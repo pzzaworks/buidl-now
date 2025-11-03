@@ -1,6 +1,6 @@
-# Buidl Now
+![Buidl Now](public/buidl-now-logo.svg)
 
-Developer tools for builders who ship fast. A comprehensive suite of developer tools and Web3 utilities built with Next.js 16.
+Buidl Now! Developer tools for builders who ship fast. A comprehensive suite of developer tools and Web3 utilities.
 
 ## Features
 
@@ -95,6 +95,16 @@ export const toolRegistry = {
 
 3. Add to the tools list in `src/lib/tools-list.ts`
 
-## License
+## 🤝 Contributing
 
-MIT
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📬 Contact
+
+Buidl Team - [https://buidlnow.com](https://buidlnow.com)
+
+Project Link: [https://github.com/pzzaworks/buidl-now](https://github.com/pzzaworks/buidl-now) 
