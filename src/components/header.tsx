@@ -2,13 +2,29 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { MdArrowBack } from "react-icons/md";
+import { useEffect } from "react";
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const isToolPage = pathname?.startsWith("/tools/");
   const isHomePage = pathname === "/";
+
+  // Navigate to home on Escape key
+  useEffect(() => {
+    if (!isToolPage) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" || e.key === "Esc") {
+        router.push("/");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isToolPage, router]);
 
   // Don't show header on homepage
   if (isHomePage) return null;
@@ -28,11 +44,13 @@ export function Header() {
         {isToolPage && (
           <Link
             href="/"
-            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
+            className="group flex items-center gap-2 px-3 h-8 text-sm text-muted-foreground hover:text-white rounded border border-muted-foreground/30 transition-colors hover:bg-muted-foreground/40"
           >
             <MdArrowBack className="w-4 h-4" />
-            <span className="hidden sm:inline">Return to Toolbag</span>
-            <span className="sm:hidden">Back</span>
+            <span>Return</span>
+            <kbd className="hidden sm:inline-flex items-center justify-center px-1.5 h-5 text-[10px] font-semibold text-muted-foreground/80 rounded border border-muted-foreground/30 min-w-[24px] transition-colors">
+              ESC
+            </kbd>
           </Link>
         )}
       </div>
