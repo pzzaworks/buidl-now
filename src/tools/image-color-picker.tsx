@@ -386,6 +386,95 @@ export const imageColorPickerConfig: ToolConfig = {
       type: "text",
     },
   ],
+  codeSnippet: `// npm install canvas
+// npm install @types/node --save-dev
+
+import { createCanvas, loadImage } from 'canvas';
+import * as fs from 'fs';
+
+interface RGB {
+  r: number;
+  g: number;
+  b: number;
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  return '#' + [r, g, b]
+    .map(x => x.toString(16).padStart(2, '0'))
+    .join('')
+    .toUpperCase();
+}
+
+async function pickColorFromImage(imagePath: string, x: number, y: number): Promise<RGB> {
+  const image = await loadImage(imagePath);
+  const canvas = createCanvas(image.width, image.height);
+  const ctx = canvas.getContext('2d');
+
+  ctx.drawImage(image, 0, 0);
+  const imageData = ctx.getImageData(x, y, 1, 1);
+  const [r, g, b] = imageData.data;
+
+  return { r, g, b };
+}
+
+async function extractDominantColors(imagePath: string, count: number = 5): Promise<RGB[]> {
+  const image = await loadImage(imagePath);
+  const canvas = createCanvas(image.width, image.height);
+  const ctx = canvas.getContext('2d');
+
+  ctx.drawImage(image, 0, 0);
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const pixels = imageData.data;
+
+  // Sample pixels (every 10th pixel for performance)
+  const colorMap = new Map<string, number>();
+  for (let i = 0; i < pixels.length; i += 40) {
+    const r = pixels[i];
+    const g = pixels[i + 1];
+    const b = pixels[i + 2];
+    const key = \`\${r},\${g},\${b}\`;
+    colorMap.set(key, (colorMap.get(key) || 0) + 1);
+  }
+
+  // Get top N colors
+  return Array.from(colorMap.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, count)
+    .map(([color]) => {
+      const [r, g, b] = color.split(',').map(Number);
+      return { r, g, b };
+    });
+}
+
+// Example usage
+async function main() {
+  const imagePath = './sample-image.jpg'; // Replace with your image path
+
+  // Pick color at specific coordinates
+  const color = await pickColorFromImage(imagePath, 100, 50);
+  console.log('Color at (100, 50):', rgbToHex(color.r, color.g, color.b));
+  console.log(\`RGB: rgb(\${color.r}, \${color.g}, \${color.b})\`);
+
+  // Extract 5 dominant colors
+  console.log('\\nExtracting dominant colors...');
+  const dominantColors = await extractDominantColors(imagePath, 5);
+  dominantColors.forEach((c, i) => {
+    console.log(\`Color \${i + 1}: \${rgbToHex(c.r, c.g, c.b)} - rgb(\${c.r}, \${c.g}, \${c.b})\`);
+  });
+}
+
+main().catch(console.error);
+
+// Output:
+// Color at (100, 50): #FF5733
+// RGB: rgb(255, 87, 51)
+//
+// Extracting dominant colors...
+// Color 1: #3498DB - rgb(52, 152, 219)
+// Color 2: #E74C3C - rgb(231, 76, 60)
+// Color 3: #2ECC71 - rgb(46, 204, 113)
+// Color 4: #F39C12 - rgb(243, 156, 18)
+// Color 5: #9B59B6 - rgb(155, 89, 182)`,
   references: [
     {
       title: "Color Theory Basics",

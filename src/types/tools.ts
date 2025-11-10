@@ -1,7 +1,7 @@
 import { IconType } from "react-icons";
 import { SiEthereum } from "react-icons/si";
 import {
-  MdSwapHoriz, MdTextFields, MdCode, MdFormatAlignLeft, MdAutorenew, MdImage, MdCheckCircle,
+  MdSwapHoriz, MdTextFields, MdCode, MdFormatAlignLeft, MdAutorenew,
   MdKey, MdLocalGasStation, MdToken, MdArticle, MdTag,
   MdFormatSize, MdCompareArrows, MdAnalytics, MdReorder,
   MdLock, MdFingerprint, MdTextFormat, MdPalette, MdSchedule, MdNumbers, MdDataObject,
@@ -14,8 +14,6 @@ export type ToolCategory =
   | "encoders-decoders"
   | "formatters"
   | "generators"
-  | "graphic"
-  | "testers"
   | "web3";
 
 export type ToolSubcategory = string;
@@ -27,7 +25,7 @@ export interface Tool {
   category: ToolCategory;
   subcategory?: ToolSubcategory;
   path: string;
-  icon?: string;
+  icon?: IconType;
 }
 
 export interface Subcategory {
@@ -119,17 +117,5 @@ export const toolCategories: { id: ToolCategory; name: string; description: stri
     name: "Generators",
     description: "Generate various types of data",
     icon: MdAutorenew,
-  },
-  {
-    id: "graphic",
-    name: "Graphic",
-    description: "Image and color manipulation tools",
-    icon: MdImage,
-  },
-  {
-    id: "testers",
-    name: "Testers",
-    description: "Test and validate your data",
-    icon: MdCheckCircle,
   },
 ];

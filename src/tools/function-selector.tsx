@@ -151,6 +151,69 @@ export const functionSelectorConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// npm install viem
+
+import { keccak256, toBytes, toFunctionSelector } from 'viem';
+
+// Calculate function selector (4 bytes) from function signature
+function getFunctionSelector(functionSignature: string): string {
+  // Hash the function signature with keccak256
+  const hash = keccak256(toBytes(functionSignature));
+
+  // Take first 4 bytes (8 hex characters + 0x)
+  const selector = hash.slice(0, 10);
+
+  return selector;
+}
+
+// Alternative: Use viem's toFunctionSelector helper
+function getFunctionSelectorFromABI(
+  functionName: string,
+  paramTypes: string[]
+): string {
+  const signature = \`\${functionName}(\${paramTypes.join(',')})\`;
+  return toFunctionSelector(signature);
+}
+
+// Examples
+const balanceOfSelector = getFunctionSelector('balanceOf(address)');
+console.log('balanceOf selector:', balanceOfSelector);
+// 0x70a08231
+
+const transferSelector = getFunctionSelector('transfer(address,uint256)');
+console.log('transfer selector:', transferSelector);
+// 0xa9059cbb
+
+const ownerOfSelector = getFunctionSelector('ownerOf(uint256)');
+console.log('ownerOf selector:', ownerOfSelector);
+// 0x6352211e
+
+// Using the helper function
+const approveSelector = getFunctionSelectorFromABI('approve', [
+  'address',
+  'uint256'
+]);
+console.log('approve selector:', approveSelector);
+// 0x095ea7b3
+
+// Encode function call with parameters
+import { encodeFunctionData } from 'viem';
+
+const calldata = encodeFunctionData({
+  abi: [{
+    name: 'transfer',
+    type: 'function',
+    inputs: [
+      { name: 'to', type: 'address' },
+      { name: 'amount', type: 'uint256' }
+    ]
+  }],
+  functionName: 'transfer',
+  args: ['0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045', 1000000000000000000n]
+});
+
+console.log('Calldata:', calldata);
+// 0xa9059cbb (selector) + encoded parameters`,
   references: [
     {
       title: "viem: toFunctionSelector",

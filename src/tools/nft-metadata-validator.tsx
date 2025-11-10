@@ -450,6 +450,62 @@ export const nftMetadataValidatorConfig: ToolConfig = {
   description: "Validate NFT metadata against OpenSea, ERC-721, and ERC-1155 standards",
   category: "web3",
   component: NftMetadataValidatorTool,
+  codeSnippet: `// Validate NFT metadata against ERC-721/OpenSea standards
+
+interface NFTMetadata {
+  name: string;
+  description: string;
+  image: string;
+  attributes?: Array<{
+    trait_type: string;
+    value: string | number;
+    display_type?: string;
+  }>;
+  external_url?: string;
+  animation_url?: string;
+  background_color?: string;
+}
+
+function validateNFTMetadata(metadata: NFTMetadata): boolean {
+  // Required fields
+  if (!metadata.name || !metadata.description || !metadata.image) {
+    console.error("Missing required fields");
+    return false;
+  }
+
+  // Validate image URI
+  const validProtocols = ["ipfs://", "https://", "ar://", "data:"];
+  if (!validProtocols.some(p => metadata.image.startsWith(p))) {
+    console.error("Invalid image URI protocol");
+    return false;
+  }
+
+  // Validate attributes
+  if (metadata.attributes) {
+    for (const attr of metadata.attributes) {
+      if (!attr.trait_type || attr.value === undefined) {
+        console.error("Invalid attribute structure");
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+// Example valid metadata
+const metadata: NFTMetadata = {
+  name: "My NFT #1",
+  description: "A unique collectible",
+  image: "ipfs://QmXyz...",
+  attributes: [
+    { trait_type: "Background", value: "Blue" },
+    { trait_type: "Rarity", value: 95, display_type: "number" }
+  ]
+};
+
+console.log("Valid:", validateNFTMetadata(metadata));
+`,
   seo: {
     keywords: [
       "nft metadata validator",

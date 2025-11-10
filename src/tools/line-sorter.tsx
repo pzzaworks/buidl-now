@@ -204,6 +204,76 @@ export const lineSorterConfig: ToolConfig = {
       type: "text",
     },
   ],
+  codeSnippet: `type SortOptions = {
+  sortOrder: 'asc' | 'desc';
+  caseSensitive: boolean;
+  removeDuplicates: boolean;
+  removeEmptyLines: boolean;
+};
+
+function sortLines(input: string, options: SortOptions): string {
+  let lines = input.split('\\n');
+
+  // Remove empty lines if option is enabled
+  if (options.removeEmptyLines) {
+    lines = lines.filter((line) => line.trim().length > 0);
+  }
+
+  // Remove duplicates if option is enabled
+  if (options.removeDuplicates) {
+    if (options.caseSensitive) {
+      lines = Array.from(new Set(lines));
+    } else {
+      // Case-insensitive duplicate removal
+      const seen = new Set<string>();
+      lines = lines.filter((line) => {
+        const lower = line.toLowerCase();
+        if (seen.has(lower)) {
+          return false;
+        }
+        seen.add(lower);
+        return true;
+      });
+    }
+  }
+
+  // Sort lines
+  const sorted = [...lines].sort((a, b) => {
+    const strA = options.caseSensitive ? a : a.toLowerCase();
+    const strB = options.caseSensitive ? b : b.toLowerCase();
+
+    if (options.sortOrder === 'asc') {
+      return strA.localeCompare(strB);
+    } else {
+      return strB.localeCompare(strA);
+    }
+  });
+
+  return sorted.join('\\n');
+}
+
+// Example usage
+const input = \`banana
+apple
+cherry
+Apple
+banana
+date\`;
+
+const options: SortOptions = {
+  sortOrder: 'asc',
+  caseSensitive: false,
+  removeDuplicates: true,
+  removeEmptyLines: true,
+};
+
+const sorted = sortLines(input, options);
+console.log(sorted);
+// Output:
+// apple
+// banana
+// cherry
+// date`,
   references: [
     {
       title: "String Collation",

@@ -177,6 +177,53 @@ export const removeDuplicatesConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `type RemoveDuplicatesOptions = {
+  caseSensitive: boolean;
+};
+
+function removeDuplicates(input: string, options: RemoveDuplicatesOptions): string {
+  const lines = input.split('\\n');
+  const seen = new Set<string>();
+  const uniqueLines: string[] = [];
+
+  lines.forEach((line) => {
+    const key = options.caseSensitive ? line : line.toLowerCase();
+
+    if (!seen.has(key)) {
+      seen.add(key);
+      uniqueLines.push(line);
+    }
+  });
+
+  return uniqueLines.join('\\n');
+}
+
+// Example usage
+const input = \`apple
+banana
+Apple
+cherry
+banana
+apple\`;
+
+// Case insensitive (default behavior)
+const result1 = removeDuplicates(input, { caseSensitive: false });
+console.log('Case insensitive:');
+console.log(result1);
+// Output:
+// apple
+// banana
+// cherry
+
+// Case sensitive
+const result2 = removeDuplicates(input, { caseSensitive: true });
+console.log('\\nCase sensitive:');
+console.log(result2);
+// Output:
+// apple
+// banana
+// Apple
+// cherry`,
   references: [
     {
       title: "Set - JavaScript | MDN",

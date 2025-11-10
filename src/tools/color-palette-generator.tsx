@@ -362,6 +362,114 @@ export const colorPaletteGeneratorConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// No external dependencies needed - uses built-in Math functions
+
+interface Color {
+  hex: string;
+  rgb: string;
+  hsl: string;
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  return '#' + [r, g, b]
+    .map(x => x.toString(16).padStart(2, '0'))
+    .join('')
+    .toUpperCase();
+}
+
+function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+  s /= 100;
+  l /= 100;
+
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+
+  let r = 0, g = 0, b = 0;
+
+  if (h >= 0 && h < 60) { r = c; g = x; b = 0; }
+  else if (h >= 60 && h < 120) { r = x; g = c; b = 0; }
+  else if (h >= 120 && h < 180) { r = 0; g = c; b = x; }
+  else if (h >= 180 && h < 240) { r = 0; g = x; b = c; }
+  else if (h >= 240 && h < 300) { r = x; g = 0; b = c; }
+  else { r = c; g = 0; b = x; }
+
+  return [
+    Math.round((r + m) * 255),
+    Math.round((g + m) * 255),
+    Math.round((b + m) * 255)
+  ];
+}
+
+function generateRandomColor(): Color {
+  const r = Math.floor(Math.random() * 256);
+  const g = Math.floor(Math.random() * 256);
+  const b = Math.floor(Math.random() * 256);
+
+  return {
+    hex: rgbToHex(r, g, b),
+    rgb: \`rgb(\${r}, \${g}, \${b})\`,
+    hsl: \`hsl(0, 0%, 0%)\` // Simplified
+  };
+}
+
+function generateComplementaryPalette(): Color[] {
+  const hue = Math.floor(Math.random() * 360);
+  const [r1, g1, b1] = hslToRgb(hue, 70, 50);
+  const [r2, g2, b2] = hslToRgb((hue + 180) % 360, 70, 50);
+
+  return [
+    {
+      hex: rgbToHex(r1, g1, b1),
+      rgb: \`rgb(\${r1}, \${g1}, \${b1})\`,
+      hsl: \`hsl(\${hue}, 70%, 50%)\`
+    },
+    {
+      hex: rgbToHex(r2, g2, b2),
+      rgb: \`rgb(\${r2}, \${g2}, \${b2})\`,
+      hsl: \`hsl(\${(hue + 180) % 360}, 70%, 50%)\`
+    }
+  ];
+}
+
+function generateMonochromaticPalette(count: number = 5): Color[] {
+  const hue = Math.floor(Math.random() * 360);
+  const saturation = 70;
+  const colors: Color[] = [];
+
+  for (let i = 0; i < count; i++) {
+    const lightness = 20 + (i * 15);
+    const [r, g, b] = hslToRgb(hue, saturation, lightness);
+
+    colors.push({
+      hex: rgbToHex(r, g, b),
+      rgb: \`rgb(\${r}, \${g}, \${b})\`,
+      hsl: \`hsl(\${hue}, \${saturation}%, \${lightness}%)\`
+    });
+  }
+
+  return colors;
+}
+
+// Example usage
+console.log('Random Color:');
+console.log(generateRandomColor());
+
+console.log('\\nComplementary Palette:');
+console.log(generateComplementaryPalette());
+
+console.log('\\nMonochromatic Palette (5 colors):');
+console.log(generateMonochromaticPalette(5));
+
+// Output:
+// Random Color:
+// { hex: '#A3C4F3', rgb: 'rgb(163, 196, 243)', hsl: 'hsl(0, 0%, 0%)' }
+//
+// Complementary Palette:
+// [
+//   { hex: '#FF6B6B', rgb: 'rgb(255, 107, 107)', hsl: 'hsl(0, 70%, 50%)' },
+//   { hex: '#6BFFFF', rgb: 'rgb(107, 255, 255)', hsl: 'hsl(180, 70%, 50%)' }
+// ]`,
   references: [
     {
       title: "Color Theory - Wikipedia",

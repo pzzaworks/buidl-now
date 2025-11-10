@@ -211,6 +211,81 @@ export const cssFormatterConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// No external dependencies needed - uses built-in string manipulation
+
+function formatCss(css: string): string {
+  if (!css.trim()) return '';
+
+  let formatted = css;
+
+  // Remove comments
+  formatted = formatted.replace(/\\/\\*[\\s\\S]*?\\*\\//g, '');
+
+  // Remove extra whitespace
+  formatted = formatted.replace(/\\s+/g, ' ');
+
+  // Add newline after opening brace
+  formatted = formatted.replace(/\\{/g, ' {\\n  ');
+
+  // Add newline after semicolons inside rules
+  formatted = formatted.replace(/;/g, ';\\n  ');
+
+  // Add newline before closing brace
+  formatted = formatted.replace(/\\}/g, '\\n}\\n\\n');
+
+  // Clean up extra spaces and newlines
+  formatted = formatted.replace(/\\n\\s*\\n\\s*\\n/g, '\\n\\n');
+  formatted = formatted.replace(/\\s*\\{\\s*/g, ' {\\n  ');
+  formatted = formatted.replace(/;\\s*\\}/g, ';\\n}');
+  formatted = formatted.replace(/\\}\\s*\\n\\s*\\}/g, '}\\n}');
+
+  return formatted.trim();
+}
+
+function minifyCss(css: string): string {
+  if (!css.trim()) return '';
+
+  let minified = css;
+
+  // Remove comments
+  minified = minified.replace(/\\/\\*[\\s\\S]*?\\*\\//g, '');
+
+  // Remove whitespace around special characters
+  minified = minified.replace(/\\s*([{}:;,])\\s*/g, '$1');
+
+  // Remove extra whitespace
+  minified = minified.replace(/\\s+/g, ' ');
+
+  // Remove spaces after colons
+  minified = minified.replace(/:\\s+/g, ':');
+
+  return minified.trim();
+}
+
+// Example usage
+const unformattedCss = 'body{margin:0;padding:0;font-family:Arial}.header{background:blue;color:white}';
+
+console.log('Formatted CSS:');
+console.log(formatCss(unformattedCss));
+
+console.log('\\nMinified CSS:');
+console.log(minifyCss(unformattedCss));
+
+// Output:
+// Formatted CSS:
+// body {
+//   margin: 0;
+//   padding: 0;
+//   font-family: Arial;
+// }
+//
+// .header {
+//   background: blue;
+//   color: white;
+// }
+//
+// Minified CSS:
+// body{margin:0;padding:0;font-family:Arial}.header{background:blue;color:white}`,
   references: [
     {
       title: "MDN: CSS Basics",

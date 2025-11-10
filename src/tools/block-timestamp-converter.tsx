@@ -519,6 +519,71 @@ Reference: block explorer verified timestamp 1693641363`,
       type: "code",
     },
   ],
+  codeSnippet: `// No external packages needed - pure Node.js/TypeScript
+
+interface Chain {
+  name: string;
+  blockTime: number; // seconds per block
+}
+
+const chains: Record<string, Chain> = {
+  ethereum: { name: 'Ethereum', blockTime: 12 },
+  polygon: { name: 'Polygon', blockTime: 2 },
+  arbitrum: { name: 'Arbitrum', blockTime: 0.25 }
+};
+
+// Convert block number to timestamp
+function blockToTimestamp(
+  blockNumber: number,
+  referenceBlock: number,
+  referenceTimestamp: number,
+  chain: Chain
+): number {
+  const blocksDiff = blockNumber - referenceBlock;
+  const timeDiff = blocksDiff * chain.blockTime;
+  return referenceTimestamp + timeDiff;
+}
+
+// Convert timestamp to block number
+function timestampToBlock(
+  timestamp: number,
+  referenceBlock: number,
+  referenceTimestamp: number,
+  chain: Chain
+): number {
+  const timeDiff = timestamp - referenceTimestamp;
+  const blocksDiff = Math.floor(timeDiff / chain.blockTime);
+  return referenceBlock + blocksDiff;
+}
+
+// Example: Ethereum block to timestamp
+const ethChain = chains.ethereum;
+const refBlock = 18000000;
+const refTimestamp = 1693641363; // Known timestamp from block explorer
+
+const targetBlock = 18500000;
+const estimatedTimestamp = blockToTimestamp(
+  targetBlock,
+  refBlock,
+  refTimestamp,
+  ethChain
+);
+console.log('Block', targetBlock, '→ Timestamp:', estimatedTimestamp);
+console.log('Date:', new Date(estimatedTimestamp * 1000).toISOString());
+
+// Convert timestamp back to block
+const targetTimestamp = Math.floor(Date.now() / 1000);
+const estimatedBlock = timestampToBlock(
+  targetTimestamp,
+  refBlock,
+  refTimestamp,
+  ethChain
+);
+console.log('Timestamp', targetTimestamp, '→ Block:', estimatedBlock);
+
+// Calculate blocks per day
+const blocksPerDay = Math.floor(86400 / ethChain.blockTime);
+console.log('Blocks per day:', blocksPerDay); // ~7200 for Ethereum`,
   references: [
     {
       title: "Ethereum Block Time",

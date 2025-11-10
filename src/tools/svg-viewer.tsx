@@ -254,6 +254,66 @@ export const svgViewerConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// No external dependencies needed - SVG is native to browsers
+
+// Create an SVG programmatically
+function createSvg(width: number, height: number): string {
+  return \`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 \${width} \${height}" width="\${width}" height="\${height}">
+  <!-- Add your SVG elements here -->
+</svg>\`;
+}
+
+// Example: Create a circle SVG
+function createCircleSvg(radius: number, color: string): string {
+  const size = radius * 2 + 20;
+  return \`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 \${size} \${size}" width="\${size}" height="\${size}">
+  <circle cx="\${size / 2}" cy="\${size / 2}" r="\${radius}" fill="\${color}" />
+</svg>\`;
+}
+
+// Example: Create a smiley face SVG
+function createSmileyFaceSvg(): string {
+  return \`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Face -->
+  <circle cx="100" cy="100" r="80" fill="#FFD700" stroke="#FFA500" stroke-width="3"/>
+
+  <!-- Left eye -->
+  <circle cx="75" cy="85" r="8" fill="#000"/>
+
+  <!-- Right eye -->
+  <circle cx="125" cy="85" r="8" fill="#000"/>
+
+  <!-- Smile -->
+  <path d="M 70 120 Q 100 140 130 120" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round"/>
+</svg>\`;
+}
+
+// Validate SVG
+function validateSvg(svgCode: string): boolean {
+  return svgCode.includes('<svg') && svgCode.includes('</svg>');
+}
+
+// Example usage
+const circleSvg = createCircleSvg(50, '#4F46E5');
+console.log('Circle SVG:');
+console.log(circleSvg);
+
+const smileyFace = createSmileyFaceSvg();
+console.log('\\nSmiley Face SVG:');
+console.log(smileyFace);
+
+console.log('\\nIs valid SVG:', validateSvg(smileyFace));
+
+// Output:
+// Circle SVG:
+// <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+//   <circle cx="60" cy="60" r="50" fill="#4F46E5" />
+// </svg>
+//
+// Smiley Face SVG:
+// (Full SVG markup with face, eyes, and smile)
+//
+// Is valid SVG: true`,
   references: [
     {
       title: "SVG Tutorial - MDN Web Docs",

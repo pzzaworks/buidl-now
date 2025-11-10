@@ -366,6 +366,33 @@ export const multiChainAddressDeriverConfig: ToolConfig = {
   description: "Derive addresses from private key or mnemonic for multiple EVM-compatible chains",
   category: "web3",
   component: MultiChainAddressDeriverTool,
+  codeSnippet: `// npm install viem
+
+import { privateKeyToAccount, mnemonicToAccount } from 'viem/accounts';
+
+// Derive address from private key
+const privateKey = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
+const account = privateKeyToAccount(privateKey as \`0x\${string}\`);
+console.log("Address:", account.address);
+
+// Derive address from mnemonic phrase
+const mnemonic = "duty clump embody almost vanish excite same mass";
+const mnemonicAccount = mnemonicToAccount(mnemonic, {
+  path: "m/44'/60'/0'/0/0" // BIP44 derivation path for Ethereum
+});
+console.log("Address:", mnemonicAccount.address);
+
+// Derive multiple addresses from same mnemonic
+for (let i = 0; i < 5; i++) {
+  const derivedAccount = mnemonicToAccount(mnemonic, {
+    path: \`m/44'/60'/0'/0/\${i}\`
+  });
+  console.log(\`Address \${i}:\`, derivedAccount.address);
+}
+
+// Same address works across all EVM chains:
+// Ethereum, BSC, Polygon, Arbitrum, Optimism, Avalanche, Base
+`,
   seo: {
     keywords: [
       "address deriver",

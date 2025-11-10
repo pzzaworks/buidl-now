@@ -299,6 +299,99 @@ Message: {"maker":"0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045","taker":"0x000000
       type: "code",
     },
   ],
+  codeSnippet: `// npm install viem
+
+import { keccak256, encodeAbiParameters, parseAbiParameters } from 'viem';
+
+interface Domain {
+  name: string;
+  version: string;
+  chainId: number;
+  verifyingContract: string;
+}
+
+interface TypedData {
+  domain: Domain;
+  types: Record<string, Array<{ name: string; type: string }>>;
+  primaryType: string;
+  message: Record<string, any>;
+}
+
+// Calculate EIP-712 hash
+function hashTypedData(data: TypedData): string {
+  // Step 1: Calculate domain separator
+  const domainTypeHash = keccak256(
+    Buffer.from('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)')
+  );
+
+  const domainEncoded = encodeAbiParameters(
+    parseAbiParameters('bytes32,bytes32,bytes32,uint256,address'),
+    [
+      domainTypeHash,
+      keccak256(Buffer.from(data.domain.name)),
+      keccak256(Buffer.from(data.domain.version)),
+      BigInt(data.domain.chainId),
+      data.domain.verifyingContract
+    ]
+  );
+
+  const domainSeparator = keccak256(domainEncoded);
+
+  // Step 2: Calculate message hash
+  const primaryTypeFields = data.types[data.primaryType];
+  const typeString = \`\${data.primaryType}(\${primaryTypeFields
+    .map(f => \`\${f.type} \${f.name}\`)
+    .join(',')})\`;
+
+  const typeHash = keccak256(Buffer.from(typeString));
+
+  const messageTypes = primaryTypeFields.map(f => f.type).join(',');
+  const messageValues = primaryTypeFields.map(f => {
+    const value = data.message[f.name];
+    return f.type === 'string' ? keccak256(Buffer.from(value)) : value;
+  });
+
+  const messageEncoded = encodeAbiParameters(
+    parseAbiParameters(\`bytes32,\${messageTypes}\`),
+    [typeHash, ...messageValues]
+  );
+
+  const messageHash = keccak256(messageEncoded);
+
+  // Step 3: Calculate final hash
+  const finalEncoded = \`0x1901\${domainSeparator.slice(2)}\${messageHash.slice(2)}\` as \`0x\${string}\`;
+  return keccak256(Buffer.from(finalEncoded.slice(2), 'hex'));
+}
+
+// Example: ERC-20 Permit
+const permitData: TypedData = {
+  domain: {
+    name: 'USDC',
+    version: '1',
+    chainId: 1,
+    verifyingContract: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+  },
+  types: {
+    Permit: [
+      { name: 'owner', type: 'address' },
+      { name: 'spender', type: 'address' },
+      { name: 'value', type: 'uint256' },
+      { name: 'nonce', type: 'uint256' },
+      { name: 'deadline', type: 'uint256' }
+    ]
+  },
+  primaryType: 'Permit',
+  message: {
+    owner: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+    spender: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
+    value: '1000000',
+    nonce: '0',
+    deadline: '1735689600'
+  }
+};
+
+const hash = hashTypedData(permitData);
+console.log('EIP-712 Hash:', hash);`,
   references: [
     {
       title: "EIP-712 Specification",

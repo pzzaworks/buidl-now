@@ -288,6 +288,112 @@ export const xmlJsonConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// npm install xml-js
+// npm install @types/node --save-dev
+
+import * as convert from 'xml-js';
+
+function xmlToJson(xml: string, pretty: boolean = true): string {
+  const result = convert.xml2js(xml, {
+    compact: true,
+    spaces: pretty ? 2 : 0
+  });
+  return JSON.stringify(result, null, pretty ? 2 : 0);
+}
+
+function jsonToXml(json: string, pretty: boolean = true): string {
+  const obj = JSON.parse(json);
+  const xml = convert.js2xml(obj, {
+    compact: true,
+    spaces: pretty ? 2 : 0
+  });
+  return xml;
+}
+
+function readFile(path: string): string {
+  const fs = require('fs');
+  return fs.readFileSync(path, 'utf8');
+}
+
+function writeFile(path: string, content: string): void {
+  const fs = require('fs');
+  fs.writeFileSync(path, content, 'utf8');
+  console.log(\`File saved to \${path}\`);
+}
+
+// Example usage
+console.log('=== XML to JSON ===');
+const xmlInput = \`<?xml version="1.0" encoding="UTF-8"?>
+<person id="1">
+  <name>John</name>
+  <age>30</age>
+  <skills>
+    <skill>JavaScript</skill>
+    <skill>TypeScript</skill>
+  </skills>
+</person>\`;
+
+const jsonOutput = xmlToJson(xmlInput);
+console.log(jsonOutput);
+
+console.log('\\n=== JSON to XML ===');
+const jsonInput = JSON.stringify({
+  user: {
+    _attributes: { id: '2' },
+    name: { _text: 'Jane' },
+    age: { _text: '25' },
+    city: { _text: 'London' }
+  }
+});
+
+const xmlOutput = jsonToXml(jsonInput);
+console.log(xmlOutput);
+
+console.log('\\n=== Complex Example ===');
+const complexXml = \`<?xml version="1.0"?>
+<catalog>
+  <book id="bk101">
+    <author>Gambardella, Matthew</author>
+    <title>XML Developer's Guide</title>
+    <price>44.95</price>
+  </book>
+  <book id="bk102">
+    <author>Ralls, Kim</author>
+    <title>Midnight Rain</title>
+    <price>5.95</price>
+  </book>
+</catalog>\`;
+
+const complexJson = xmlToJson(complexXml);
+console.log(complexJson);
+
+// Uncomment to save files:
+// writeFile('output.json', jsonOutput);
+// writeFile('output.xml', xmlOutput);
+
+// Output:
+// === XML to JSON ===
+// {
+//   "_declaration": { "_attributes": { "version": "1.0", "encoding": "UTF-8" } },
+//   "person": {
+//     "_attributes": { "id": "1" },
+//     "name": { "_text": "John" },
+//     "age": { "_text": "30" },
+//     "skills": {
+//       "skill": [
+//         { "_text": "JavaScript" },
+//         { "_text": "TypeScript" }
+//       ]
+//     }
+//   }
+// }
+//
+// === JSON to XML ===
+// <user id="2">
+//   <name>Jane</name>
+//   <age>25</age>
+//   <city>London</city>
+// </user>`,
   references: [
     {
       title: "XML Tutorial - MDN",

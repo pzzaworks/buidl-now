@@ -281,6 +281,144 @@ export const gradientGeneratorConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// No external dependencies needed - generates CSS gradient strings
+
+interface ColorStop {
+  color: string;
+  position: number; // 0-100
+}
+
+type GradientType = 'linear' | 'radial';
+
+interface GradientOptions {
+  type: GradientType;
+  angle?: number; // 0-360 for linear gradients
+  colorStops: ColorStop[];
+}
+
+function generateGradientCSS(options: GradientOptions): string {
+  const sortedStops = [...options.colorStops].sort((a, b) => a.position - b.position);
+  const stops = sortedStops.map(stop => \`\${stop.color} \${stop.position}%\`).join(', ');
+
+  if (options.type === 'linear') {
+    const angle = options.angle ?? 90;
+    return \`linear-gradient(\${angle}deg, \${stops})\`;
+  } else {
+    return \`radial-gradient(circle, \${stops})\`;
+  }
+}
+
+function generateRandomGradient(type: GradientType = 'linear'): string {
+  const randomColor = () => {
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+    return \`rgb(\${r}, \${g}, \${b})\`;
+  };
+
+  const colorStops: ColorStop[] = [
+    { color: randomColor(), position: 0 },
+    { color: randomColor(), position: 100 }
+  ];
+
+  const angle = Math.floor(Math.random() * 360);
+
+  return generateGradientCSS({ type, angle, colorStops });
+}
+
+function generateLinearGradient(
+  color1: string,
+  color2: string,
+  angle: number = 90
+): string {
+  return generateGradientCSS({
+    type: 'linear',
+    angle,
+    colorStops: [
+      { color: color1, position: 0 },
+      { color: color2, position: 100 }
+    ]
+  });
+}
+
+function generateRadialGradient(color1: string, color2: string): string {
+  return generateGradientCSS({
+    type: 'radial',
+    colorStops: [
+      { color: color1, position: 0 },
+      { color: color2, position: 100 }
+    ]
+  });
+}
+
+function generateMultiStopGradient(colors: string[], type: GradientType = 'linear'): string {
+  const colorStops: ColorStop[] = colors.map((color, index) => ({
+    color,
+    position: (index / (colors.length - 1)) * 100
+  }));
+
+  return generateGradientCSS({
+    type,
+    angle: 90,
+    colorStops
+  });
+}
+
+// Example usage
+console.log('Linear gradient (90deg):');
+console.log(generateLinearGradient('#667eea', '#764ba2', 90));
+
+console.log('\\nLinear gradient (45deg):');
+console.log(generateLinearGradient('#f093fb', '#f5576c', 45));
+
+console.log('\\nRadial gradient:');
+console.log(generateRadialGradient('#4facfe', '#00f2fe'));
+
+console.log('\\nMulti-stop gradient (3 colors):');
+console.log(generateMultiStopGradient(['#ff0000', '#00ff00', '#0000ff']));
+
+console.log('\\nRainbow gradient (5 colors):');
+console.log(generateMultiStopGradient([
+  '#ff0000',
+  '#ffff00',
+  '#00ff00',
+  '#00ffff',
+  '#0000ff'
+]));
+
+console.log('\\nRandom linear gradient:');
+console.log(generateRandomGradient('linear'));
+
+console.log('\\nRandom radial gradient:');
+console.log(generateRandomGradient('radial'));
+
+console.log('\\nCustom gradient with multiple stops:');
+const customGradient = generateGradientCSS({
+  type: 'linear',
+  angle: 135,
+  colorStops: [
+    { color: '#667eea', position: 0 },
+    { color: '#764ba2', position: 50 },
+    { color: '#f093fb', position: 100 }
+  ]
+});
+console.log(customGradient);
+
+// Output:
+// Linear gradient (90deg):
+// linear-gradient(90deg, #667eea 0%, #764ba2 100%)
+//
+// Linear gradient (45deg):
+// linear-gradient(45deg, #f093fb 0%, #f5576c 100%)
+//
+// Radial gradient:
+// radial-gradient(circle, #4facfe 0%, #00f2fe 100%)
+//
+// Multi-stop gradient (3 colors):
+// linear-gradient(90deg, #ff0000 0%, #00ff00 50%, #0000ff 100%)
+//
+// Rainbow gradient (5 colors):
+// linear-gradient(90deg, #ff0000 0%, #ffff00 25%, #00ff00 50%, #00ffff 75%, #0000ff 100%)`,
   references: [
     {
       title: "CSS Gradients - MDN Web Docs",

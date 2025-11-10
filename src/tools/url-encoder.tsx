@@ -134,6 +134,40 @@ export const urlEncoderConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// Encode URL component (replaces special characters with percent-encoded values)
+function encodeUrl(text: string): string {
+  return encodeURIComponent(text);
+}
+
+// Decode URL component
+function decodeUrl(encodedText: string): string {
+  return decodeURIComponent(encodedText);
+}
+
+// Example usage
+const url = "Hello World! How are you?";
+const encoded = encodeUrl(url);
+console.log(\`Original: \${url}\`);
+console.log(\`Encoded: \${encoded}\`);
+// Output: Hello%20World!%20How%20are%20you%3F
+
+const decoded = decodeUrl(encoded);
+console.log(\`Decoded: \${decoded}\`);
+// Output: Hello World! How are you?
+
+// Building query parameters
+const params = {
+  name: "John Doe",
+  email: "user@example.com",
+  message: "Hello & welcome!"
+};
+
+const queryString = Object.entries(params)
+  .map(([key, value]) => \`\${encodeUrl(key)}=\${encodeUrl(value)}\`)
+  .join('&');
+
+console.log(\`Query string: \${queryString}\`);
+// Output: name=John%20Doe&email=user%40example.com&message=Hello%20%26%20welcome!`,
   references: [
     {
       title: "Percent-encoding - Wikipedia",

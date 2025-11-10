@@ -513,6 +513,82 @@ lendingPool.flashLoan(token, amount, data);`,
       type: "code",
     },
   ],
+  codeSnippet: `// No external packages needed - Foundry built-in cheatcodes
+// Use in Foundry tests (.t.sol files)
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "forge-std/Test.sol";
+
+contract CheatcodeExamples is Test {
+    // Pranking: Impersonate addresses
+    function testPrank() public {
+        address alice = address(0x1);
+        vm.prank(alice);
+        // Next call will be from alice
+        someContract.doSomething();
+    }
+
+    function testStartPrank() public {
+        address alice = address(0x1);
+        vm.startPrank(alice);
+        // All calls are from alice until stopPrank
+        someContract.call1();
+        someContract.call2();
+        vm.stopPrank();
+    }
+
+    // Balance: Set ETH balance
+    function testDeal() public {
+        address alice = address(0x1);
+        vm.deal(alice, 100 ether);
+        assertEq(alice.balance, 100 ether);
+    }
+
+    // Time: Manipulate block.timestamp
+    function testWarp() public {
+        uint256 futureTime = block.timestamp + 30 days;
+        vm.warp(futureTime);
+        assertEq(block.timestamp, futureTime);
+    }
+
+    // Block: Manipulate block.number
+    function testRoll() public {
+        vm.roll(1000000);
+        assertEq(block.number, 1000000);
+    }
+
+    // Mock: Mock external calls
+    function testMockCall() public {
+        address token = address(0x123);
+        vm.mockCall(
+            token,
+            abi.encodeWithSelector(IERC20.balanceOf.selector, address(this)),
+            abi.encode(1000e18)
+        );
+
+        uint256 balance = IERC20(token).balanceOf(address(this));
+        assertEq(balance, 1000e18);
+    }
+
+    // Expect: Verify calls are made
+    function testExpectCall() public {
+        vm.expectCall(
+            address(token),
+            abi.encodeWithSelector(IERC20.transfer.selector, recipient, 100)
+        );
+        token.transfer(recipient, 100);
+    }
+
+    // Combined: Hoax (prank + deal)
+    function testHoax() public {
+        address alice = address(0x1);
+        vm.hoax(alice, 10 ether);
+        // Next call is from alice with 10 ETH balance
+        payable(bob).transfer(5 ether);
+    }
+}`,
   references: [
     {
       title: "Foundry Cheatcodes Reference",

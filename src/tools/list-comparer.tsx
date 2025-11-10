@@ -285,6 +285,50 @@ export const listComparerConfig: ToolConfig = {
       type: "text",
     },
   ],
+  codeSnippet: `type ComparisonResult = {
+  onlyInList1: string[];
+  onlyInList2: string[];
+  inBoth: string[];
+};
+
+function compareLists(list1: string, list2: string): ComparisonResult {
+  const items1 = list1
+    .split('\\n')
+    .map((s) => s.trim())
+    .filter((s) => s);
+  const items2 = list2
+    .split('\\n')
+    .map((s) => s.trim())
+    .filter((s) => s);
+
+  const set1 = new Set(items1);
+  const set2 = new Set(items2);
+
+  const only1 = items1.filter((item) => !set2.has(item));
+  const only2 = items2.filter((item) => !set1.has(item));
+  const both = items1.filter((item) => set2.has(item));
+
+  return {
+    onlyInList1: [...new Set(only1)],
+    onlyInList2: [...new Set(only2)],
+    inBoth: [...new Set(both)],
+  };
+}
+
+// Example usage
+const list1 = \`apple
+banana
+orange\`;
+
+const list2 = \`banana
+grape
+orange\`;
+
+const result = compareLists(list1, list2);
+
+console.log('Only in List 1:', result.onlyInList1);  // ['apple']
+console.log('Only in List 2:', result.onlyInList2);  // ['grape']
+console.log('In Both:', result.inBoth);              // ['banana', 'orange']`,
   references: [
     {
       title: "Set Operations",

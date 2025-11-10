@@ -233,6 +233,39 @@ Values: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
       type: "code",
     },
   ],
+  codeSnippet: `// npm install viem
+
+import { encodeAbiParameters, decodeAbiParameters, parseAbiParameters } from 'viem';
+
+// Encode ABI parameters
+function encodeParameters(types: string, values: any[]): string {
+  const abiParams = parseAbiParameters(types);
+  const encoded = encodeAbiParameters(abiParams, values);
+  return encoded;
+}
+
+// Decode ABI parameters
+function decodeParameters(types: string, data: string): any[] {
+  const abiParams = parseAbiParameters(types);
+  const decoded = decodeAbiParameters(abiParams, data as \`0x\${string}\`);
+  return decoded as any[];
+}
+
+// Example: Encode transfer parameters
+const types = 'address,uint256';
+const values = [
+  '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+  1000000000000000000n // 1 ETH in wei (BigInt)
+];
+
+const encoded = encodeParameters(types, values);
+console.log('Encoded:', encoded);
+// 0x000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa960450000000000000000000000000000000000000000000000000de0b6b3a7640000
+
+// Decode it back
+const decoded = decodeParameters(types, encoded);
+console.log('Decoded:', decoded);
+// ['0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045', 1000000000000000000n]`,
   references: [
     {
       title: "viem: encodeAbiParameters",

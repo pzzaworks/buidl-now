@@ -242,6 +242,57 @@ export const caseConverterConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `type CaseConversions = {
+  camelCase: string;
+  pascalCase: string;
+  snakeCase: string;
+  kebabCase: string;
+  constantCase: string;
+};
+
+function convertCase(text: string): CaseConversions {
+  // Split text into words (handle spaces, underscores, hyphens, and camelCase)
+  const words = text
+    .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space before capital letters
+    .replace(/[_-]/g, ' ') // Replace underscores and hyphens with spaces
+    .split(/\\s+/)
+    .filter((word) => word.length > 0)
+    .map((word) => word.toLowerCase());
+
+  // camelCase: first word lowercase, rest capitalized
+  const camelCase = words
+    .map((word, index) => {
+      if (index === 0) return word.toLowerCase();
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    })
+    .join('');
+
+  // PascalCase: all words capitalized
+  const pascalCase = words
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join('');
+
+  // snake_case: lowercase with underscores
+  const snakeCase = words.join('_');
+
+  // kebab-case: lowercase with hyphens
+  const kebabCase = words.join('-');
+
+  // CONSTANT_CASE: uppercase with underscores
+  const constantCase = words.map((w) => w.toUpperCase()).join('_');
+
+  return { camelCase, pascalCase, snakeCase, kebabCase, constantCase };
+}
+
+// Example usage
+const input = "hello world example";
+const conversions = convertCase(input);
+
+console.log(\`camelCase: \${conversions.camelCase}\`);       // helloWorldExample
+console.log(\`PascalCase: \${conversions.pascalCase}\`);     // HelloWorldExample
+console.log(\`snake_case: \${conversions.snakeCase}\`);      // hello_world_example
+console.log(\`kebab-case: \${conversions.kebabCase}\`);      // hello-world-example
+console.log(\`CONSTANT_CASE: \${conversions.constantCase}\`); // HELLO_WORLD_EXAMPLE`,
   references: [
     {
       title: "Naming Conventions in Programming",

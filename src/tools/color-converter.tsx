@@ -376,6 +376,127 @@ export const colorConverterConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// No npm packages needed - pure Node.js/TypeScript
+
+interface RGB {
+  r: number;
+  g: number;
+  b: number;
+}
+
+interface HSL {
+  h: number;
+  s: number;
+  l: number;
+}
+
+interface HSV {
+  h: number;
+  s: number;
+  v: number;
+}
+
+function hexToRgb(hex: string): RGB | null {
+  const result = /^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16),
+  } : null;
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  return '#' + [r, g, b]
+    .map(x => {
+      const hex = x.toString(16);
+      return hex.length === 1 ? '0' + hex : hex;
+    })
+    .join('')
+    .toUpperCase();
+}
+
+function rgbToHsl(r: number, g: number, b: number): HSL {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const delta = max - min;
+
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
+
+  if (delta !== 0) {
+    s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+
+    switch (max) {
+      case r: h = ((g - b) / delta + (g < b ? 6 : 0)) / 6; break;
+      case g: h = ((b - r) / delta + 2) / 6; break;
+      case b: h = ((r - g) / delta + 4) / 6; break;
+    }
+  }
+
+  return {
+    h: Math.round(h * 360),
+    s: Math.round(s * 100),
+    l: Math.round(l * 100),
+  };
+}
+
+function rgbToHsv(r: number, g: number, b: number): HSV {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const delta = max - min;
+
+  let h = 0;
+  const s = max === 0 ? 0 : delta / max;
+  const v = max;
+
+  if (delta !== 0) {
+    switch (max) {
+      case r: h = ((g - b) / delta + (g < b ? 6 : 0)) / 6; break;
+      case g: h = ((b - r) / delta + 2) / 6; break;
+      case b: h = ((r - g) / delta + 4) / 6; break;
+    }
+  }
+
+  return {
+    h: Math.round(h * 360),
+    s: Math.round(s * 100),
+    v: Math.round(v * 100),
+  };
+}
+
+// Example usage
+const hexColor = '#FF5733';
+console.log('Converting HEX:', hexColor);
+
+const rgb = hexToRgb(hexColor);
+if (rgb) {
+  console.log(\`RGB: rgb(\${rgb.r}, \${rgb.g}, \${rgb.b})\`);
+
+  const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+  console.log(\`HSL: hsl(\${hsl.h}, \${hsl.s}%, \${hsl.l}%)\`);
+
+  const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+  console.log(\`HSV: hsv(\${hsv.h}, \${hsv.s}%, \${hsv.v}%)\`);
+
+  const hexBack = rgbToHex(rgb.r, rgb.g, rgb.b);
+  console.log(\`HEX: \${hexBack}\`);
+}
+
+// Output:
+// Converting HEX: #FF5733
+// RGB: rgb(255, 87, 51)
+// HSL: hsl(9, 100%, 60%)
+// HSV: hsv(9, 80%, 100%)
+// HEX: #FF5733`,
   references: [
     {
       title: "Color Models - Wikipedia",

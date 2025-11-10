@@ -405,6 +405,93 @@ export const erc20PermitGeneratorConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// npm install viem
+
+import { signTypedData } from 'viem/accounts';
+import { privateKeyToAccount } from 'viem/accounts';
+
+interface PermitData {
+  owner: string;
+  spender: string;
+  value: string;
+  nonce: string;
+  deadline: string;
+}
+
+// Sign ERC-20 permit (EIP-2612)
+async function signPermit(
+  tokenAddress: string,
+  tokenName: string,
+  chainId: number,
+  permitData: PermitData,
+  privateKey: string
+): Promise<{ v: number; r: string; s: string }> {
+  const account = privateKeyToAccount(privateKey as \`0x\${string}\`);
+
+  // EIP-712 domain
+  const domain = {
+    name: tokenName,
+    version: '1',
+    chainId,
+    verifyingContract: tokenAddress as \`0x\${string}\`
+  };
+
+  // EIP-712 types
+  const types = {
+    Permit: [
+      { name: 'owner', type: 'address' },
+      { name: 'spender', type: 'address' },
+      { name: 'value', type: 'uint256' },
+      { name: 'nonce', type: 'uint256' },
+      { name: 'deadline', type: 'uint256' }
+    ]
+  };
+
+  // Sign the typed data
+  const signature = await signTypedData({
+    account,
+    domain,
+    types,
+    primaryType: 'Permit',
+    message: permitData
+  });
+
+  // Split signature into v, r, s
+  const r = signature.slice(0, 66);
+  const s = '0x' + signature.slice(66, 130);
+  const v = parseInt(signature.slice(130, 132), 16);
+
+  return { v, r, s };
+}
+
+// Example: Create USDC permit
+const permitData: PermitData = {
+  owner: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0',
+  spender: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
+  value: '1000000000', // 1000 USDC (6 decimals)
+  nonce: '0',
+  deadline: Math.floor(Date.now() / 1000 + 86400).toString() // 24h from now
+};
+
+// Sign permit (NOTE: Never expose private keys in production!)
+// const signature = await signPermit(
+//   '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC
+//   'USD Coin',
+//   1,
+//   permitData,
+//   '0x...' // Private key
+// );
+
+// Call permit on token contract
+// await token.permit(
+//   permitData.owner,
+//   permitData.spender,
+//   permitData.value,
+//   permitData.deadline,
+//   signature.v,
+//   signature.r,
+//   signature.s
+// );`,
   references: [
     {
       title: "EIP-2612: Permit Extension for ERC-20",

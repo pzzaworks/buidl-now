@@ -116,6 +116,31 @@ export const methodIdFinderConfig: ToolConfig = {
   description: "Look up smart contract method signatures by their 4-byte method ID",
   category: "web3",
   component: MethodIdFinderTool,
+  codeSnippet: `// npm install viem
+
+import { keccak256, toBytes } from 'viem';
+
+// Get method ID (4-byte selector) from function signature
+function getMethodId(signature: string): string {
+  const hash = keccak256(toBytes(signature));
+  return hash.slice(0, 10); // First 4 bytes (8 hex chars + "0x")
+}
+
+// Common ERC-20 function signatures
+const transfer = getMethodId("transfer(address,uint256)");
+console.log(transfer); // 0xa9059cbb
+
+const approve = getMethodId("approve(address,uint256)");
+console.log(approve); // 0x095ea7b3
+
+const transferFrom = getMethodId("transferFrom(address,address,uint256)");
+console.log(transferFrom); // 0x23b872dd
+
+// Look up unknown method ID on 4byte.directory
+const unknownMethodId = "0xa9059cbb";
+const lookupUrl = \`https://www.4byte.directory/api/v1/signatures/?hex_signature=\${unknownMethodId}\`;
+// Fetch from API to get human-readable signature
+`,
   seo: {
     keywords: [
       "method id lookup",

@@ -148,6 +148,28 @@ export const reverseStringConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// Reverse a string character by character
+function reverseString(input: string): string {
+  return input.split('').reverse().join('');
+}
+
+// Check if a string is a palindrome
+function isPalindrome(input: string): boolean {
+  const cleaned = input.toLowerCase().replace(/[^a-z0-9]/g, '');
+  return cleaned === reverseString(cleaned);
+}
+
+// Example usage
+const text = "Hello World";
+const reversed = reverseString(text);
+console.log(\`Original: \${text}\`);         // Hello World
+console.log(\`Reversed: \${reversed}\`);     // dlroW olleH
+
+// Palindrome check
+const palindrome1 = "racecar";
+const palindrome2 = "A man, a plan, a canal: Panama";
+console.log(\`Is "\${palindrome1}" a palindrome? \${isPalindrome(palindrome1)}\`); // true
+console.log(\`Is "\${palindrome2}" a palindrome? \${isPalindrome(palindrome2)}\`); // true`,
   references: [
     {
       title: "Palindrome - Wikipedia",

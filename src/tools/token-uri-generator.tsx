@@ -381,6 +381,57 @@ export const tokenUriGeneratorConfig: ToolConfig = {
   description: "Generate token URIs for IPFS, Arweave, and on-chain storage",
   category: "web3",
   component: TokenUriGeneratorTool,
+  codeSnippet: `// Generate NFT metadata URIs for different storage solutions
+
+interface NFTMetadata {
+  name: string;
+  description: string;
+  image: string;
+  attributes?: Array<{ trait_type: string; value: string | number }>;
+}
+
+function generateTokenURIs(metadata: NFTMetadata) {
+  const jsonString = JSON.stringify(metadata);
+
+  // IPFS URI (requires actual upload to get real CID)
+  // For demo, we'll simulate a CID
+  const simulatedCID = "QmXyz123..."; // Upload to IPFS to get real CID
+  const ipfsUri = \`ipfs://\${simulatedCID}\`;
+
+  // IPFS Gateway URLs (for HTTP access)
+  const gateways = {
+    ipfsIo: \`https://ipfs.io/ipfs/\${simulatedCID}\`,
+    cloudflare: \`https://cloudflare-ipfs.com/ipfs/\${simulatedCID}\`,
+    pinata: \`https://gateway.pinata.cloud/ipfs/\${simulatedCID}\`
+  };
+
+  // Arweave URI (requires upload to get transaction ID)
+  const arweaveId = "abc123..."; // Upload to Arweave
+  const arweaveUri = \`ar://\${arweaveId}\`;
+  const arweaveGateway = \`https://arweave.net/\${arweaveId}\`;
+
+  // Data URI (fully on-chain)
+  const base64 = btoa(jsonString);
+  const dataUri = \`data:application/json;base64,\${base64}\`;
+
+  return { ipfsUri, gateways, arweaveUri, arweaveGateway, dataUri };
+}
+
+// Example usage
+const metadata: NFTMetadata = {
+  name: "My NFT #1",
+  description: "A unique digital collectible",
+  image: "ipfs://QmImage123...",
+  attributes: [
+    { trait_type: "Rarity", value: "Legendary" },
+    { trait_type: "Power", value: 95 }
+  ]
+};
+
+const uris = generateTokenURIs(metadata);
+console.log("IPFS URI:", uris.ipfsUri);
+console.log("Gateway:", uris.gateways.ipfsIo);
+`,
   seo: {
     keywords: [
       "token uri generator",

@@ -202,6 +202,92 @@ export const xmlFormatterConfig: ToolConfig = {
       type: "text",
     },
   ],
+  codeSnippet: `// No external dependencies needed - uses built-in DOMParser and string manipulation
+
+function formatXml(xml: string): string {
+  if (!xml.trim()) return '';
+
+  const PADDING = '  ';
+  const reg = /(>)(<)(\\/*)/g;
+  let formatted = '';
+  let pad = 0;
+
+  // Add newlines between tags
+  xml = xml.replace(reg, '$1\\n$2$3');
+
+  // Split by newlines
+  const lines = xml.split('\\n');
+
+  lines.forEach((line) => {
+    let indent = 0;
+    const node = line.trim();
+
+    if (!node) return;
+
+    // Decrease indent for closing tags
+    if (node.match(/^<\\/\\w/)) {
+      pad = Math.max(pad - 1, 0);
+    }
+    // Check for self-closing or single-line tags
+    else if (node.match(/^<\\w[^>]*[^\\/]>.*<\\/\\w/) && !node.match(/^<\\w[^>]*\\/>/)) {
+      indent = 0;
+    }
+    // Increase indent after opening tags
+    else if (node.match(/^<\\w/) && !node.match(/\\/>/)) {
+      indent = 1;
+    } else {
+      indent = 0;
+    }
+
+    formatted += PADDING.repeat(pad) + node + '\\n';
+    pad += indent;
+  });
+
+  return formatted.trim();
+}
+
+function validateXml(xml: string): { valid: boolean; error?: string } {
+  try {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xml, 'text/xml');
+
+    // Check for parser errors
+    const parserError = xmlDoc.querySelector('parsererror');
+    if (parserError) {
+      return {
+        valid: false,
+        error: parserError.textContent || 'Unknown XML parsing error'
+      };
+    }
+
+    return { valid: true };
+  } catch (e) {
+    return {
+      valid: false,
+      error: e instanceof Error ? e.message : 'Invalid XML'
+    };
+  }
+}
+
+// Example usage
+const unformattedXml = '<root><person id="1"><name>John Doe</name><age>30</age></person></root>';
+
+const validation = validateXml(unformattedXml);
+if (validation.valid) {
+  console.log('Formatted XML:');
+  console.log(formatXml(unformattedXml));
+} else {
+  console.log('Error:', validation.error);
+}
+
+// Output:
+// Formatted XML:
+// <root>
+//   <person id="1">
+//     <name>John Doe</name>
+//     <age>30</age>
+//   </person>
+// </root>`,
   references: [
     {
       title: "W3Schools XML Tutorial",

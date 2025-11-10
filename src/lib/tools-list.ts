@@ -1,4 +1,61 @@
 import { Tool } from "@/types/tools";
+import {
+  MdPalette,
+  MdColorLens,
+  MdAccessTime,
+  MdTableChart,
+  MdCode,
+  MdCompareArrows,
+  MdNumbers,
+  MdImage,
+  MdTextFields,
+  MdShuffle,
+  MdSort,
+  MdCompare,
+  MdNotes,
+  MdAnalytics,
+  MdPattern,
+  MdSwapHoriz,
+  MdFilterList,
+  MdSpaceBar,
+  MdLockOpen,
+  MdDataArray,
+  MdWeb,
+  MdRotateRight,
+  MdLink,
+  MdDataObject,
+  MdVpnKey,
+  MdStyle,
+  MdStorage,
+  MdDescription,
+  MdVisibility,
+  MdCheckCircle,
+  MdAutorenew,
+  MdFingerprint,
+  MdGeneratingTokens,
+  MdPassword,
+  MdQrCode,
+  MdTextRotationNone,
+  MdToken,
+  MdGradient,
+  MdCalculate,
+  MdSecurity,
+  MdAccountBalanceWallet,
+  MdVerifiedUser,
+  MdDns,
+  MdKey,
+  MdAttachMoney,
+  MdLayers,
+  MdSchedule,
+  MdGavel,
+  MdBatchPrediction,
+  MdSearch,
+  MdPreview,
+  MdMemory,
+  MdBugReport,
+  MdError,
+  MdAdminPanelSettings,
+} from "react-icons/md";
 
 export const tools: Tool[] = [
   // Converters
@@ -9,6 +66,7 @@ export const tools: Tool[] = [
     category: "converters",
     subcategory: "color-converters",
     path: "/tools/color-converter",
+    icon: MdPalette,
   },
   {
     id: "image-color-picker",
@@ -17,6 +75,7 @@ export const tools: Tool[] = [
     category: "converters",
     subcategory: "color-converters",
     path: "/tools/image-color-picker",
+    icon: MdColorLens,
   },
   {
     id: "epoch-converter",
@@ -25,6 +84,7 @@ export const tools: Tool[] = [
     category: "converters",
     subcategory: "time-converters",
     path: "/tools/epoch-converter",
+    icon: MdAccessTime,
   },
   {
     id: "json-to-table",
@@ -33,6 +93,7 @@ export const tools: Tool[] = [
     category: "converters",
     subcategory: "data-converters",
     path: "/tools/json-to-table",
+    icon: MdTableChart,
   },
   {
     id: "json-yaml",
@@ -41,6 +102,7 @@ export const tools: Tool[] = [
     category: "converters",
     subcategory: "data-converters",
     path: "/tools/json-yaml",
+    icon: MdCode,
   },
   {
     id: "xml-json",
@@ -49,6 +111,7 @@ export const tools: Tool[] = [
     category: "converters",
     subcategory: "data-converters",
     path: "/tools/xml-json",
+    icon: MdCompareArrows,
   },
   {
     id: "csv-json",
@@ -57,6 +120,7 @@ export const tools: Tool[] = [
     category: "converters",
     subcategory: "data-converters",
     path: "/tools/csv-json",
+    icon: MdTableChart,
   },
   {
     id: "number-base",
@@ -65,6 +129,7 @@ export const tools: Tool[] = [
     category: "converters",
     subcategory: "number-converters",
     path: "/tools/number-base",
+    icon: MdNumbers,
   },
   {
     id: "image-base64",
@@ -73,6 +138,7 @@ export const tools: Tool[] = [
     category: "converters",
     subcategory: "data-converters",
     path: "/tools/image-base64",
+    icon: MdImage,
   },
 
   // Text
@@ -83,6 +149,7 @@ export const tools: Tool[] = [
     category: "text",
     subcategory: "case-format",
     path: "/tools/case-converter",
+    icon: MdTextFields,
   },
   {
     id: "escape-unescape",
@@ -91,6 +158,7 @@ export const tools: Tool[] = [
     category: "text",
     subcategory: "case-format",
     path: "/tools/escape-unescape",
+    icon: MdShuffle,
   },
   {
     id: "line-sorter",
@@ -99,6 +167,7 @@ export const tools: Tool[] = [
     category: "text",
     subcategory: "line-ops",
     path: "/tools/line-sorter",
+    icon: MdSort,
   },
   {
     id: "list-comparer",
@@ -107,6 +176,7 @@ export const tools: Tool[] = [
     category: "text",
     subcategory: "comparison",
     path: "/tools/list-comparer",
+    icon: MdCompare,
   },
   {
     id: "lorem-ipsum",
@@ -115,6 +185,7 @@ export const tools: Tool[] = [
     category: "text",
     subcategory: "text-generators",
     path: "/tools/lorem-ipsum",
+    icon: MdNotes,
   },
   {
     id: "text-comparer",
@@ -123,6 +194,7 @@ export const tools: Tool[] = [
     category: "text",
     subcategory: "comparison",
     path: "/tools/text-comparer",
+    icon: MdCompare,
   },
   {
     id: "text-statistics",
@@ -131,6 +203,7 @@ export const tools: Tool[] = [
     category: "text",
     subcategory: "analysis",
     path: "/tools/text-statistics",
+    icon: MdAnalytics,
   },
   {
     id: "regex-tester",
@@ -139,6 +212,7 @@ export const tools: Tool[] = [
     category: "text",
     subcategory: "analysis",
     path: "/tools/regex-tester",
+    icon: MdPattern,
   },
   {
     id: "reverse-string",
@@ -147,6 +221,7 @@ export const tools: Tool[] = [
     category: "text",
     subcategory: "case-format",
     path: "/tools/reverse-string",
+    icon: MdSwapHoriz,
   },
   {
     id: "remove-duplicates",
@@ -155,6 +230,7 @@ export const tools: Tool[] = [
     category: "text",
     subcategory: "line-ops",
     path: "/tools/remove-duplicates",
+    icon: MdFilterList,
   },
   {
     id: "whitespace-remover",
@@ -163,6 +239,7 @@ export const tools: Tool[] = [
     category: "text",
     subcategory: "case-format",
     path: "/tools/whitespace-remover",
+    icon: MdSpaceBar,
   },
 
   // Encoders / Decoders
@@ -173,6 +250,7 @@ export const tools: Tool[] = [
     category: "encoders-decoders",
     subcategory: "text-encoders",
     path: "/tools/base64-text",
+    icon: MdLockOpen,
   },
   {
     id: "binary-text",
@@ -181,6 +259,7 @@ export const tools: Tool[] = [
     category: "encoders-decoders",
     subcategory: "text-encoders",
     path: "/tools/binary-text",
+    icon: MdDataArray,
   },
   {
     id: "html-encoder",
@@ -189,6 +268,7 @@ export const tools: Tool[] = [
     category: "encoders-decoders",
     subcategory: "text-encoders",
     path: "/tools/html-encoder",
+    icon: MdWeb,
   },
   {
     id: "rot13",
@@ -197,6 +277,7 @@ export const tools: Tool[] = [
     category: "encoders-decoders",
     subcategory: "crypto-encoders",
     path: "/tools/rot13",
+    icon: MdRotateRight,
   },
   {
     id: "url-encoder",
@@ -205,6 +286,7 @@ export const tools: Tool[] = [
     category: "encoders-decoders",
     subcategory: "text-encoders",
     path: "/tools/url-encoder",
+    icon: MdLink,
   },
   {
     id: "hex-text",
@@ -213,6 +295,7 @@ export const tools: Tool[] = [
     category: "encoders-decoders",
     subcategory: "text-encoders",
     path: "/tools/hex-text",
+    icon: MdCode,
   },
   {
     id: "jwt-decoder",
@@ -221,6 +304,7 @@ export const tools: Tool[] = [
     category: "encoders-decoders",
     subcategory: "crypto-encoders",
     path: "/tools/jwt-decoder",
+    icon: MdVpnKey,
   },
 
   // Formatters
@@ -231,6 +315,7 @@ export const tools: Tool[] = [
     category: "formatters",
     subcategory: "code-formatters",
     path: "/tools/css-formatter",
+    icon: MdStyle,
   },
   {
     id: "sql-formatter",
@@ -239,6 +324,7 @@ export const tools: Tool[] = [
     category: "formatters",
     subcategory: "code-formatters",
     path: "/tools/sql-formatter",
+    icon: MdStorage,
   },
   {
     id: "xml-formatter",
@@ -247,6 +333,7 @@ export const tools: Tool[] = [
     category: "formatters",
     subcategory: "code-formatters",
     path: "/tools/xml-formatter",
+    icon: MdDescription,
   },
   {
     id: "svg-viewer",
@@ -255,6 +342,7 @@ export const tools: Tool[] = [
     category: "formatters",
     subcategory: "code-formatters",
     path: "/tools/svg-viewer",
+    icon: MdVisibility,
   },
   {
     id: "yaml-validator",
@@ -263,6 +351,7 @@ export const tools: Tool[] = [
     category: "formatters",
     subcategory: "data-formatters",
     path: "/tools/yaml-validator",
+    icon: MdCheckCircle,
   },
   {
     id: "json-validator",
@@ -271,6 +360,7 @@ export const tools: Tool[] = [
     category: "formatters",
     subcategory: "code-formatters",
     path: "/tools/json-validator",
+    icon: MdDataObject,
   },
 
   // Generators
@@ -281,6 +371,7 @@ export const tools: Tool[] = [
     category: "generators",
     subcategory: "color-generators",
     path: "/tools/color-palette-generator",
+    icon: MdAutorenew,
   },
   {
     id: "hash-generator",
@@ -289,6 +380,7 @@ export const tools: Tool[] = [
     category: "generators",
     subcategory: "crypto-generators",
     path: "/tools/hash-generator",
+    icon: MdFingerprint,
   },
   {
     id: "nanoid-generator",
@@ -297,6 +389,7 @@ export const tools: Tool[] = [
     category: "generators",
     subcategory: "id-generators",
     path: "/tools/nanoid-generator",
+    icon: MdGeneratingTokens,
   },
   {
     id: "password-generator",
@@ -305,6 +398,7 @@ export const tools: Tool[] = [
     category: "generators",
     subcategory: "crypto-generators",
     path: "/tools/password-generator",
+    icon: MdPassword,
   },
   {
     id: "qr-code-generator",
@@ -313,6 +407,7 @@ export const tools: Tool[] = [
     category: "generators",
     subcategory: "color-generators",
     path: "/tools/qr-code-generator",
+    icon: MdQrCode,
   },
   {
     id: "random-string-generator",
@@ -321,6 +416,7 @@ export const tools: Tool[] = [
     category: "generators",
     subcategory: "text-generators",
     path: "/tools/random-string-generator",
+    icon: MdTextRotationNone,
   },
   {
     id: "uuid-generator",
@@ -329,6 +425,7 @@ export const tools: Tool[] = [
     category: "generators",
     subcategory: "id-generators",
     path: "/tools/uuid-generator",
+    icon: MdToken,
   },
   {
     id: "gradient-generator",
@@ -337,6 +434,7 @@ export const tools: Tool[] = [
     category: "generators",
     subcategory: "color-generators",
     path: "/tools/gradient-generator",
+    icon: MdGradient,
   },
 
   // Web3
@@ -347,6 +445,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "contracts",
     path: "/tools/function-selector",
+    icon: MdCode,
   },
   {
     id: "keccak-hash",
@@ -355,6 +454,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "encoding",
     path: "/tools/keccak-hash",
+    icon: MdFingerprint,
   },
   {
     id: "eth-unit-converter",
@@ -363,6 +463,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "token-decimals",
     path: "/tools/eth-unit-converter",
+    icon: MdSwapHoriz,
   },
   {
     id: "abi-encoder",
@@ -371,6 +472,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "contracts",
     path: "/tools/abi-encoder",
+    icon: MdDataObject,
   },
   {
     id: "address-checksum",
@@ -379,6 +481,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "address-keys",
     path: "/tools/address-checksum",
+    icon: MdCheckCircle,
   },
   {
     id: "event-topic",
@@ -387,6 +490,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "contracts",
     path: "/tools/event-topic",
+    icon: MdCalculate,
   },
   {
     id: "signature-verifier",
@@ -395,6 +499,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "contracts",
     path: "/tools/signature-verifier",
+    icon: MdVerifiedUser,
   },
   {
     id: "ens-resolver",
@@ -403,6 +508,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "address-keys",
     path: "/tools/ens-resolver",
+    icon: MdDns,
   },
   {
     id: "transaction-decoder",
@@ -411,6 +517,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "transaction-gas",
     path: "/tools/transaction-decoder",
+    icon: MdCode,
   },
   {
     id: "private-key-to-address",
@@ -419,6 +526,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "address-keys",
     path: "/tools/private-key-to-address",
+    icon: MdKey,
   },
   {
     id: "mnemonic-generator",
@@ -427,6 +535,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "crypto-generators",
     path: "/tools/mnemonic-generator",
+    icon: MdGeneratingTokens,
   },
   {
     id: "gas-estimator",
@@ -435,6 +544,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "transaction-gas",
     path: "/tools/gas-estimator",
+    icon: MdAttachMoney,
   },
   {
     id: "token-decimals-converter",
@@ -443,6 +553,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "token-decimals",
     path: "/tools/token-decimals-converter",
+    icon: MdToken,
   },
   {
     id: "method-id-finder",
@@ -451,6 +562,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "contracts",
     path: "/tools/method-id-finder",
+    icon: MdSearch,
   },
   {
     id: "contract-storage-slot",
@@ -459,6 +571,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "contracts",
     path: "/tools/contract-storage-slot",
+    icon: MdStorage,
   },
   {
     id: "eip712-hasher",
@@ -467,6 +580,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "encoding",
     path: "/tools/eip712-hasher",
+    icon: MdFingerprint,
   },
   {
     id: "ecdsa-signature",
@@ -475,6 +589,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "encoding",
     path: "/tools/ecdsa-signature",
+    icon: MdSecurity,
   },
   // DeFi & Protocol Tools
   {
@@ -484,6 +599,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "defi",
     path: "/tools/uniswap-price-calculator",
+    icon: MdCalculate,
   },
   {
     id: "token-launch-calculator",
@@ -492,6 +608,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "defi",
     path: "/tools/token-launch-calculator",
+    icon: MdToken,
   },
   {
     id: "timelock-transaction-builder",
@@ -500,6 +617,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "governance",
     path: "/tools/timelock-transaction-builder",
+    icon: MdSchedule,
   },
   {
     id: "multi-chain-address-deriver",
@@ -508,6 +626,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "address-keys",
     path: "/tools/multi-chain-address-deriver",
+    icon: MdLayers,
   },
   // Smart Contract Development Tools
   {
@@ -517,6 +636,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "governance",
     path: "/tools/safe-batch-builder",
+    icon: MdBatchPrediction,
   },
   {
     id: "proxy-implementation-checker",
@@ -525,6 +645,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "contracts",
     path: "/tools/proxy-implementation-checker",
+    icon: MdSearch,
   },
   {
     id: "create2-address-predictor",
@@ -533,6 +654,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "contracts",
     path: "/tools/create2-address-predictor",
+    icon: MdPreview,
   },
   {
     id: "contract-size-calculator",
@@ -541,6 +663,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "contracts",
     path: "/tools/contract-size-calculator",
+    icon: MdMemory,
   },
   // Testing & Debugging Tools
   {
@@ -550,6 +673,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "testing",
     path: "/tools/foundry-cheatcode-generator",
+    icon: MdCode,
   },
   {
     id: "block-timestamp-converter",
@@ -558,6 +682,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "testing",
     path: "/tools/block-timestamp-converter",
+    icon: MdAccessTime,
   },
   {
     id: "revert-reason-decoder",
@@ -566,6 +691,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "testing",
     path: "/tools/revert-reason-decoder",
+    icon: MdError,
   },
   {
     id: "trace-visualizer",
@@ -574,6 +700,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "testing",
     path: "/tools/trace-visualizer",
+    icon: MdVisibility,
   },
   // Token & NFT Tools
   {
@@ -583,6 +710,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "token-nft",
     path: "/tools/erc20-permit-generator",
+    icon: MdToken,
   },
   {
     id: "nft-metadata-validator",
@@ -591,6 +719,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "token-nft",
     path: "/tools/nft-metadata-validator",
+    icon: MdCheckCircle,
   },
   {
     id: "token-uri-generator",
@@ -599,6 +728,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "token-nft",
     path: "/tools/token-uri-generator",
+    icon: MdLink,
   },
   // Security & Analysis Tools
   {
@@ -608,6 +738,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "security",
     path: "/tools/bytecode-differ",
+    icon: MdCompare,
   },
   {
     id: "access-control-visualizer",
@@ -616,6 +747,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "security",
     path: "/tools/access-control-visualizer",
+    icon: MdAdminPanelSettings,
   },
   {
     id: "delegatecall-analyzer",
@@ -624,6 +756,7 @@ export const tools: Tool[] = [
     category: "web3",
     subcategory: "security",
     path: "/tools/delegatecall-analyzer",
+    icon: MdStorage,
   },
 ];
 

@@ -184,6 +184,67 @@ export const ethUnitConverterConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// npm install viem
+
+import { parseEther, parseGwei, formatEther, formatGwei } from 'viem';
+
+// Convert ETH to Wei
+function ethToWei(eth: string): bigint {
+  return parseEther(eth);
+}
+
+// Convert Wei to ETH
+function weiToEth(wei: bigint): string {
+  return formatEther(wei);
+}
+
+// Convert Gwei to Wei
+function gweiToWei(gwei: string): bigint {
+  return parseGwei(gwei);
+}
+
+// Convert Wei to Gwei
+function weiToGwei(wei: bigint): string {
+  return formatGwei(wei);
+}
+
+// Convert ETH to Gwei
+function ethToGwei(eth: string): string {
+  const wei = parseEther(eth);
+  return formatGwei(wei);
+}
+
+// Convert Gwei to ETH
+function gweiToEth(gwei: string): string {
+  const wei = parseGwei(gwei);
+  return formatEther(wei);
+}
+
+// Examples
+console.log('1 ETH to Wei:', ethToWei('1'));
+// 1000000000000000000n
+
+console.log('1 ETH to Gwei:', ethToGwei('1'));
+// 1000000000
+
+console.log('20 Gwei to Wei:', gweiToWei('20'));
+// 20000000000n
+
+console.log('20 Gwei to ETH:', gweiToEth('20'));
+// 0.00000002
+
+console.log('1000000000000000000 Wei to ETH:', weiToEth(1000000000000000000n));
+// 1
+
+console.log('20000000000 Wei to Gwei:', weiToGwei(20000000000n));
+// 20
+
+// Calculate gas cost
+const gasLimit = 21000n;
+const gasPrice = parseGwei('50'); // 50 Gwei
+const gasCost = gasLimit * gasPrice;
+console.log('Gas cost in ETH:', formatEther(gasCost));
+// 0.00105`,
   references: [
     {
       title: "viem: parseEther & formatEther",

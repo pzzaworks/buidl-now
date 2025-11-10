@@ -158,6 +158,49 @@ export const htmlEncoderConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `const htmlEntities: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+  '/': '&#x2F;',
+};
+
+const reverseHtmlEntities: Record<string, string> = {
+  '&amp;': '&',
+  '&lt;': '<',
+  '&gt;': '>',
+  '&quot;': '"',
+  '&#39;': "'",
+  '&#x2F;': '/',
+  '&apos;': "'",
+};
+
+// Encode HTML entities
+function encodeHtml(input: string): string {
+  return input.replace(/[&<>"'\\/]/g, (char) => htmlEntities[char] || char);
+}
+
+// Decode HTML entities
+function decodeHtml(input: string): string {
+  let result = input;
+  Object.entries(reverseHtmlEntities).forEach(([entity, char]) => {
+    result = result.replaceAll(entity, char);
+  });
+  return result;
+}
+
+// Example usage
+const original = '<div class="example">Hello & goodbye</div>';
+const encoded = encodeHtml(original);
+console.log(\`Original: \${original}\`);
+console.log(\`Encoded: \${encoded}\`);
+// Output: &lt;div class=&quot;example&quot;&gt;Hello &amp; goodbye&lt;&#x2F;div&gt;
+
+const decoded = decodeHtml(encoded);
+console.log(\`Decoded: \${decoded}\`);
+// Output: <div class="example">Hello & goodbye</div>`,
   references: [
     {
       title: "HTML Entities - MDN",

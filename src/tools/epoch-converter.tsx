@@ -425,6 +425,91 @@ export const epochConverterConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// No npm packages needed - pure Node.js/TypeScript
+
+interface TimeBreakdown {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
+function timestampToDate(timestamp: number | string): string {
+  const num = typeof timestamp === 'string' ? parseInt(timestamp) : timestamp;
+
+  // Auto-detect format: 10 digits = seconds, 13 = milliseconds
+  const milliseconds = num.toString().length === 10 ? num * 1000 : num;
+
+  const date = new Date(milliseconds);
+  return date.toISOString();
+}
+
+function dateToTimestamp(dateStr: string): number {
+  const date = new Date(dateStr);
+  return Math.floor(date.getTime() / 1000);
+}
+
+function getCurrentTimestamp(): number {
+  return Math.floor(Date.now() / 1000);
+}
+
+function secondsToTimeBreakdown(seconds: number): TimeBreakdown {
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  return { days, hours, minutes, seconds: remainingSeconds };
+}
+
+function batchConvertTimestamps(timestamps: number[]): string[] {
+  return timestamps.map(ts => {
+    try {
+      return \`\${ts} → \${timestampToDate(ts)}\`;
+    } catch (e) {
+      return \`\${ts} → Invalid\`;
+    }
+  });
+}
+
+// Example usage
+console.log('=== Timestamp to Date ===');
+const timestamp = 1704067200;
+console.log(\`\${timestamp} → \${timestampToDate(timestamp)}\`);
+
+console.log('\\n=== Date to Timestamp ===');
+const isoDate = '2024-01-01T00:00:00.000Z';
+console.log(\`\${isoDate} → \${dateToTimestamp(isoDate)}\`);
+
+console.log('\\n=== Current Timestamp ===');
+console.log(\`Current: \${getCurrentTimestamp()}\`);
+
+console.log('\\n=== Seconds Breakdown ===');
+const breakdown = secondsToTimeBreakdown(90061);
+console.log(\`90061 seconds = \${breakdown.days}d \${breakdown.hours}h \${breakdown.minutes}m \${breakdown.seconds}s\`);
+
+console.log('\\n=== Batch Convert ===');
+const timestamps = [1609459200, 1640995200, 1672531200];
+const results = batchConvertTimestamps(timestamps);
+results.forEach(result => console.log(result));
+
+// Output:
+// === Timestamp to Date ===
+// 1704067200 → 2024-01-01T00:00:00.000Z
+//
+// === Date to Timestamp ===
+// 2024-01-01T00:00:00.000Z → 1704067200
+//
+// === Current Timestamp ===
+// Current: 1731283200
+//
+// === Seconds Breakdown ===
+// 90061 seconds = 1d 1h 1m 1s
+//
+// === Batch Convert ===
+// 1609459200 → 2021-01-01T00:00:00.000Z
+// 1640995200 → 2022-01-01T00:00:00.000Z
+// 1672531200 → 2023-01-01T00:00:00.000Z`,
   references: [
     {
       title: "Unix time - Wikipedia",

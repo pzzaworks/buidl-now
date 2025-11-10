@@ -5,11 +5,12 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { MdArrowBack } from "react-icons/md";
 import { useEffect } from "react";
+import { Button } from "./ui/button";
 
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
-  const isToolPage = pathname?.startsWith("/tools/");
+  const isToolPage = pathname?.startsWith("/tools/") || pathname === "/tools";
   const isHomePage = pathname === "/";
 
   // Navigate to home on Escape key
@@ -44,13 +45,18 @@ export function Header() {
         {isToolPage && (
           <Link
             href="/"
-            className="group flex items-center gap-2 px-3 h-8 text-sm text-muted-foreground hover:text-white rounded border border-muted-foreground/30 transition-colors hover:bg-muted-foreground/40"
+          >
+          <Button
+            variant="secondary"
+            size="sm"
+            className="flex items-center gap-1 h-auto px-2 py-1 text-xs"
           >
             <MdArrowBack className="w-4 h-4" />
             <span>Return</span>
-            <kbd className="hidden sm:inline-flex items-center justify-center px-1.5 h-5 text-[10px] font-semibold text-muted-foreground/80 rounded border border-muted-foreground/30 min-w-[24px] transition-colors">
+            <kbd className="hidden sm:inline-flex items-center justify-center px-1.5 h-5 text-[10px] font-semibold text-muted-foreground/80 rounded border border-muted-foreground/30 min-w-[24px] ml-1.5 transition-colors">
               ESC
             </kbd>
+          </Button>
           </Link>
         )}
       </div>

@@ -359,6 +359,69 @@ export const textStatisticsConfig: ToolConfig = {
       type: "text",
     },
   ],
+  codeSnippet: `type TextStatistics = {
+  characters: number;
+  charactersNoSpaces: number;
+  words: number;
+  lines: number;
+  paragraphs: number;
+  sentences: number;
+  averageWordLength: number;
+  readingTime: number;
+};
+
+function analyzeText(text: string): TextStatistics {
+  const characters = text.length;
+  const charactersNoSpaces = text.replace(/\\s/g, '').length;
+  const lines = text.split('\\n').length;
+  const paragraphs = text.split(/\\n\\n+/).filter((p) => p.trim()).length;
+
+  // Extract words
+  const words = text
+    .toLowerCase()
+    .replace(/[^a-z0-9\\s]/g, ' ')
+    .split(/\\s+/)
+    .filter((word) => word.length > 0);
+
+  const wordCount = words.length;
+
+  // Reading time (200 words per minute)
+  const readingTime = Math.ceil(wordCount / 200);
+
+  // Average word length
+  const totalLength = words.reduce((sum, word) => sum + word.length, 0);
+  const averageWordLength = wordCount > 0 ? totalLength / wordCount : 0;
+
+  // Sentence count
+  const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0).length;
+
+  return {
+    characters,
+    charactersNoSpaces,
+    words: wordCount,
+    lines,
+    paragraphs,
+    sentences,
+    averageWordLength,
+    readingTime,
+  };
+}
+
+// Example usage
+const sampleText = \`Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.\`;
+
+const stats = analyzeText(sampleText);
+
+console.log(\`Characters: \${stats.characters}\`);
+console.log(\`Words: \${stats.words}\`);
+console.log(\`Lines: \${stats.lines}\`);
+console.log(\`Paragraphs: \${stats.paragraphs}\`);
+console.log(\`Sentences: \${stats.sentences}\`);
+console.log(\`Average word length: \${stats.averageWordLength.toFixed(2)}\`);
+console.log(\`Reading time: \${stats.readingTime} minute(s)\`);`,
   references: [
     {
       title: "Average Reading Speed",

@@ -599,6 +599,111 @@ export const delegatecallAnalyzerConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// No external packages needed - pure TypeScript
+
+interface StorageSlot {
+  name: string;
+  type: string;
+  slot: number;
+  offset: number;
+  size: number;
+}
+
+// Simplified storage layout parser
+function parseStorageLayout(source: string): StorageSlot[] {
+  const slots: StorageSlot[] = [];
+  let currentSlot = 0;
+  let currentOffset = 0;
+
+  const TYPE_SIZES: Record<string, number> = {
+    uint256: 32,
+    address: 20,
+    bool: 1,
+    bytes32: 32
+  };
+
+  // Simple regex to match variable declarations
+  const lines = source.split('\\n');
+  const varPattern = /^\s*(uint256|address|bool|bytes32)\s+(?:public|private|internal)?\s+(\w+)/;
+
+  for (const line of lines) {
+    const match = line.match(varPattern);
+    if (match) {
+      const [, type, name] = match;
+      const size = TYPE_SIZES[type] || 32;
+
+      // Check if we need to move to next slot
+      if (currentOffset > 0 && currentOffset + size > 32) {
+        currentSlot++;
+        currentOffset = 0;
+      }
+
+      slots.push({ name, type, slot: currentSlot, offset: currentOffset, size });
+
+      currentOffset += size;
+      if (currentOffset >= 32) {
+        currentSlot++;
+        currentOffset = 0;
+      }
+    }
+
+    // Detect storage gap
+    if (line.includes('__gap')) {
+      const gapMatch = line.match(/uint256\[(\d+)\]/);
+      if (gapMatch) {
+        const gapSize = parseInt(gapMatch[1]);
+        slots.push({
+          name: '__gap',
+          type: \`uint256[\${gapSize}]\`,
+          slot: currentSlot,
+          offset: 0,
+          size: gapSize * 32
+        });
+        currentSlot += gapSize;
+        currentOffset = 0;
+      }
+    }
+  }
+
+  return slots;
+}
+
+// Detect storage conflicts between proxy and implementation
+function detectConflicts(proxySlots: StorageSlot[], implSlots: StorageSlot[]): string[] {
+  const conflicts: string[] = [];
+
+  proxySlots.forEach(proxySlot => {
+    implSlots.forEach(implSlot => {
+      if (proxySlot.slot === implSlot.slot) {
+        conflicts.push(
+          \`Conflict at slot \${proxySlot.slot}: \${proxySlot.name} (proxy) vs \${implSlot.name} (impl)\`
+        );
+      }
+    });
+  });
+
+  return conflicts;
+}
+
+// Example
+const proxySource = \`
+  address private _implementation;
+  address private _owner;
+\`;
+
+const implSource = \`
+  uint256 private _value;
+  address private _admin;
+  uint256[48] private __gap;
+\`;
+
+const proxySlots = parseStorageLayout(proxySource);
+const implSlots = parseStorageLayout(implSource);
+const conflicts = detectConflicts(proxySlots, implSlots);
+
+console.log('Proxy slots:', proxySlots);
+console.log('Implementation slots:', implSlots);
+console.log('Conflicts:', conflicts);`,
   references: [
     {
       title: "OpenZeppelin Proxy Upgrade Pattern",

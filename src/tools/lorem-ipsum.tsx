@@ -231,6 +231,69 @@ export const loremIpsumConfig: ToolConfig = {
       type: "text",
     },
   ],
+  codeSnippet: `const LOREM_WORDS = [
+  'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit',
+  'sed', 'do', 'eiusmod', 'tempor', 'incididunt', 'ut', 'labore', 'et', 'dolore',
+  'magna', 'aliqua', 'enim', 'ad', 'minim', 'veniam', 'quis', 'nostrud',
+  'exercitation', 'ullamco', 'laboris', 'nisi', 'aliquip', 'ex', 'ea', 'commodo',
+  'consequat', 'duis', 'aute', 'irure', 'in', 'reprehenderit', 'voluptate',
+  'velit', 'esse', 'cillum', 'fugiat', 'nulla', 'pariatur', 'excepteur', 'sint',
+  'occaecat', 'cupidatat', 'non', 'proident', 'sunt', 'culpa', 'qui', 'officia',
+  'deserunt', 'mollit', 'anim', 'id', 'est', 'laborum'
+];
+
+const LOREM_START = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit';
+
+function generateWord(): string {
+  return LOREM_WORDS[Math.floor(Math.random() * LOREM_WORDS.length)];
+}
+
+function generateSentence(wordCount?: number): string {
+  const numWords = wordCount || Math.floor(Math.random() * 10) + 5; // 5-14 words
+  const words: string[] = [];
+
+  for (let i = 0; i < numWords; i++) {
+    words.push(generateWord());
+  }
+
+  // Capitalize first word
+  words[0] = words[0].charAt(0).toUpperCase() + words[0].slice(1);
+  return words.join(' ') + '.';
+}
+
+function generateParagraph(sentenceCount?: number): string {
+  const numSentences = sentenceCount || Math.floor(Math.random() * 4) + 3; // 3-6 sentences
+  const sentences: string[] = [];
+
+  for (let i = 0; i < numSentences; i++) {
+    sentences.push(generateSentence());
+  }
+
+  return sentences.join(' ');
+}
+
+function generateLoremIpsum(count: number, type: 'paragraphs' | 'sentences' | 'words', startWithLorem = true): string {
+  if (type === 'paragraphs') {
+    const paragraphs: string[] = [];
+    if (startWithLorem && count > 0) {
+      paragraphs.push(LOREM_START + '. ' + generateParagraph(4).split('. ').slice(1).join('. '));
+      for (let i = 1; i < count; i++) {
+        paragraphs.push(generateParagraph());
+      }
+    } else {
+      for (let i = 0; i < count; i++) {
+        paragraphs.push(generateParagraph());
+      }
+    }
+    return paragraphs.join('\\n\\n');
+  }
+
+  return ''; // Simplified for brevity
+}
+
+// Example usage
+const loremText = generateLoremIpsum(3, 'paragraphs', true);
+console.log(loremText);`,
   references: [
     {
       title: "Lorem Ipsum - Wikipedia",

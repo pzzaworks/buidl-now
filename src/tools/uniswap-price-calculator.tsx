@@ -235,6 +235,57 @@ export const uniswapPriceCalculatorConfig: ToolConfig = {
   description: "Calculate swap prices, slippage, and impermanent loss for Uniswap V2/V3/V4 pools",
   category: "web3",
   component: UniswapPriceCalculatorTool,
+  codeSnippet: `// Calculate Uniswap V2 swap output using constant product formula
+
+function calculateUniswapV2Swap(
+  reserve0: number,
+  reserve1: number,
+  amountIn: number,
+  feePercent: number = 0.3
+) {
+  // Initial price (Token1 per Token0)
+  const initialPrice = reserve1 / reserve0;
+
+  // Apply fee (0.3% default)
+  const feeMultiplier = 1 - (feePercent / 100);
+  const amountInWithFee = amountIn * feeMultiplier;
+
+  // Uniswap V2 formula: x * y = k
+  // amountOut = (amountIn * reserve1) / (reserve0 + amountIn)
+  const numerator = amountInWithFee * reserve1;
+  const denominator = reserve0 + amountInWithFee;
+  const amountOut = numerator / denominator;
+
+  // Calculate price impact
+  const executionPrice = amountOut / amountIn;
+  const priceImpact = Math.abs((initialPrice - executionPrice) / initialPrice) * 100;
+
+  // Calculate new reserves after swap
+  const newReserve0 = reserve0 + amountIn;
+  const newReserve1 = reserve1 - amountOut;
+  const newPrice = newReserve1 / newReserve0;
+
+  return {
+    amountOut,
+    priceImpact,
+    initialPrice,
+    executionPrice,
+    newPrice
+  };
+}
+
+// Example: Swap in ETH/USDC pool
+const result = calculateUniswapV2Swap(
+  10000,  // 10,000 ETH reserve
+  20000000, // 20M USDC reserve
+  100     // Swap 100 ETH
+);
+
+console.log("Amount out:", result.amountOut.toFixed(2), "USDC");
+console.log("Price impact:", result.priceImpact.toFixed(4), "%");
+console.log("Initial price:", result.initialPrice.toFixed(2), "USDC/ETH");
+console.log("Execution price:", result.executionPrice.toFixed(2), "USDC/ETH");
+`,
   seo: {
     keywords: [
       "uniswap calculator",

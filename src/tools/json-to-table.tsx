@@ -163,6 +163,93 @@ export const jsonToTableConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// No npm packages needed - pure Node.js/TypeScript
+
+function jsonToCSV(jsonArray: Array<Record<string, any>>): string {
+  if (!Array.isArray(jsonArray) || jsonArray.length === 0) {
+    throw new Error('Input must be a non-empty array');
+  }
+
+  // Get all unique keys from all objects
+  const keys = Array.from(
+    new Set(jsonArray.flatMap(obj => Object.keys(obj)))
+  );
+
+  // Escape CSV value if needed
+  function escapeCsvValue(value: any): string {
+    if (value === null || value === undefined) return '';
+    const str = String(value);
+    // Wrap in quotes if contains comma or quote
+    if (str.includes(',') || str.includes('"')) {
+      return \`"\${str.replace(/"/g, '""')}"\`;
+    }
+    return str;
+  }
+
+  // Create CSV header
+  const header = keys.join(',');
+
+  // Create CSV rows
+  const rows = jsonArray.map(obj =>
+    keys.map(key => escapeCsvValue(obj[key])).join(',')
+  );
+
+  return [header, ...rows].join('\\n');
+}
+
+function saveToFile(csv: string, filename: string): void {
+  const fs = require('fs');
+  fs.writeFileSync(filename, csv, 'utf8');
+  console.log(\`CSV saved to \${filename}\`);
+}
+
+// Example usage
+console.log('=== Basic Conversion ===');
+const data = [
+  { name: 'John', age: 30, city: 'New York' },
+  { name: 'Jane', age: 25, city: 'London' },
+  { name: 'Bob', age: 35, city: 'Paris' }
+];
+
+const csv = jsonToCSV(data);
+console.log(csv);
+
+console.log('\\n=== Values with Commas ===');
+const dataWithCommas = [
+  { name: 'John Doe', message: 'Hello, World!', country: 'USA' },
+  { name: 'Jane Smith', message: 'Hi, there!', country: 'UK' }
+];
+console.log(jsonToCSV(dataWithCommas));
+
+console.log('\\n=== Complex Data ===');
+const complexData = [
+  { id: 1, product: 'Laptop', price: 999.99, tags: 'electronics,computers', inStock: true },
+  { id: 2, product: 'Mouse', price: 29.99, tags: 'electronics,accessories', inStock: false },
+  { id: 3, product: 'Keyboard', price: 79.99, tags: 'electronics,computers', inStock: true }
+];
+const complexCsv = jsonToCSV(complexData);
+console.log(complexCsv);
+
+// Uncomment to save to file:
+// saveToFile(complexCsv, 'output.csv');
+
+// Output:
+// === Basic Conversion ===
+// name,age,city
+// John,30,New York
+// Jane,25,London
+// Bob,35,Paris
+//
+// === Values with Commas ===
+// name,message,country
+// John Doe,"Hello, World!",USA
+// Jane Smith,"Hi, there!",UK
+//
+// === Complex Data ===
+// id,product,price,tags,inStock
+// 1,Laptop,999.99,"electronics,computers",true
+// 2,Mouse,29.99,"electronics,accessories",false
+// 3,Keyboard,79.99,"electronics,computers",true`,
   references: [
     {
       title: "CSV Format - Wikipedia",

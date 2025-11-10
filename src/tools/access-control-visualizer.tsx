@@ -611,6 +611,80 @@ export const accessControlVisualizerConfig: ToolConfig = {
       type: "text",
     },
   ],
+  codeSnippet: `// No external packages needed - standard JSON ABI parsing
+
+interface Role {
+  name: string;
+  identifier: string;
+  functions: string[];
+}
+
+// Analyze ABI for access control patterns
+function analyzeAccessControl(abi: any[]): {
+  type: string;
+  roles: Role[];
+} {
+  const roles: Map<string, Role> = new Map();
+
+  // Detect AccessControl pattern
+  const hasAccessControl = abi.some(
+    item => item.type === 'function' &&
+    (item.name === 'hasRole' || item.name === 'getRoleAdmin')
+  );
+
+  // Detect Ownable pattern
+  const hasOwnable = abi.some(
+    item => item.type === 'function' && item.name === 'owner'
+  );
+
+  // Extract role-based functions
+  abi.forEach(item => {
+    if (item.type === 'function') {
+      // Find minter role
+      if (item.name.includes('mint') && !item.name.includes('Minter')) {
+        if (!roles.has('MINTER_ROLE')) {
+          roles.set('MINTER_ROLE', {
+            name: 'MINTER_ROLE',
+            identifier: 'MINTER_ROLE',
+            functions: []
+          });
+        }
+        roles.get('MINTER_ROLE')!.functions.push(item.name);
+      }
+
+      // Find pauser role
+      if (item.name.includes('pause')) {
+        if (!roles.has('PAUSER_ROLE')) {
+          roles.set('PAUSER_ROLE', {
+            name: 'PAUSER_ROLE',
+            identifier: 'PAUSER_ROLE',
+            functions: []
+          });
+        }
+        roles.get('PAUSER_ROLE')!.functions.push(item.name);
+      }
+    }
+  });
+
+  const type = hasAccessControl ? 'AccessControl' :
+               hasOwnable ? 'Ownable' : 'Unknown';
+
+  return {
+    type,
+    roles: Array.from(roles.values())
+  };
+}
+
+// Example usage
+const exampleABI = [
+  { type: 'function', name: 'hasRole', inputs: [] },
+  { type: 'function', name: 'mint', inputs: [] },
+  { type: 'function', name: 'pause', inputs: [] }
+];
+
+const analysis = analyzeAccessControl(exampleABI);
+console.log('Type:', analysis.type); // AccessControl
+console.log('Roles:', analysis.roles);`,
   references: [
     {
       title: "OpenZeppelin AccessControl",

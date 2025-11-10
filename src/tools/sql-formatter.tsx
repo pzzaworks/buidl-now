@@ -233,6 +233,61 @@ order by name`,
       type: "code",
     },
   ],
+  codeSnippet: `// No external dependencies needed - uses built-in string manipulation
+
+function formatSql(sql: string): string {
+  if (!sql.trim()) return '';
+
+  const keywords = [
+    'SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'ORDER BY', 'GROUP BY',
+    'HAVING', 'JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN',
+    'ON', 'AS', 'INSERT INTO', 'VALUES', 'UPDATE', 'SET',
+    'DELETE FROM', 'CREATE TABLE', 'LIMIT', 'UNION', 'CASE',
+    'WHEN', 'THEN', 'ELSE', 'END', 'IN', 'NOT', 'NULL', 'IS',
+    'LIKE', 'BETWEEN'
+  ];
+
+  // Remove extra whitespace
+  let formatted = sql.replace(/\\s+/g, ' ').trim();
+
+  // Convert keywords to uppercase
+  keywords.forEach((keyword) => {
+    const regex = new RegExp(\`\\\\b\${keyword}\\\\b\`, 'gi');
+    formatted = formatted.replace(regex, keyword);
+  });
+
+  // Add newlines before major keywords
+  const majorKeywords = [
+    'SELECT', 'FROM', 'WHERE', 'ORDER BY', 'GROUP BY', 'HAVING',
+    'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'JOIN',
+    'INSERT INTO', 'UPDATE', 'DELETE FROM', 'UNION'
+  ];
+
+  majorKeywords.forEach((keyword) => {
+    const regex = new RegExp(\`\\\\b\${keyword}\\\\b\`, 'g');
+    formatted = formatted.replace(regex, \`\\n\${keyword}\`);
+  });
+
+  // Add newlines after commas
+  formatted = formatted.replace(/,\\s*/g, ',\\n  ');
+
+  return formatted.trim();
+}
+
+// Example usage
+const unformattedSql = 'select id, name, email from users where active = true and created_at > \\'2024-01-01\\' order by name';
+
+console.log('Formatted SQL:');
+console.log(formatSql(unformattedSql));
+
+// Output:
+// Formatted SQL:
+// SELECT id,
+//   name,
+//   email
+// FROM users
+// WHERE active = true AND created_at > '2024-01-01'
+// ORDER BY name`,
   references: [
     {
       title: "SQL Tutorial - W3Schools",

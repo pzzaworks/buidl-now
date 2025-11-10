@@ -131,6 +131,39 @@ export const signatureVerifierConfig: ToolConfig = {
   description: "Verify Ethereum signatures (ECDSA) and recover signer addresses",
   category: "web3",
   component: SignatureVerifierTool,
+  codeSnippet: `// npm install viem
+
+import { recoverMessageAddress, verifyMessage } from 'viem';
+
+// Message and signature from signing
+const message = "Hello, Ethereum!";
+const signature = "0x1234567890abcdef..."; // 65-byte signature
+
+// Recover signer address from signature
+const recoveredAddress = await recoverMessageAddress({
+  message,
+  signature: signature as \`0x\${string}\`
+});
+console.log("Signer:", recoveredAddress);
+
+// Verify signature matches expected address
+const expectedAddress = "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb";
+const isValid = await verifyMessage({
+  address: expectedAddress as \`0x\${string}\`,
+  message,
+  signature: signature as \`0x\${string}\`
+});
+console.log("Valid signature:", isValid);
+
+// Sign a message with private key account
+import { privateKeyToAccount } from 'viem/accounts';
+
+const account = privateKeyToAccount("0x1234..." as \`0x\${string}\`);
+const newSignature = await account.signMessage({
+  message: "Sign this message"
+});
+console.log("New signature:", newSignature);
+`,
   seo: {
     keywords: [
       "ethereum signature",

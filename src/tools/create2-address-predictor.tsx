@@ -512,6 +512,55 @@ Warning: Longer prefixes take exponentially longer to find`,
       type: "code",
     },
   ],
+  codeSnippet: `// npm install viem
+
+import { keccak256, encodePacked, getAddress } from 'viem';
+
+// Calculate CREATE2 address
+function getCreate2Address(
+  deployerAddress: string,
+  salt: string,
+  initCodeHash: string
+): string {
+  // Ensure salt is 32 bytes
+  let saltBytes: \`0x\${string}\`;
+  if (salt.startsWith('0x') && salt.length === 66) {
+    saltBytes = salt as \`0x\${string}\`;
+  } else {
+    const saltBigInt = BigInt(salt);
+    saltBytes = ('0x' + saltBigInt.toString(16).padStart(64, '0')) as \`0x\${string}\`;
+  }
+
+  // Pack: 0xff ++ deployer ++ salt ++ initCodeHash
+  const packed = encodePacked(
+    ['bytes1', 'address', 'bytes32', 'bytes32'],
+    ['0xff', deployerAddress as \`0x\${string}\`, saltBytes, initCodeHash as \`0x\${string}\`]
+  );
+
+  // Hash and take last 20 bytes as address
+  const hash = keccak256(packed);
+  const address = '0x' + hash.slice(-40);
+
+  return getAddress(address);
+}
+
+// Calculate init code hash from bytecode
+function getInitCodeHash(bytecode: string): string {
+  return keccak256(bytecode as \`0x\${string}\`);
+}
+
+// Example: Predict deployment address
+const deployer = '0x1F98431c8aD98523631AE4a59f267346ea31F984';
+const salt = '0';
+const initCode = '0x6080604052348015600f57600080fd5b50...';
+
+const initCodeHash = getInitCodeHash(initCode);
+console.log('Init Code Hash:', initCodeHash);
+
+const predictedAddress = getCreate2Address(deployer, salt, initCodeHash);
+console.log('Predicted Address:', predictedAddress);
+
+// The contract can be deployed to this exact address using CREATE2`,
   references: [
     {
       title: "EIP-1014: Skinny CREATE2",

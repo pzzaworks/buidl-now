@@ -156,6 +156,42 @@ export const escapeUnescapeConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// Escape special characters for JavaScript strings
+function escapeString(input: string): string {
+  return input
+    .replace(/\\\\/g, '\\\\\\\\')
+    .replace(/"/g, '\\\\"')
+    .replace(/'/g, "\\\\'")
+    .replace(/\\n/g, '\\\\n')
+    .replace(/\\r/g, '\\\\r')
+    .replace(/\\t/g, '\\\\t');
+}
+
+// Unescape special characters
+function unescapeString(input: string): string {
+  return input
+    .replace(/\\\\n/g, '\\n')
+    .replace(/\\\\r/g, '\\r')
+    .replace(/\\\\t/g, '\\t')
+    .replace(/\\\\"/g, '"')
+    .replace(/\\\\'/g, "'")
+    .replace(/\\\\\\\\/g, '\\\\');
+}
+
+// Example usage
+const original = \`Line 1
+Line 2
+He said "Hello"\`;
+
+const escaped = escapeString(original);
+console.log('Escaped:', escaped);
+// Output: Line 1\\nLine 2\\nHe said \\"Hello\\"
+
+const unescaped = unescapeString(escaped);
+console.log('Unescaped:', unescaped);
+// Output: Line 1
+// Line 2
+// He said "Hello"`,
   references: [
     {
       title: "Escape Sequences - MDN",

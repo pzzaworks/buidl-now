@@ -165,6 +165,48 @@ export const addressChecksumConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// npm install viem
+
+import { getAddress, isAddress } from 'viem';
+
+// Convert address to EIP-55 checksum format
+function toChecksumAddress(address: string): string {
+  if (!isAddress(address)) {
+    throw new Error('Invalid Ethereum address');
+  }
+
+  // getAddress automatically converts to checksum format
+  return getAddress(address);
+}
+
+// Validate if address is already in correct checksum format
+function hasCorrectChecksum(address: string): boolean {
+  try {
+    const checksummed = getAddress(address);
+    return address === checksummed;
+  } catch {
+    return false;
+  }
+}
+
+// Example usage
+const lowercaseAddress = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045';
+const checksumAddress = toChecksumAddress(lowercaseAddress);
+console.log('Checksum:', checksumAddress);
+// 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
+
+// Check if already checksummed
+const isCorrect = hasCorrectChecksum(checksumAddress);
+console.log('Has correct checksum:', isCorrect); // true
+
+// Wrong checksum
+const wrongChecksum = '0xD8DA6bf26964af9d7eed9E03e53415d37aa96045';
+const isWrong = hasCorrectChecksum(wrongChecksum);
+console.log('Wrong checksum:', isWrong); // false
+
+// Validate address format
+const valid = isAddress(lowercaseAddress);
+console.log('Is valid address:', valid); // true`,
   references: [
     {
       title: "EIP-55: Mixed-case checksum address encoding",

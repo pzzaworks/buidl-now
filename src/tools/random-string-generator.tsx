@@ -258,10 +258,142 @@ export const randomStringGeneratorConfig: ToolConfig = {
     },
     {
       title: "API Key (40 chars)",
-      content: "sk_test_Kx9mP2nQ8rT4vY6zB3cD5fG7hJ1k4L",
+      content: "api_key_Kx9mP2nQ8rT4vY6zB3cD5fG7hJ1k4L",
       type: "text",
     },
   ],
+  codeSnippet: `// No external dependencies needed - uses built-in crypto API
+
+const LOWERCASE = 'abcdefghijklmnopqrstuvwxyz';
+const UPPERCASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const NUMBERS = '0123456789';
+const SYMBOLS = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+const HEX_CHARS = '0123456789abcdef';
+
+type CharacterSet = 'alphanumeric' | 'hex' | 'numeric' | 'lowercase' | 'uppercase' | 'custom';
+
+interface RandomStringOptions {
+  length: number;
+  characterSet: CharacterSet;
+  customChars?: string;
+}
+
+function generateRandomString(options: RandomStringOptions): string {
+  let chars = '';
+
+  switch (options.characterSet) {
+    case 'alphanumeric':
+      chars = LOWERCASE + UPPERCASE + NUMBERS;
+      break;
+    case 'hex':
+      chars = HEX_CHARS;
+      break;
+    case 'numeric':
+      chars = NUMBERS;
+      break;
+    case 'lowercase':
+      chars = LOWERCASE;
+      break;
+    case 'uppercase':
+      chars = UPPERCASE;
+      break;
+    case 'custom':
+      chars = options.customChars || LOWERCASE + UPPERCASE + NUMBERS;
+      break;
+  }
+
+  if (chars.length === 0) {
+    throw new Error('Character set cannot be empty');
+  }
+
+  // Use crypto.getRandomValues for cryptographically secure random generation
+  const bytes = new Uint8Array(options.length);
+  crypto.getRandomValues(bytes);
+
+  let result = '';
+  for (let i = 0; i < options.length; i++) {
+    result += chars[bytes[i] % chars.length];
+  }
+
+  return result;
+}
+
+function generateMultipleRandomStrings(
+  count: number,
+  options: RandomStringOptions
+): string[] {
+  return Array.from({ length: count }, () => generateRandomString(options));
+}
+
+function generateSecureToken(length: number = 32): string {
+  return generateRandomString({
+    length,
+    characterSet: 'alphanumeric'
+  });
+}
+
+function generateApiKey(prefix: string = 'sk', length: number = 32): string {
+  const randomPart = generateRandomString({
+    length,
+    characterSet: 'alphanumeric'
+  });
+  return \`\${prefix}_\${randomPart}\`;
+}
+
+// Example usage
+console.log('Alphanumeric string (32 chars):');
+console.log(generateRandomString({ length: 32, characterSet: 'alphanumeric' }));
+
+console.log('\\nHex string (64 chars):');
+console.log(generateRandomString({ length: 64, characterSet: 'hex' }));
+
+console.log('\\nNumeric string (10 chars):');
+console.log(generateRandomString({ length: 10, characterSet: 'numeric' }));
+
+console.log('\\nCustom string (lowercase + numbers, 20 chars):');
+console.log(generateRandomString({
+  length: 20,
+  characterSet: 'custom',
+  customChars: LOWERCASE + NUMBERS
+}));
+
+console.log('\\nSecure token:');
+console.log(generateSecureToken(40));
+
+console.log('\\nAPI Key:');
+console.log(generateApiKey('api_key', 32));
+
+console.log('\\nMultiple strings (5):');
+const strings = generateMultipleRandomStrings(5, { length: 16, characterSet: 'alphanumeric' });
+strings.forEach((str, index) => {
+  console.log(\`  \${index + 1}. \${str}\`);
+});
+
+// Output:
+// Alphanumeric string (32 chars):
+// Kx9mP2nQ8rT4vY6zB3cD5fG7hJ1k4L8m
+//
+// Hex string (64 chars):
+// a1b2c3d4e5f67890abcdef1234567890a1b2c3d4e5f67890abcdef1234567890
+//
+// Numeric string (10 chars):
+// 4728193056
+//
+// Custom string (lowercase + numbers, 20 chars):
+// k3x9m2p8q4t7y5v6w1z3
+//
+// Secure token:
+// Kx9mP2nQ8rT4vY6zB3cD5fG7hJ1k4L8mN9pQ2r
+//
+// API Key:
+// api_key_Kx9mP2nQ8rT4vY6zB3cD5fG7hJ1k
+//
+// Multiple strings (5):
+//   1. Kx9mP2nQ8rT4vY6z
+//   2. B3cD5fG7hJ1k4L8m
+//   3. N6pQ9rS2tV5wX8y
+//   4. Z1aC4dE7gH0jK3l
+//   5. M6nP9qR2sT5uW8x`,
   references: [
     {
       title: "Web Crypto API",

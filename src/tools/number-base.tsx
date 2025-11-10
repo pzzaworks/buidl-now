@@ -238,6 +238,112 @@ export const numberBaseConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// No npm packages needed - pure Node.js/TypeScript
+
+interface NumberBases {
+  decimal: string;
+  binary: string;
+  octal: string;
+  hexadecimal: string;
+}
+
+function convertFromDecimal(decimal: number): NumberBases {
+  return {
+    decimal: decimal.toString(10),
+    binary: decimal.toString(2),
+    octal: decimal.toString(8),
+    hexadecimal: decimal.toString(16).toUpperCase()
+  };
+}
+
+function convertFromBinary(binary: string): NumberBases {
+  const decimal = parseInt(binary, 2);
+  return convertFromDecimal(decimal);
+}
+
+function convertFromOctal(octal: string): NumberBases {
+  const decimal = parseInt(octal, 8);
+  return convertFromDecimal(decimal);
+}
+
+function convertFromHex(hex: string): NumberBases {
+  const decimal = parseInt(hex, 16);
+  return convertFromDecimal(decimal);
+}
+
+function displayNumber(num: NumberBases, label: string): void {
+  console.log(\`\\n=== \${label} ===\`);
+  console.log(\`Decimal:      \${num.decimal}\`);
+  console.log(\`Binary:       \${num.binary}\`);
+  console.log(\`Octal:        \${num.octal}\`);
+  console.log(\`Hexadecimal:  \${num.hexadecimal}\`);
+}
+
+// Example usage
+console.log('Number Base Converter Examples');
+
+// Convert from decimal
+const num1 = convertFromDecimal(42);
+displayNumber(num1, 'Number 42');
+
+// Convert from binary
+const num2 = convertFromBinary('11111111');
+displayNumber(num2, 'Binary 11111111');
+
+// Convert from hexadecimal
+const num3 = convertFromHex('FF');
+displayNumber(num3, 'Hexadecimal FF');
+
+// Convert from octal
+const num4 = convertFromOctal('52');
+displayNumber(num4, 'Octal 52');
+
+// Common use cases
+console.log('\\n=== Common Use Cases ===');
+
+// RGB color value
+const rgbRed = convertFromDecimal(255);
+console.log(\`RGB Red (255) in Hex: #\${rgbRed.hexadecimal}0000\`);
+
+// File permissions (Unix)
+const permissions = convertFromOctal('755');
+console.log(\`File permissions 755 in binary: \${permissions.binary}\`);
+
+// Memory address
+const memoryAddr = convertFromHex('DEADBEEF');
+console.log(\`Memory address 0xDEADBEEF in decimal: \${memoryAddr.decimal}\`);
+
+// Output:
+// Number Base Converter Examples
+//
+// === Number 42 ===
+// Decimal:      42
+// Binary:       101010
+// Octal:        52
+// Hexadecimal:  2A
+//
+// === Binary 11111111 ===
+// Decimal:      255
+// Binary:       11111111
+// Octal:        377
+// Hexadecimal:  FF
+//
+// === Hexadecimal FF ===
+// Decimal:      255
+// Binary:       11111111
+// Octal:        377
+// Hexadecimal:  FF
+//
+// === Octal 52 ===
+// Decimal:      42
+// Binary:       101010
+// Octal:        52
+// Hexadecimal:  2A
+//
+// === Common Use Cases ===
+// RGB Red (255) in Hex: #FF0000
+// File permissions 755 in binary: 111101101
+// Memory address 0xDEADBEEF in decimal: 3735928559`,
   references: [
     {
       title: "Number Systems - Wikipedia",

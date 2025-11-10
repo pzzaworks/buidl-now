@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { MdKeyboardArrowUp } from "react-icons/md";
+import { Button } from "./ui/button";
 
 export function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
@@ -33,15 +34,17 @@ export function ScrollToTop() {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none">
       <div className="w-[640px] mx-auto px-6 py-12 flex justify-end">
-        <button
+        <Button
           onClick={scrollToTop}
-          className={`pointer-events-auto p-2 bg-[#1a1a1a] text-muted-foreground rounded border border-border hover:bg-[#222222] transition-all duration-300 shadow-[0_2px_8px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.1)] active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] cursor-pointer ${
+          variant="secondary"
+          size="sm"
+          className={`pointer-events-auto !px-2 h-auto min-h-0 transition-all duration-300 ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
           }`}
           aria-label="Scroll to top"
         >
           <MdKeyboardArrowUp className="w-5 h-5" />
-        </button>
+        </Button>
       </div>
     </div>
   );

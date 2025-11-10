@@ -322,6 +322,87 @@ export const yamlValidatorConfig: ToolConfig = {
       type: "text",
     },
   ],
+  codeSnippet: `// npm install js-yaml
+// npm install @types/js-yaml --save-dev
+
+import * as yaml from 'js-yaml';
+
+interface YamlData {
+  [key: string]: any;
+}
+
+function parseYaml(yamlString: string): YamlData {
+  try {
+    const parsed = yaml.load(yamlString) as YamlData;
+    return parsed;
+  } catch (error) {
+    throw new Error(\`YAML parsing error: \${error instanceof Error ? error.message : 'Unknown error'}\`);
+  }
+}
+
+function validateYaml(yamlString: string): { valid: boolean; error?: string; data?: YamlData } {
+  try {
+    const data = parseYaml(yamlString);
+    return { valid: true, data };
+  } catch (error) {
+    return {
+      valid: false,
+      error: error instanceof Error ? error.message : 'Invalid YAML'
+    };
+  }
+}
+
+function yamlToJson(yamlString: string): string {
+  const parsed = parseYaml(yamlString);
+  return JSON.stringify(parsed, null, 2);
+}
+
+function jsonToYaml(jsonString: string): string {
+  const parsed = JSON.parse(jsonString);
+  return yaml.dump(parsed);
+}
+
+// Example usage
+const yamlExample = \`
+name: John Doe
+age: 30
+hobbies:
+  - reading
+  - coding
+  - gaming
+address:
+  city: New York
+  country: USA
+\`;
+
+console.log('Validating YAML...');
+const result = validateYaml(yamlExample);
+
+if (result.valid) {
+  console.log('Valid YAML!');
+  console.log('\\nParsed data:');
+  console.log(result.data);
+
+  console.log('\\nConverted to JSON:');
+  console.log(yamlToJson(yamlExample));
+} else {
+  console.log('Invalid YAML:', result.error);
+}
+
+// Output:
+// Validating YAML...
+// Valid YAML!
+//
+// Parsed data:
+// { name: 'John Doe', age: 30, hobbies: ['reading', 'coding', 'gaming'], address: { city: 'New York', country: 'USA' } }
+//
+// Converted to JSON:
+// {
+//   "name": "John Doe",
+//   "age": 30,
+//   "hobbies": ["reading", "coding", "gaming"],
+//   "address": { "city": "New York", "country": "USA" }
+// }`,
   references: [
     {
       title: "YAML Official Site",

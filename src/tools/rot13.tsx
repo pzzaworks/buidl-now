@@ -127,6 +127,29 @@ export const rot13Config: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// ROT13 cipher - self-inverse encryption/decryption
+function rot13(text: string): string {
+  return text.replace(/[a-zA-Z]/g, (char) => {
+    const start = char <= 'Z' ? 65 : 97;
+    return String.fromCharCode(
+      ((char.charCodeAt(0) - start + 13) % 26) + start
+    );
+  });
+}
+
+// Example usage
+const original = "Hello World";
+const encoded = rot13(original);
+console.log(\`Original: \${original}\`);  // Hello World
+console.log(\`Encoded: \${encoded}\`);    // Uryyb Jbeyq
+
+// ROT13 is self-inverse: applying it twice returns the original
+const decoded = rot13(encoded);
+console.log(\`Decoded: \${decoded}\`);    // Hello World
+
+// Non-alphabetic characters remain unchanged
+const withNumbers = "Test123!";
+console.log(rot13(withNumbers));        // Grfg123!`,
   references: [
     {
       title: "Wikipedia: ROT13",

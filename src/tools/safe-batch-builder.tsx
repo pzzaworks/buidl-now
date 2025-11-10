@@ -239,6 +239,54 @@ export const safeBatchBuilderConfig: ToolConfig = {
   description: "Build and export batch transactions for Safe (Gnosis Safe) multi-sig wallets",
   category: "web3",
   component: SafeBatchBuilderTool,
+  codeSnippet: `// Build Safe batch transaction JSON
+
+interface SafeTransaction {
+  to: string;
+  value: string;
+  data: string;
+  operation: 0 | 1; // 0 = Call, 1 = DelegateCall
+}
+
+function buildSafeBatch(transactions: SafeTransaction[]) {
+  return {
+    version: "1.0",
+    chainId: "1", // Update to your chain
+    createdAt: Date.now(),
+    meta: {
+      name: "Batch Transaction",
+      description: "Multiple operations in one Safe transaction",
+      txBuilderVersion: "1.16.3"
+    },
+    transactions: transactions.map(tx => ({
+      to: tx.to,
+      value: tx.value,
+      data: tx.data,
+      contractMethod: null,
+      contractInputsValues: null,
+      operation: tx.operation
+    }))
+  };
+}
+
+// Example: Approve and swap on Uniswap
+const batch = buildSafeBatch([
+  {
+    to: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", // USDC
+    value: "0",
+    data: "0x095ea7b3000000000000000000000000E592427A0AEce92De3Edee1F18E0157C05861564", // approve
+    operation: 0
+  },
+  {
+    to: "0xE592427A0AEce92De3Edee1F18E0157C05861564", // Uniswap Router
+    value: "0",
+    data: "0x414bf389...", // exactInputSingle
+    operation: 0
+  }
+]);
+
+console.log(JSON.stringify(batch, null, 2));
+`,
   seo: {
     keywords: [
       "safe batch builder",

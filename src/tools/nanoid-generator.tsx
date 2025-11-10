@@ -164,6 +164,73 @@ export const nanoidGeneratorConfig: ToolConfig = {
       type: "text",
     },
   ],
+  codeSnippet: `// npm install nanoid
+
+import { nanoid, customAlphabet } from 'nanoid';
+
+// Generate a standard nanoid (21 characters)
+function generateNanoid(size: number = 21): string {
+  return nanoid(size);
+}
+
+// Generate multiple nanoids
+function generateMultipleNanoids(count: number, size: number = 21): string[] {
+  return Array.from({ length: count }, () => nanoid(size));
+}
+
+// Generate nanoid with custom alphabet
+function generateCustomNanoid(alphabet: string, size: number): string {
+  const customNano = customAlphabet(alphabet, size);
+  return customNano();
+}
+
+// Common custom alphabets
+const ALPHABETS = {
+  alphanumeric: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+  numeric: '0123456789',
+  lowercase: 'abcdefghijklmnopqrstuvwxyz',
+  uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+  hex: '0123456789abcdef'
+};
+
+// Example usage
+console.log('Standard Nanoid (21 chars):');
+console.log(generateNanoid());
+
+console.log('\\nShort Nanoid (10 chars):');
+console.log(generateNanoid(10));
+
+console.log('\\nLong Nanoid (32 chars):');
+console.log(generateNanoid(32));
+
+console.log('\\nMultiple Nanoids (5):');
+const nanoids = generateMultipleNanoids(5, 16);
+nanoids.forEach((id, index) => {
+  console.log(\`  \${index + 1}. \${id}\`);
+});
+
+console.log('\\nCustom Nanoid (numeric only, 12 chars):');
+console.log(generateCustomNanoid(ALPHABETS.numeric, 12));
+
+console.log('\\nCustom Nanoid (hex, 16 chars):');
+console.log(generateCustomNanoid(ALPHABETS.hex, 16));
+
+// Output:
+// Standard Nanoid (21 chars):
+// V1StGXR8_Z5jdHi6B-myT
+//
+// Short Nanoid (10 chars):
+// IRFa-VaY2b
+//
+// Long Nanoid (32 chars):
+// ppBqWA9-TdOtWAFIj1nQH_FI5bw5xM9G
+//
+// Multiple Nanoids (5):
+//   1. Kx9mP2nQ8rT4vY6z
+//   2. B3cD5fG7hJ1k4L8m
+//   3. N6pQ9rS2tV5wX8y
+//   4. Z1aC4dE7gH0jK3l
+//   5. M6nP9qR2sT5uW8x`,
   references: [
     {
       title: "Nanoid - GitHub",

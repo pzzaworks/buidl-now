@@ -197,6 +197,90 @@ export const jsonValidatorConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// No external dependencies needed - uses built-in JSON methods
+
+interface ValidationResult {
+  valid: boolean;
+  error?: string;
+  formatted?: string;
+  minified?: string;
+}
+
+function validateAndFormatJson(jsonString: string): ValidationResult {
+  try {
+    const parsed = JSON.parse(jsonString);
+    return {
+      valid: true,
+      formatted: JSON.stringify(parsed, null, 2),
+      minified: JSON.stringify(parsed)
+    };
+  } catch (error) {
+    return {
+      valid: false,
+      error: error instanceof Error ? error.message : 'Invalid JSON'
+    };
+  }
+}
+
+function formatJson(jsonString: string, spaces: number = 2): string {
+  const parsed = JSON.parse(jsonString);
+  return JSON.stringify(parsed, null, spaces);
+}
+
+function minifyJson(jsonString: string): string {
+  const parsed = JSON.parse(jsonString);
+  return JSON.stringify(parsed);
+}
+
+function isValidJson(jsonString: string): boolean {
+  try {
+    JSON.parse(jsonString);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Example usage
+const unformattedJson = '{"name":"John Doe","age":30,"email":"john@example.com","hobbies":["reading","coding"]}';
+
+console.log('Validating JSON...');
+const result = validateAndFormatJson(unformattedJson);
+
+if (result.valid) {
+  console.log('Valid JSON!');
+
+  console.log('\\nFormatted JSON:');
+  console.log(result.formatted);
+
+  console.log('\\nMinified JSON:');
+  console.log(result.minified);
+} else {
+  console.log('Invalid JSON:', result.error);
+}
+
+// Example with invalid JSON
+const invalidJson = '{"name": "John", age: 30}'; // Missing quotes around age
+console.log('\\nValidating invalid JSON...');
+console.log('Is valid:', isValidJson(invalidJson));
+
+// Output:
+// Validating JSON...
+// Valid JSON!
+//
+// Formatted JSON:
+// {
+//   "name": "John Doe",
+//   "age": 30,
+//   "email": "john@example.com",
+//   "hobbies": ["reading", "coding"]
+// }
+//
+// Minified JSON:
+// {"name":"John Doe","age":30,"email":"john@example.com","hobbies":["reading","coding"]}
+//
+// Validating invalid JSON...
+// Is valid: false`,
   references: [
     {
       title: "JSON.org",

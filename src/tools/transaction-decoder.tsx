@@ -262,6 +262,37 @@ export const transactionDecoderConfig: ToolConfig = {
   description: "Decode raw Ethereum transaction data",
   category: "web3",
   component: TransactionDecoderTool,
+  codeSnippet: `// npm install viem
+
+import { parseTransaction, formatEther, formatGwei } from 'viem';
+
+// Decode raw transaction hex
+const rawTx = "0xf86c808504a817c800825208944592d8f8d7b001e72cb26a73e4fa1806a51ac79d880de0b6b3a7640000801ca0...";
+
+const tx = parseTransaction(rawTx as \`0x\${string}\`);
+
+console.log("Transaction Details:");
+console.log("To:", tx.to);
+console.log("Value (ETH):", formatEther(tx.value || 0n));
+console.log("Gas Limit:", tx.gas?.toString());
+console.log("Nonce:", tx.nonce);
+console.log("Type:", tx.type);
+console.log("Chain ID:", tx.chainId);
+console.log("Data:", tx.data);
+
+// Handle different transaction types
+if (tx.type === "legacy") {
+  console.log("Gas Price (Gwei):", formatGwei(tx.gasPrice || 0n));
+} else if (tx.type === "eip1559") {
+  console.log("Max Fee (Gwei):", formatGwei(tx.maxFeePerGas || 0n));
+  console.log("Max Priority Fee (Gwei):", formatGwei(tx.maxPriorityFeePerGas || 0n));
+}
+
+// Extract signature components
+console.log("Signature v:", tx.v);
+console.log("Signature r:", tx.r);
+console.log("Signature s:", tx.s);
+`,
   seo: {
     keywords: [
       "ethereum transaction decoder",

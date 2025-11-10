@@ -154,6 +154,38 @@ export const tokenDecimalsConverterConfig: ToolConfig = {
   description: "Convert between human-readable amounts and raw token amounts",
   category: "web3",
   component: TokenDecimalsConverterTool,
+  codeSnippet: `// npm install viem
+
+import { parseUnits, formatUnits } from 'viem';
+
+// Convert human-readable to raw (wei-like units)
+const humanAmount = "1.5";
+const decimals = 18;
+
+const rawAmount = parseUnits(humanAmount, decimals);
+console.log("Raw amount:", rawAmount);
+// 1500000000000000000n
+
+// Convert raw to human-readable
+const rawValue = 1500000000000000000n;
+const formatted = formatUnits(rawValue, decimals);
+console.log("Formatted:", formatted);
+// "1.5"
+
+// Common token examples
+const ethAmount = parseUnits("2.5", 18); // ETH has 18 decimals
+const usdcAmount = parseUnits("100", 6);  // USDC has 6 decimals
+const wbtcAmount = parseUnits("0.1", 8);  // WBTC has 8 decimals
+
+console.log("2.5 ETH in wei:", ethAmount);
+console.log("100 USDC in raw:", usdcAmount);
+console.log("0.1 WBTC in satoshis:", wbtcAmount);
+
+// Convert back
+console.log("ETH:", formatUnits(ethAmount, 18));
+console.log("USDC:", formatUnits(usdcAmount, 6));
+console.log("WBTC:", formatUnits(wbtcAmount, 8));
+`,
   seo: {
     keywords: [
       "token decimals converter",

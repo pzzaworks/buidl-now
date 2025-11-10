@@ -229,6 +229,32 @@ export const mnemonicGeneratorConfig: ToolConfig = {
   description: "Generate and validate BIP39 mnemonic phrases",
   category: "web3",
   component: MnemonicGeneratorTool,
+  codeSnippet: `// npm install viem
+
+import { english, generateMnemonic, mnemonicToAccount } from 'viem/accounts';
+
+// Generate a 12-word mnemonic (128 bits entropy)
+const mnemonic12 = generateMnemonic(english);
+console.log("12-word mnemonic:", mnemonic12);
+
+// Generate a 24-word mnemonic (256 bits entropy)
+const mnemonic24 = generateMnemonic(english, { strength: 256 });
+console.log("24-word mnemonic:", mnemonic24);
+
+// Validate and derive account from mnemonic
+try {
+  const account = mnemonicToAccount(mnemonic12);
+  console.log("Valid mnemonic! Address:", account.address);
+} catch (error) {
+  console.log("Invalid mnemonic");
+}
+
+// Derive account with custom path
+const customPathAccount = mnemonicToAccount(mnemonic12, {
+  path: "m/44'/60'/0'/0/1" // Second address
+});
+console.log("Second address:", customPathAccount.address);
+`,
   seo: {
     keywords: [
       "bip39 mnemonic generator",

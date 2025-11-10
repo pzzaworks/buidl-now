@@ -163,6 +163,102 @@ export const passwordGeneratorConfig: ToolConfig = {
       type: "text",
     },
   ],
+  codeSnippet: `// No external dependencies needed - uses built-in crypto API
+
+const LOWERCASE = 'abcdefghijklmnopqrstuvwxyz';
+const UPPERCASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const NUMBERS = '0123456789';
+const SYMBOLS = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+interface PasswordOptions {
+  length: number;
+  includeLowercase: boolean;
+  includeUppercase: boolean;
+  includeNumbers: boolean;
+  includeSymbols: boolean;
+}
+
+function generatePassword(options: PasswordOptions): string {
+  let chars = '';
+
+  if (options.includeLowercase) chars += LOWERCASE;
+  if (options.includeUppercase) chars += UPPERCASE;
+  if (options.includeNumbers) chars += NUMBERS;
+  if (options.includeSymbols) chars += SYMBOLS;
+
+  if (chars.length === 0) {
+    throw new Error('At least one character type must be selected');
+  }
+
+  // Use crypto.getRandomValues for secure random generation
+  const bytes = new Uint8Array(options.length);
+  crypto.getRandomValues(bytes);
+
+  let password = '';
+  for (let i = 0; i < options.length; i++) {
+    password += chars[bytes[i] % chars.length];
+  }
+
+  return password;
+}
+
+function calculatePasswordStrength(password: string): string {
+  const hasLower = /[a-z]/.test(password);
+  const hasUpper = /[A-Z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasSymbol = /[^a-zA-Z0-9]/.test(password);
+
+  const varietyScore = [hasLower, hasUpper, hasNumber, hasSymbol].filter(Boolean).length;
+  const lengthScore = password.length >= 16 ? 2 : password.length >= 12 ? 1 : 0;
+
+  const totalScore = varietyScore + lengthScore;
+
+  if (totalScore >= 5) return 'Very Strong';
+  if (totalScore >= 4) return 'Strong';
+  if (totalScore >= 3) return 'Medium';
+  return 'Weak';
+}
+
+// Example usage
+const options: PasswordOptions = {
+  length: 16,
+  includeLowercase: true,
+  includeUppercase: true,
+  includeNumbers: true,
+  includeSymbols: true
+};
+
+console.log('Generating passwords...');
+
+const password1 = generatePassword(options);
+console.log(\`\\nPassword 1: \${password1}\`);
+console.log(\`Strength: \${calculatePasswordStrength(password1)}\`);
+
+const password2 = generatePassword({ ...options, length: 24 });
+console.log(\`\\nPassword 2 (24 chars): \${password2}\`);
+console.log(\`Strength: \${calculatePasswordStrength(password2)}\`);
+
+const simplePassword = generatePassword({
+  length: 12,
+  includeLowercase: true,
+  includeUppercase: true,
+  includeNumbers: true,
+  includeSymbols: false
+});
+console.log(\`\\nSimple Password (no symbols): \${simplePassword}\`);
+console.log(\`Strength: \${calculatePasswordStrength(simplePassword)}\`);
+
+// Output:
+// Generating passwords...
+//
+// Password 1: X7$mK9#pQ2@nL4&w
+// Strength: Very Strong
+//
+// Password 2 (24 chars): R8*tY6^uI3%oP5!aS9$dF2#g
+// Strength: Very Strong
+//
+// Simple Password (no symbols): aB3dE6gH9jK2
+// Strength: Medium`,
   references: [
     {
       title: "NIST Password Guidelines",

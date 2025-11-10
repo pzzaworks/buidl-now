@@ -290,6 +290,76 @@ export const ecdsaSignatureConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// No external packages needed - pure TypeScript
+
+interface SignatureComponents {
+  r: string;
+  s: string;
+  v: number | null;
+  yParity: number | null;
+}
+
+// Parse ECDSA signature into r, s, v components
+function parseSignature(signature: string): SignatureComponents {
+  // Remove 0x prefix if present
+  let cleanSig = signature.trim();
+  if (cleanSig.startsWith('0x')) {
+    cleanSig = cleanSig.slice(2);
+  }
+
+  // Validate hex string
+  if (!/^[0-9a-fA-F]+$/.test(cleanSig)) {
+    throw new Error('Invalid hex string');
+  }
+
+  // Signature can be 64 bytes (128 hex) or 65 bytes (130 hex)
+  if (cleanSig.length !== 128 && cleanSig.length !== 130) {
+    throw new Error('Signature must be 64 or 65 bytes');
+  }
+
+  // Parse r and s (first 64 bytes)
+  const r = '0x' + cleanSig.slice(0, 64);
+  const s = '0x' + cleanSig.slice(64, 128);
+
+  // Parse v if present (last byte)
+  let v: number | null = null;
+  let yParity: number | null = null;
+
+  if (cleanSig.length === 130) {
+    v = parseInt(cleanSig.slice(128, 130), 16);
+
+    // Calculate yParity (0 or 1)
+    if (v === 27 || v === 0) {
+      yParity = 0; // even
+    } else if (v === 28 || v === 1) {
+      yParity = 1; // odd
+    } else {
+      // EIP-155: v = chainId * 2 + 35 + yParity
+      const chainId = Math.floor((v - 35) / 2);
+      yParity = v - (chainId * 2 + 35);
+    }
+  }
+
+  return { r, s, v, yParity };
+}
+
+// Example: Parse a 65-byte signature
+const signature = '0x' + 'a'.repeat(64) + 'b'.repeat(64) + '1b';
+const components = parseSignature(signature);
+
+console.log('r:', components.r);
+console.log('s:', components.s);
+console.log('v:', components.v); // 27
+console.log('yParity:', components.yParity); // 0 (even)
+
+// Example: Parse a 64-byte signature (no v)
+const compactSig = '0x' + 'c'.repeat(128);
+const compactComponents = parseSignature(compactSig);
+
+console.log('r:', compactComponents.r);
+console.log('s:', compactComponents.s);
+console.log('v:', compactComponents.v); // null
+console.log('yParity:', compactComponents.yParity); // null`,
   references: [
     {
       title: "Ethereum Yellow Paper (ECDSA)",

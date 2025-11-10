@@ -1,6 +1,7 @@
 import { TextareaHTMLAttributes, forwardRef, useState } from "react";
 import { clsx } from "clsx";
 import { MdContentCopy, MdCheck, MdClear } from "react-icons/md";
+import { Button } from "./button";
 
 export interface TextareaProps
   extends TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -67,10 +68,12 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             {label && <label className="text-sm">{label}</label>}
             <div className="flex items-center gap-2">
               {showCopy && value && (
-                <button
+                <Button
                   type="button"
                   onClick={handleCopy}
-                  className="flex items-center gap-1 px-2 py-1 text-xs text-muted-foreground hover:text-foreground transition-colors rounded hover:bg-[#222222] cursor-pointer"
+                  variant="ghost"
+                  size="sm"
+                  className="h-auto min-h-0 px-2 py-1 text-xs"
                   title="Copy to clipboard"
                 >
                   {copied ? (
@@ -84,18 +87,20 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
                       <span>Copy</span>
                     </>
                   )}
-                </button>
+                </Button>
               )}
               {showClear && value && onClearClick && (
-                <button
+                <Button
                   type="button"
                   onClick={onClearClick}
-                  className="flex items-center gap-1 px-2 py-1 text-xs text-muted-foreground hover:text-foreground transition-colors rounded hover:bg-[#222222] cursor-pointer"
+                  variant="ghost"
+                  size="sm"
+                  className="h-auto min-h-0 px-2 py-1 text-xs"
                   title="Clear"
                 >
                   <MdClear className="w-3.5 h-3.5" />
                   <span>Clear</span>
-                </button>
+                </Button>
               )}
             </div>
           </div>

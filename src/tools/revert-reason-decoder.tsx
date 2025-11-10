@@ -545,6 +545,51 @@ export const revertReasonDecoderConfig: ToolConfig = {
   description: "Decode Ethereum transaction revert reasons and error messages",
   category: "web3",
   component: RevertReasonDecoderTool,
+  codeSnippet: `// Decode revert reasons from failed transactions
+
+// Common error selectors
+const ERROR_SELECTOR = "0x08c379a0"; // Error(string)
+const PANIC_SELECTOR = "0x4e487b71"; // Panic(uint256)
+
+function decodeRevertReason(errorData: string): string {
+  const selector = errorData.slice(0, 10);
+
+  if (selector === ERROR_SELECTOR) {
+    // Error(string) - decode the string message
+    const dataWithoutSelector = errorData.slice(10);
+    // Skip offset (64 chars) and length (64 chars)
+    const messageHex = dataWithoutSelector.slice(128);
+
+    // Convert hex to string
+    const bytes = [];
+    for (let i = 0; i < messageHex.length; i += 2) {
+      const byte = parseInt(messageHex.substr(i, 2), 16);
+      if (byte >= 32 && byte <= 126) {
+        bytes.push(String.fromCharCode(byte));
+      }
+    }
+    return bytes.join("");
+  }
+
+  if (selector === PANIC_SELECTOR) {
+    // Panic(uint256) - decode the panic code
+    const panicCode = "0x" + errorData.slice(-2);
+    const panicCodes: Record<string, string> = {
+      "0x01": "Assert failed",
+      "0x11": "Arithmetic overflow/underflow",
+      "0x12": "Division by zero",
+      "0x32": "Array index out of bounds"
+    };
+    return panicCodes[panicCode] || "Unknown panic";
+  }
+
+  return "Custom error: " + selector;
+}
+
+// Example usage
+const revertData = "0x08c379a00000000000000000000000000000000000000000000000000000000000000020...";
+console.log(decodeRevertReason(revertData));
+`,
   seo: {
     keywords: [
       "revert reason decoder",

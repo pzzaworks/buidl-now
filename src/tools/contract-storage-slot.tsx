@@ -216,6 +216,53 @@ Slot: 2
       type: "text",
     },
   ],
+  codeSnippet: `// npm install viem
+
+import { keccak256, encodePacked, pad, toHex } from 'viem';
+
+// Calculate storage slot for mapping
+function getMappingSlot(key: string, slotNumber: number): string {
+  let keyBytes: \`0x\${string}\`;
+
+  // Handle address (20 bytes) or uint256 (32 bytes)
+  if (key.startsWith('0x')) {
+    keyBytes = key as \`0x\${string}\`;
+    // Pad address to 32 bytes if needed
+    if (keyBytes.length === 42) {
+      keyBytes = pad(keyBytes, { size: 32 }) as \`0x\${string}\`;
+    }
+  } else {
+    // Convert decimal number to bytes32
+    const numKey = BigInt(key);
+    keyBytes = pad(toHex(numKey), { size: 32 }) as \`0x\${string}\`;
+  }
+
+  // Pad slot number to 32 bytes
+  const slotBytes = pad(toHex(slotNumber), { size: 32 }) as \`0x\${string}\`;
+
+  // Calculate: keccak256(key . slot)
+  const packed = encodePacked(['bytes32', 'bytes32'], [keyBytes, slotBytes]);
+  const storageSlot = keccak256(packed);
+
+  return storageSlot;
+}
+
+// Example: ERC-20 balances mapping at slot 0
+const userAddress = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
+const balanceSlot = getMappingSlot(userAddress, 0);
+console.log('Balance storage slot:', balanceSlot);
+// 0xfca351f4d96129454cfc8ef7930b638ac71fea35eb69ee3b8d959496beb04a33
+
+// Example: NFT owner mapping at slot 2
+const tokenId = '1';
+const ownerSlot = getMappingSlot(tokenId, 2);
+console.log('Owner storage slot:', ownerSlot);
+
+// Usage with eth_getStorageAt
+// const value = await publicClient.getStorageAt({
+//   address: '0x...', // Contract address
+//   slot: balanceSlot
+// });`,
   references: [
     {
       title: "Ethereum Storage Layout",

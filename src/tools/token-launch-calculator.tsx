@@ -287,6 +287,50 @@ export const tokenLaunchCalculatorConfig: ToolConfig = {
   description: "Calculate token economics, liquidity pool allocation, and market cap for token launches",
   category: "web3",
   component: TokenLaunchCalculatorTool,
+  codeSnippet: `// Calculate token launch economics
+
+function calculateTokenLaunch(
+  totalSupply: number,
+  liquidityPercent: number,
+  ethAmount: number
+) {
+  // Calculate tokens for liquidity pool
+  const tokensForPool = (totalSupply * liquidityPercent) / 100;
+
+  // Calculate initial price (ETH per token)
+  const pricePerToken = ethAmount / tokensForPool;
+
+  // Calculate market cap (circulating supply * price)
+  const marketCap = tokensForPool * pricePerToken;
+
+  // Calculate fully diluted value (total supply * price)
+  const fdv = totalSupply * pricePerToken;
+
+  // LP token value (both sides of pool)
+  const lpTokenValue = ethAmount * 2;
+
+  return {
+    tokensForPool,
+    pricePerToken,
+    marketCap,
+    fdv,
+    lpTokenValue
+  };
+}
+
+// Example: Launch with 1B supply, 30% liquidity, 10 ETH
+const launch = calculateTokenLaunch(
+  1_000_000_000, // 1B total supply
+  30,            // 30% for liquidity
+  10             // 10 ETH paired
+);
+
+console.log("Tokens for pool:", launch.tokensForPool.toLocaleString());
+console.log("Price per token:", launch.pricePerToken.toFixed(10), "ETH");
+console.log("Market cap:", launch.marketCap.toFixed(2), "ETH");
+console.log("FDV:", launch.fdv.toFixed(2), "ETH");
+console.log("LP value:", launch.lpTokenValue, "ETH");
+`,
   seo: {
     keywords: [
       "token launch calculator",

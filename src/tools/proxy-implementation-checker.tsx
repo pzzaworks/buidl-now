@@ -335,6 +335,48 @@ export const proxyImplementationCheckerConfig: ToolConfig = {
   description: "Detect proxy type and find implementation address for upgradeable smart contracts",
   category: "web3",
   component: ProxyImplementationCheckerTool,
+  codeSnippet: `// npm install viem
+
+import { createPublicClient, http, getAddress } from 'viem';
+import { mainnet } from 'viem/chains';
+
+// EIP-1967 standard storage slots
+const IMPLEMENTATION_SLOT = "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc";
+const ADMIN_SLOT = "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103";
+
+const client = createPublicClient({
+  chain: mainnet,
+  transport: http()
+});
+
+async function getProxyImplementation(proxyAddress: string) {
+  // Read implementation address from storage slot
+  const implSlot = await client.getStorageAt({
+    address: proxyAddress as \`0x\${string}\`,
+    slot: IMPLEMENTATION_SLOT as \`0x\${string}\`
+  });
+
+  if (implSlot && implSlot !== "0x" + "0".repeat(64)) {
+    const implAddress = "0x" + implSlot.slice(-40);
+    console.log("Implementation:", implAddress);
+    return implAddress;
+  }
+
+  // Try reading admin slot
+  const adminSlot = await client.getStorageAt({
+    address: proxyAddress as \`0x\${string}\`,
+    slot: ADMIN_SLOT as \`0x\${string}\`
+  });
+
+  if (adminSlot && adminSlot !== "0x" + "0".repeat(64)) {
+    const adminAddress = "0x" + adminSlot.slice(-40);
+    console.log("Admin:", adminAddress);
+  }
+}
+
+// Example: Check Aave V3 Pool proxy
+getProxyImplementation("0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2");
+`,
   seo: {
     keywords: [
       "proxy checker",

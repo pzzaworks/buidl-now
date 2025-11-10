@@ -265,6 +265,47 @@ export const regexTesterConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `type RegexMatch = {
+  match: string;
+  index: number;
+  groups: string[];
+};
+
+function testRegex(pattern: string, flags: string, testString: string): RegexMatch[] {
+  try {
+    const regex = new RegExp(pattern, flags);
+    const globalRegex = new RegExp(pattern, flags.includes('g') ? flags : flags + 'g');
+    const matches: RegexMatch[] = [];
+
+    let match;
+    while ((match = globalRegex.exec(testString)) !== null) {
+      matches.push({
+        match: match[0],
+        index: match.index,
+        groups: match.slice(1),
+      });
+      if (!flags.includes('g')) break;
+    }
+
+    return matches;
+  } catch (e) {
+    throw new Error(\`Invalid regular expression: \${e instanceof Error ? e.message : 'Unknown error'}\`);
+  }
+}
+
+// Example usage
+const pattern = '\\\\d{3}-\\\\d{3}-\\\\d{4}';
+const flags = 'g';
+const testString = 'Call me at 555-123-4567 or 555-987-6543';
+
+const matches = testRegex(pattern, flags, testString);
+
+matches.forEach((match, i) => {
+  console.log(\`Match \${i + 1}: "\${match.match}" at position \${match.index}\`);
+});
+// Output:
+// Match 1: "555-123-4567" at position 11
+// Match 2: "555-987-6543" at position 27`,
   references: [
     {
       title: "MDN: Regular Expressions",

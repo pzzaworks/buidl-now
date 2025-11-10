@@ -131,6 +131,59 @@ export const eventTopicConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// npm install viem
+
+import { keccak256, toBytes, toEventSignature } from 'viem';
+
+// Calculate event topic (Topic0) from event signature
+function getEventTopic(eventSignature: string): string {
+  // Hash the event signature with keccak256
+  const topic = keccak256(toBytes(eventSignature));
+  return topic;
+}
+
+// Alternative: Use viem's toEventSignature helper
+function getEventTopicFromABI(eventName: string, paramTypes: string[]): string {
+  // Build event signature
+  const signature = \`\${eventName}(\${paramTypes.join(',')})\`;
+  return keccak256(toBytes(signature));
+}
+
+// Examples
+const transferTopic = getEventTopic('Transfer(address,address,uint256)');
+console.log('Transfer event topic:', transferTopic);
+// 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef
+
+const approvalTopic = getEventTopic('Approval(address,address,uint256)');
+console.log('Approval event topic:', approvalTopic);
+// 0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925
+
+// Using the helper function
+const swapTopic = getEventTopicFromABI('Swap', [
+  'address',
+  'uint256',
+  'uint256',
+  'uint256',
+  'uint256',
+  'address'
+]);
+console.log('Uniswap Swap event topic:', swapTopic);
+
+// Filter logs by event topic
+// const logs = await publicClient.getLogs({
+//   address: '0x...',
+//   event: {
+//     type: 'event',
+//     name: 'Transfer',
+//     inputs: [
+//       { type: 'address', indexed: true, name: 'from' },
+//       { type: 'address', indexed: true, name: 'to' },
+//       { type: 'uint256', indexed: false, name: 'value' }
+//     ]
+//   },
+//   fromBlock: 'earliest',
+//   toBlock: 'latest'
+// });`,
   references: [
     {
       title: "Solidity Events Documentation",

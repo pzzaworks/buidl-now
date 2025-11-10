@@ -161,6 +161,131 @@ export const qrCodeGeneratorConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// npm install qrcode
+// npm install @types/qrcode --save-dev
+
+import QRCode from 'qrcode';
+import * as fs from 'fs';
+
+interface QRCodeOptions {
+  width?: number;
+  margin?: number;
+  errorCorrectionLevel?: 'L' | 'M' | 'Q' | 'H';
+  color?: {
+    dark?: string;
+    light?: string;
+  };
+}
+
+// Generate QR code as Data URL (for browser/base64)
+async function generateQRCodeDataURL(
+  text: string,
+  options: QRCodeOptions = {}
+): Promise<string> {
+  const defaultOptions = {
+    width: 256,
+    margin: 2,
+    errorCorrectionLevel: 'M' as const,
+    color: {
+      dark: '#000000',
+      light: '#FFFFFF'
+    }
+  };
+
+  const finalOptions = { ...defaultOptions, ...options };
+
+  try {
+    const dataUrl = await QRCode.toDataURL(text, finalOptions);
+    return dataUrl;
+  } catch (error) {
+    throw new Error(\`Failed to generate QR code: \${error instanceof Error ? error.message : 'Unknown error'}\`);
+  }
+}
+
+// Generate QR code and save to file
+async function generateQRCodeToFile(
+  text: string,
+  filePath: string,
+  options: QRCodeOptions = {}
+): Promise<void> {
+  const defaultOptions = {
+    width: 512,
+    margin: 2,
+    errorCorrectionLevel: 'M' as const
+  };
+
+  const finalOptions = { ...defaultOptions, ...options };
+
+  try {
+    await QRCode.toFile(filePath, text, finalOptions);
+    console.log(\`QR code saved to \${filePath}\`);
+  } catch (error) {
+    throw new Error(\`Failed to save QR code: \${error instanceof Error ? error.message : 'Unknown error'}\`);
+  }
+}
+
+// Generate QR code as terminal output (UTF-8)
+async function generateQRCodeTerminal(text: string): Promise<void> {
+  try {
+    const qrCodeString = await QRCode.toString(text, { type: 'terminal' });
+    console.log(qrCodeString);
+  } catch (error) {
+    throw new Error(\`Failed to generate terminal QR code: \${error instanceof Error ? error.message : 'Unknown error'}\`);
+  }
+}
+
+// Example usage
+async function main() {
+  const url = 'https://example.com';
+
+  // Generate Data URL
+  console.log('Generating QR code as Data URL...');
+  const dataUrl = await generateQRCodeDataURL(url, { width: 300 });
+  console.log('Data URL generated (length):', dataUrl.length);
+
+  // Generate and save to file
+  console.log('\\nSaving QR code to file...');
+  await generateQRCodeToFile(url, './qrcode.png', {
+    width: 512,
+    errorCorrectionLevel: 'H'
+  });
+
+  // Generate terminal QR code
+  console.log('\\nQR Code in terminal:');
+  await generateQRCodeTerminal(url);
+
+  // Generate QR code for WiFi
+  const wifiString = 'WIFI:T:WPA;S:MyNetwork;P:MyPassword;;';
+  console.log('\\nGenerating WiFi QR code...');
+  await generateQRCodeToFile(wifiString, './wifi-qr.png');
+
+  // Generate QR code for contact (vCard)
+  const vcard = \`BEGIN:VCARD
+VERSION:3.0
+FN:John Doe
+TEL:+1234567890
+EMAIL:john@example.com
+END:VCARD\`;
+  console.log('Generating contact QR code...');
+  await generateQRCodeToFile(vcard, './contact-qr.png');
+}
+
+main().catch(console.error);
+
+// Output:
+// Generating QR code as Data URL...
+// Data URL generated (length): 1234
+//
+// Saving QR code to file...
+// QR code saved to ./qrcode.png
+//
+// QR Code in terminal:
+// (Terminal ASCII QR code display)
+//
+// Generating WiFi QR code...
+// QR code saved to ./wifi-qr.png
+// Generating contact QR code...
+// QR code saved to ./contact-qr.png`,
   references: [
     {
       title: "QR Code - Wikipedia",

@@ -144,6 +144,42 @@ export const hashGeneratorConfig: ToolConfig = {
       type: "text",
     },
   ],
+  codeSnippet: `// npm install crypto-js
+// npm install @types/crypto-js --save-dev
+
+import CryptoJS from 'crypto-js';
+
+type HashAlgorithm = 'MD5' | 'SHA-1' | 'SHA-256' | 'SHA-512';
+
+function generateHash(text: string, algorithm: HashAlgorithm): string {
+  switch (algorithm) {
+    case 'MD5':
+      return CryptoJS.MD5(text).toString();
+    case 'SHA-1':
+      return CryptoJS.SHA1(text).toString();
+    case 'SHA-256':
+      return CryptoJS.SHA256(text).toString();
+    case 'SHA-512':
+      return CryptoJS.SHA512(text).toString();
+    default:
+      throw new Error('Unsupported algorithm');
+  }
+}
+
+// Example usage
+const input = "Hello, World!";
+const algorithms: HashAlgorithm[] = ['MD5', 'SHA-1', 'SHA-256', 'SHA-512'];
+
+algorithms.forEach(algorithm => {
+  const hash = generateHash(input, algorithm);
+  console.log(\`\${algorithm}: \${hash}\`);
+});
+
+// Output:
+// MD5: 65a8e27d8879283831b664bd8b7f0ad4
+// SHA-1: 0a0a9f2a6772942557ab5355d76af442f8f65e01
+// SHA-256: dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f
+// SHA-512: 374d794a95cdcfd8b35993185fef9ba368f160d8daf432d08ba9f1ed1e5abe6cc69291e0fa2fe0006a52570ef18c19def4e617c33ce52ef0a6e5fbe318cb0387`,
   references: [
     {
       title: "Wikipedia: Cryptographic hash function",

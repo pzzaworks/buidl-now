@@ -3,8 +3,9 @@
 import { tools } from "@/lib/tools-list";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useState, useEffect, useRef } from "react";
-import { MdSearch, MdClose, MdKeyboardReturn } from "react-icons/md";
+import { MdSearch, MdClose, MdKeyboardReturn, MdAccessTime, MdOutlineCurrencyExchange, MdCode } from "react-icons/md";
 import Image from "next/image";
 import { WebsiteStructuredData, OrganizationStructuredData } from "@/components/structured-data";
 
@@ -48,10 +49,20 @@ export default function Home() {
   // Scroll selected item into view when selectedIndex changes
   useEffect(() => {
     if (selectedItemRef.current) {
-      selectedItemRef.current.scrollIntoView({
-        behavior: "auto",
-        block: "nearest",
-      });
+      const container = selectedItemRef.current.closest('[data-scrollable]');
+      if (container) {
+        const itemRect = selectedItemRef.current.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        const offset = 8; // py-2 = 0.5rem = 8px padding
+
+        if (itemRect.top < containerRect.top + offset) {
+          // Item is above visible area
+          container.scrollTop -= (containerRect.top + offset - itemRect.top);
+        } else if (itemRect.bottom > containerRect.bottom - offset) {
+          // Item is below visible area
+          container.scrollTop += (itemRect.bottom - containerRect.bottom + offset);
+        }
+      }
     }
   }, [selectedIndex]);
 
@@ -83,7 +94,7 @@ export default function Home() {
       <WebsiteStructuredData />
       <OrganizationStructuredData />
 
-      <div className="min-h-[80vh] flex flex-col items-center justify-center">
+      <div className='flex flex-col items-center justify-center h-[60vh]'>
         {/* Hero Section */}
         <div className="flex items-end gap-4 text-white mb-8">
           <Image
@@ -124,19 +135,22 @@ export default function Home() {
                 </kbd>
               )}
               {searchQuery && (
-                <button
+                <Button
                   onClick={() => setSearchQuery("")}
-                  className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                  variant="ghost"
+                  size="sm"
+                  className="text-muted-foreground hover:text-foreground h-auto p-1 min-h-0"
                 >
                   <MdClose className="w-5 h-5" />
-                </button>
+                </Button>
               )}
             </div>
           </div>
 
           {/* Search Results - Below Search Box (Absolute) */}
           <div
-            className={`absolute left-4 right-4 top-full mt-2 bg-background/95 backdrop-blur-sm rounded-md border border-border shadow-lg max-h-[400px] overflow-y-auto z-50 transition-all duration-300 ease-out scroll-py-2 ${
+            data-scrollable
+            className={`absolute left-4 right-4 top-full mt-2 bg-background/95 backdrop-blur-sm rounded-md border border-border shadow-lg max-h-[40vh] overflow-y-auto z-50 transition-all duration-300 ease-out ${
               searchQuery
                 ? "opacity-100 translate-y-0 pointer-events-auto"
                 : "opacity-0 -translate-y-2 pointer-events-none"
@@ -149,7 +163,7 @@ export default function Home() {
                 </p>
               </div>
             ) : (
-              <div className="space-y-0 py-2 px-2">
+              <div className="py-2 px-2">
                 {filteredTools.map((tool, index) => (
                   <Link
                     key={tool.id}
@@ -163,14 +177,35 @@ export default function Home() {
                     onClick={() => setSearchQuery("")}
                     onMouseEnter={() => setSelectedIndex(index)}
                   >
-                    <div className="font-medium text-foreground">{tool.name}</div>
-                    <div className="text-sm text-muted-foreground mt-1">
-                      {tool.description}
+                    <div className="flex items-center gap-2 mb-1">
+                      {tool.icon && <tool.icon className="w-3.5 h-3.5 text-muted-foreground" />}
+                      <div className="font-medium text-foreground">{tool.name}</div>
                     </div>
+                    <div className="text-sm text-muted-foreground">{tool.description}</div>
                   </Link>
                 ))}
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Featured Tools */}
+        <div className="w-full max-w-2xl px-4 mt-6">
+          <div className="flex flex-wrap gap-2 justify-center">
+            {[
+              { tool: tools.find((t) => t.id === "epoch-converter"), icon: MdAccessTime },
+              { tool: tools.find((t) => t.id === "eth-unit-converter"), icon: MdOutlineCurrencyExchange },
+              { tool: tools.find((t) => t.id === "json-validator"), icon: MdCode },
+            ]
+              .filter((item) => item.tool)
+              .map(({ tool, icon: Icon }) => (
+                <Link key={tool!.id} href={tool!.path}>
+                  <Button variant="outline" size="sm" className="text-xs gap-1.5">
+                    <Icon className="w-3.5 h-3.5" />
+                    {tool!.name}
+                  </Button>
+                </Link>
+              ))}
           </div>
         </div>
       </div>

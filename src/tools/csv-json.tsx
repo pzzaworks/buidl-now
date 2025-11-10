@@ -342,6 +342,168 @@ export const csvJsonConfig: ToolConfig = {
       type: "text",
     },
   ],
+  codeSnippet: `// No npm packages needed - pure Node.js/TypeScript
+
+type DelimiterType = 'comma' | 'semicolon' | 'tab';
+
+function getDelimiterChar(delimiter: DelimiterType): string {
+  switch (delimiter) {
+    case 'comma': return ',';
+    case 'semicolon': return ';';
+    case 'tab': return '\\t';
+  }
+}
+
+function parseCsvLine(line: string, delimiter: string): string[] {
+  const result: string[] = [];
+  let current = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    const nextChar = line[i + 1];
+
+    if (char === '"') {
+      if (inQuotes && nextChar === '"') {
+        current += '"';
+        i++; // Skip next quote
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (char === delimiter && !inQuotes) {
+      result.push(current.trim());
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+
+  result.push(current.trim());
+  return result;
+}
+
+function csvToJson(csv: string, delimiter: DelimiterType, hasHeaders: boolean): string {
+  const delimiterChar = getDelimiterChar(delimiter);
+  const lines = csv.trim().split('\\n');
+
+  if (lines.length === 0) {
+    throw new Error('CSV input is empty');
+  }
+
+  const firstLine = parseCsvLine(lines[0], delimiterChar);
+  const headers = hasHeaders
+    ? firstLine
+    : firstLine.map((_, i) => \`column\${i + 1}\`);
+
+  const dataLines = hasHeaders ? lines.slice(1) : lines;
+  const jsonArray = dataLines.map(line => {
+    const values = parseCsvLine(line, delimiterChar);
+    const obj: Record<string, string> = {};
+
+    headers.forEach((header, index) => {
+      obj[header] = values[index] || '';
+    });
+
+    return obj;
+  });
+
+  return JSON.stringify(jsonArray, null, 2);
+}
+
+function escapeCsvValue(value: any, delimiter: string): string {
+  const str = String(value ?? '');
+  if (str.includes(delimiter) || str.includes('"') || str.includes('\\n')) {
+    return '"' + str.replace(/"/g, '""') + '"';
+  }
+  return str;
+}
+
+function jsonToCsv(json: string, delimiter: DelimiterType): string {
+  const data = JSON.parse(json);
+
+  if (!Array.isArray(data)) {
+    throw new Error('JSON must be an array of objects');
+  }
+
+  if (data.length === 0) {
+    throw new Error('JSON array is empty');
+  }
+
+  const delimiterChar = getDelimiterChar(delimiter);
+
+  // Get all unique keys
+  const allKeys = new Set<string>();
+  data.forEach(item => {
+    if (typeof item === 'object' && item !== null) {
+      Object.keys(item).forEach(key => allKeys.add(key));
+    }
+  });
+
+  const headers = Array.from(allKeys);
+  const csvLines: string[] = [];
+
+  // Add headers
+  csvLines.push(headers.map(h => escapeCsvValue(h, delimiterChar)).join(delimiterChar));
+
+  // Add data rows
+  data.forEach(item => {
+    const row = headers.map(header => {
+      const value = typeof item === 'object' ? item[header] : '';
+      return escapeCsvValue(value, delimiterChar);
+    });
+    csvLines.push(row.join(delimiterChar));
+  });
+
+  return csvLines.join('\\n');
+}
+
+// Example usage
+console.log('=== CSV to JSON ===');
+const csvInput = \`name,age,city
+John,30,New York
+Jane,25,London
+Bob,35,Paris\`;
+
+const jsonResult = csvToJson(csvInput, 'comma', true);
+console.log(jsonResult);
+
+console.log('\\n=== JSON to CSV ===');
+const jsonInput = JSON.stringify([
+  { name: 'Alice', age: 28, city: 'Tokyo' },
+  { name: 'Charlie', age: 32, city: 'Berlin' }
+]);
+
+const csvResult = jsonToCsv(jsonInput, 'comma');
+console.log(csvResult);
+
+console.log('\\n=== CSV with Special Characters ===');
+const csvWithQuotes = \`name,message
+John,"Hello, World!"
+Jane,"She said ""Hi"""\`;
+
+const jsonWithQuotes = csvToJson(csvWithQuotes, 'comma', true);
+console.log(jsonWithQuotes);
+
+console.log('\\n=== Semicolon Delimiter ===');
+const csvSemicolon = \`name;age;country
+John;30;USA
+Jane;25;UK\`;
+
+const jsonSemicolon = csvToJson(csvSemicolon, 'semicolon', true);
+console.log(jsonSemicolon);
+
+// Output:
+// === CSV to JSON ===
+// [
+//   { "name": "John", "age": "30", "city": "New York" },
+//   { "name": "Jane", "age": "25", "city": "London" },
+//   { "name": "Bob", "age": "35", "city": "Paris" }
+// ]
+//
+// === JSON to CSV ===
+// name,age,city
+// Alice,28,Tokyo
+// Charlie,32,Berlin`,
   references: [
     {
       title: "CSV Format - RFC 4180",

@@ -187,6 +187,44 @@ export const binaryTextConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// Encode text to binary
+function textToBinary(text: string): string {
+  return text
+    .split('')
+    .map(char => {
+      const binary = char.charCodeAt(0).toString(2);
+      return binary.padStart(8, '0');
+    })
+    .join(' ');
+}
+
+// Decode binary to text
+function binaryToText(binary: string): string {
+  const binaryStr = binary.replace(/\\s/g, '');
+
+  if (!/^[01]+$/.test(binaryStr)) {
+    throw new Error('Invalid binary string. Only 0 and 1 are allowed.');
+  }
+
+  if (binaryStr.length % 8 !== 0) {
+    throw new Error('Binary string length must be a multiple of 8.');
+  }
+
+  return binaryStr
+    .match(/.{8}/g)!
+    .map(byte => String.fromCharCode(parseInt(byte, 2)))
+    .join('');
+}
+
+// Example usage
+const text = "Hello";
+const binary = textToBinary(text);
+console.log(\`Text: \${text}\`);
+console.log(\`Binary: \${binary}\`);
+// Output: 01001000 01100101 01101100 01101100 01101111
+
+const decoded = binaryToText(binary);
+console.log(\`Decoded: \${decoded}\`); // Hello`,
   references: [
     {
       title: "Wikipedia: Binary Number",

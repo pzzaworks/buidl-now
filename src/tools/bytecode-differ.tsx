@@ -487,6 +487,80 @@ export const bytecodeDifferConfig: ToolConfig = {
       type: "text",
     },
   ],
+  codeSnippet: `// No external packages needed - pure TypeScript
+
+interface DiffResult {
+  similarity: number;
+  differences: number;
+  matchingBytes: number;
+  totalBytes: number;
+}
+
+// Compare two bytecode strings
+function compareBytecode(bytecode1: string, bytecode2: string): DiffResult {
+  // Remove 0x prefix if present
+  const clean1 = bytecode1.replace(/^0x/, '');
+  const clean2 = bytecode2.replace(/^0x/, '');
+
+  const maxLength = Math.max(clean1.length, clean2.length);
+  let matchCount = 0;
+  let diffCount = 0;
+
+  // Compare byte by byte (2 hex chars = 1 byte)
+  for (let i = 0; i < maxLength; i += 2) {
+    const byte1 = clean1.slice(i, i + 2);
+    const byte2 = clean2.slice(i, i + 2);
+
+    if (byte1 === byte2 && byte1 !== '') {
+      matchCount += 2;
+    } else {
+      diffCount += 2;
+    }
+  }
+
+  const similarity = (matchCount / maxLength) * 100;
+
+  return {
+    similarity: Math.round(similarity * 100) / 100,
+    differences: diffCount / 2,
+    matchingBytes: matchCount / 2,
+    totalBytes: maxLength / 2
+  };
+}
+
+// Extract metadata from bytecode (CBOR-encoded)
+function extractMetadata(bytecode: string): {
+  code: string;
+  metadata: string;
+} {
+  const clean = bytecode.replace(/^0x/, '');
+
+  // Solidity metadata pattern: a264...0033 at the end
+  const metadataPattern = /a264.*?0033$/;
+  const match = clean.match(metadataPattern);
+
+  if (match) {
+    const metadata = match[0];
+    const code = clean.slice(0, -metadata.length);
+    return { code, metadata };
+  }
+
+  return { code: clean, metadata: '' };
+}
+
+// Example usage
+const bytecode1 = '0x608060405234801561001057600080fd5b50...a264...0033';
+const bytecode2 = '0x608060405234801561001057600080fd5b50...a265...0033';
+
+const result = compareBytecode(bytecode1, bytecode2);
+console.log('Similarity:', result.similarity + '%');
+console.log('Matching bytes:', result.matchingBytes);
+console.log('Different bytes:', result.differences);
+
+// Extract metadata
+const { code, metadata } = extractMetadata(bytecode1);
+console.log('Code length:', code.length / 2, 'bytes');
+console.log('Metadata:', metadata);`,
   references: [
     {
       title: "Solidity Metadata",

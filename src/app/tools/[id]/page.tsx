@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect } from "react";
 import { notFound } from "next/navigation";
 import { getToolById } from "@/tools";
 import { tools } from "@/lib/tools-list";
@@ -16,6 +16,10 @@ export default function ToolPage({
   const { id } = use(params);
   const tool = getToolById(id);
   const toolMeta = tools.find((t) => t.id === id);
+
+  useEffect(() => {
+    scrollTo(0, 0);
+  }, []);
 
   if (!tool || !toolMeta) {
     notFound();
@@ -76,7 +80,7 @@ export default function ToolPage({
                     </h3>
                   )}
                   {example.type === "code" || (typeof example.content === "string" && !example.type) ? (
-                    <Code language="typescript" showLineNumbers={false}>
+                    <Code showLineNumbers={false}>
                       {typeof example.content === "string" ? example.content : JSON.stringify(example.content, null, 2)}
                     </Code>
                   ) : (
@@ -85,6 +89,18 @@ export default function ToolPage({
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Source Code Section */}
+        {tool.codeSnippet && (
+          <div>
+            <h2 className="mb-3 text-lg sm:text-xl font-semibold">
+              {((tool.sections?.length || 0) + (tool.examples ? 1 : 0)) + 1}. Source Code
+            </h2>
+            <Code language="typescript" showLineNumbers={true} showCopy={true}>
+              {tool.codeSnippet}
+            </Code>
           </div>
         )}
 

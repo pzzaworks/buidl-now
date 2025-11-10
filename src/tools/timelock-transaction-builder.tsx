@@ -341,6 +341,54 @@ export const timelockTransactionBuilderConfig: ToolConfig = {
   description: "Generate queue and execute data for timelock-controlled governance transactions",
   category: "web3",
   component: TimelockTransactionBuilderTool,
+  codeSnippet: `// npm install viem
+
+import { keccak256, toBytes, encodeFunctionData } from 'viem';
+
+// Build timelock transaction data
+function buildTimelockTransaction(
+  target: string,
+  value: bigint,
+  functionSignature: string,
+  params: any[],
+  delaySeconds: number
+) {
+  // Calculate ETA (earliest execution time)
+  const now = Math.floor(Date.now() / 1000);
+  const eta = now + delaySeconds;
+
+  // Encode function call data
+  const selector = keccak256(toBytes(functionSignature)).slice(0, 10);
+
+  // Queue transaction data
+  const queueData = {
+    target,
+    value: value.toString(),
+    signature: functionSignature,
+    data: selector,
+    eta
+  };
+
+  return {
+    queueData,
+    eta,
+    readableEta: new Date(eta * 1000).toISOString()
+  };
+}
+
+// Example: Queue a parameter update after 2-day delay
+const timelockTx = buildTimelockTransaction(
+  "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb", // Target contract
+  0n, // No ETH sent
+  "setParameter(uint256)",
+  [1000], // New parameter value
+  2 * 24 * 3600 // 2 days delay
+);
+
+console.log("Queue at:", new Date());
+console.log("Execute after:", timelockTx.readableEta);
+console.log(JSON.stringify(timelockTx.queueData, null, 2));
+`,
   seo: {
     keywords: [
       "timelock builder",

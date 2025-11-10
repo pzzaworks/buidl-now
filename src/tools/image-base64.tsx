@@ -203,6 +203,130 @@ export const imageBase64Config: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// No npm packages needed - pure Node.js/TypeScript
+
+import * as fs from 'fs';
+import * as path from 'path';
+
+interface Base64Result {
+  dataUrl: string;
+  base64: string;
+  mimeType: string;
+  originalSize: number;
+  encodedSize: number;
+}
+
+function getMimeType(filePath: string): string {
+  const ext = path.extname(filePath).toLowerCase();
+  const mimeTypes: Record<string, string> = {
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png',
+    '.gif': 'image/gif',
+    '.svg': 'image/svg+xml',
+    '.webp': 'image/webp',
+    '.bmp': 'image/bmp',
+    '.ico': 'image/x-icon'
+  };
+  return mimeTypes[ext] || 'application/octet-stream';
+}
+
+function imageToBase64(imagePath: string): Base64Result {
+  // Read the image file
+  const imageBuffer = fs.readFileSync(imagePath);
+  const base64 = imageBuffer.toString('base64');
+  const mimeType = getMimeType(imagePath);
+  const dataUrl = \`data:\${mimeType};base64,\${base64}\`;
+
+  return {
+    dataUrl,
+    base64,
+    mimeType,
+    originalSize: imageBuffer.length,
+    encodedSize: dataUrl.length
+  };
+}
+
+function base64ToImage(dataUrl: string, outputPath: string): void {
+  // Extract base64 data from data URL
+  const matches = dataUrl.match(/^data:([^;]+);base64,(.+)$/);
+
+  if (!matches) {
+    throw new Error('Invalid data URL format');
+  }
+
+  const base64Data = matches[2];
+  const buffer = Buffer.from(base64Data, 'base64');
+
+  fs.writeFileSync(outputPath, buffer);
+  console.log(\`Image saved to \${outputPath}\`);
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+}
+
+// Example usage
+const imagePath = './sample-image.png'; // Replace with your image path
+
+console.log('=== Image to Base64 ===');
+try {
+  const result = imageToBase64(imagePath);
+
+  console.log(\`MIME Type: \${result.mimeType}\`);
+  console.log(\`Original Size: \${formatBytes(result.originalSize)}\`);
+  console.log(\`Encoded Size: \${formatBytes(result.encodedSize)}\`);
+  console.log(\`Size Increase: \${Math.round((result.encodedSize / result.originalSize - 1) * 100)}%\`);
+  console.log(\`\\nData URL (first 100 chars):\`);
+  console.log(result.dataUrl.substring(0, 100) + '...');
+
+  console.log(\`\\nBase64 only (first 100 chars):\`);
+  console.log(result.base64.substring(0, 100) + '...');
+
+  console.log('\\n=== HTML Usage ===');
+  console.log(\`<img src="\${result.dataUrl.substring(0, 50)}..." alt="Embedded image" />\`);
+
+  console.log('\\n=== CSS Usage ===');
+  console.log(\`.bg-image {
+  background-image: url("\${result.dataUrl.substring(0, 50)}...");
+}\`);
+
+  // Uncomment to save base64 to file:
+  // fs.writeFileSync('base64-output.txt', result.dataUrl);
+  // console.log('\\nBase64 data saved to base64-output.txt');
+
+  // Uncomment to decode back to image:
+  // base64ToImage(result.dataUrl, 'decoded-image.png');
+
+} catch (error) {
+  console.error('Error:', error);
+  console.log('\\nMake sure to replace "./sample-image.png" with a valid image path');
+}
+
+// Output:
+// === Image to Base64 ===
+// MIME Type: image/png
+// Original Size: 15.2 KB
+// Encoded Size: 20.3 KB
+// Size Increase: 33%
+//
+// Data URL (first 100 chars):
+// data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...
+//
+// Base64 only (first 100 chars):
+// iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4...
+//
+// === HTML Usage ===
+// <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgA..." alt="Embedded image" />
+//
+// === CSS Usage ===
+// .bg-image {
+//   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhE...");
+// }`,
   references: [
     {
       title: "Data URIs - MDN Web Docs",

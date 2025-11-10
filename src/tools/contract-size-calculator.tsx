@@ -462,6 +462,68 @@ Flashloan (~6KB)`,
       type: "code",
     },
   ],
+  codeSnippet: `// No external packages needed - pure Node.js/TypeScript
+
+interface SizeResult {
+  bytes: number;
+  kilobytes: number;
+  percentage: number;
+  status: 'safe' | 'warning' | 'danger';
+  remainingBytes: number;
+}
+
+const MAX_CONTRACT_SIZE = 24576; // 24 KB (EIP-170 limit)
+
+// Calculate contract bytecode size
+function calculateContractSize(bytecode: string): SizeResult {
+  // Remove 0x prefix if present
+  let cleanBytecode = bytecode.trim();
+  if (cleanBytecode.startsWith('0x')) {
+    cleanBytecode = cleanBytecode.slice(2);
+  }
+
+  // Validate hex string
+  if (!/^[0-9a-fA-F]*$/.test(cleanBytecode)) {
+    throw new Error('Bytecode must be valid hexadecimal');
+  }
+
+  // Each pair of hex characters = 1 byte
+  const bytes = cleanBytecode.length / 2;
+  const kilobytes = bytes / 1024;
+  const percentage = (bytes / MAX_CONTRACT_SIZE) * 100;
+  const remainingBytes = MAX_CONTRACT_SIZE - bytes;
+
+  // Determine status
+  let status: 'safe' | 'warning' | 'danger';
+  if (bytes < 20480) {
+    status = 'safe'; // < 20 KB
+  } else if (bytes <= 23552) {
+    status = 'warning'; // 20-23 KB
+  } else {
+    status = 'danger'; // > 23 KB
+  }
+
+  return { bytes, kilobytes, percentage, status, remainingBytes };
+}
+
+// Example: Check contract size
+const exampleBytecode = '0x' + '60'.repeat(15000); // ~15 KB contract
+const result = calculateContractSize(exampleBytecode);
+
+console.log('Contract size:', result.bytes, 'bytes');
+console.log('Size in KB:', result.kilobytes.toFixed(2), 'KB');
+console.log('Percentage of limit:', result.percentage.toFixed(1) + '%');
+console.log('Status:', result.status);
+console.log('Remaining space:', result.remainingBytes, 'bytes');
+
+// Check if deployment will succeed
+if (result.status === 'danger') {
+  console.log('WARNING: Contract may exceed EIP-170 24KB limit!');
+}
+
+// Calculate how many bytes to optimize
+const bytesToOptimize = Math.max(0, result.bytes - 20480);
+console.log('Bytes to optimize for safety:', bytesToOptimize);`,
   references: [
     {
       title: "EIP-170: Contract Code Size Limit",

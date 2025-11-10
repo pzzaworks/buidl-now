@@ -233,6 +233,111 @@ export const jsonYamlConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// npm install js-yaml
+// npm install @types/js-yaml --save-dev
+
+import yaml from 'js-yaml';
+
+function jsonToYaml(jsonString: string): string {
+  const obj = JSON.parse(jsonString);
+  return yaml.dump(obj, {
+    indent: 2,
+    lineWidth: -1,
+    noRefs: true,
+  });
+}
+
+function yamlToJson(yamlString: string): string {
+  const obj = yaml.load(yamlString);
+  return JSON.stringify(obj, null, 2);
+}
+
+function readFile(path: string): string {
+  const fs = require('fs');
+  return fs.readFileSync(path, 'utf8');
+}
+
+function writeFile(path: string, content: string): void {
+  const fs = require('fs');
+  fs.writeFileSync(path, content, 'utf8');
+  console.log(\`File saved to \${path}\`);
+}
+
+// Example usage
+console.log('=== JSON to YAML ===');
+const jsonData = {
+  name: 'John',
+  age: 30,
+  skills: ['JavaScript', 'TypeScript', 'React'],
+  address: {
+    city: 'New York',
+    country: 'USA'
+  },
+  active: true
+};
+
+const jsonStr = JSON.stringify(jsonData);
+const yamlStr = jsonToYaml(jsonStr);
+console.log(yamlStr);
+
+console.log('\\n=== YAML to JSON ===');
+const yamlInput = \`
+name: Jane
+age: 25
+skills:
+  - Python
+  - Django
+  - PostgreSQL
+address:
+  city: London
+  country: UK
+active: false
+\`;
+
+const jsonOutput = yamlToJson(yamlInput);
+console.log(jsonOutput);
+
+console.log('\\n=== Complex Example ===');
+const complexData = {
+  version: '1.0',
+  services: [
+    { name: 'api', port: 3000, environment: ['NODE_ENV=production'] },
+    { name: 'db', port: 5432, environment: ['POSTGRES_DB=myapp'] }
+  ],
+  metadata: {
+    created: '2024-01-01',
+    author: 'Developer'
+  }
+};
+
+const complexYaml = jsonToYaml(JSON.stringify(complexData));
+console.log(complexYaml);
+
+// Uncomment to save files:
+// writeFile('output.yaml', yamlStr);
+// writeFile('output.json', jsonOutput);
+
+// Output:
+// === JSON to YAML ===
+// name: John
+// age: 30
+// skills:
+//   - JavaScript
+//   - TypeScript
+//   - React
+// address:
+//   city: New York
+//   country: USA
+// active: true
+//
+// === YAML to JSON ===
+// {
+//   "name": "Jane",
+//   "age": 25,
+//   "skills": ["Python", "Django", "PostgreSQL"],
+//   "address": { "city": "London", "country": "UK" },
+//   "active": false
+// }`,
   references: [
     {
       title: "JSON.org",

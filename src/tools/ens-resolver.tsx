@@ -205,6 +205,70 @@ export const ensResolverConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// npm install viem
+
+import { createPublicClient, http, normalize } from 'viem';
+import { mainnet } from 'viem/chains';
+
+// Create a public client for ENS resolution
+const client = createPublicClient({
+  chain: mainnet,
+  transport: http()
+});
+
+// Resolve ENS name to address
+async function resolveENS(ensName: string): Promise<string | null> {
+  try {
+    // Normalize the ENS name (handles special characters)
+    const normalized = normalize(ensName);
+
+    // Resolve the ENS name
+    const address = await client.getEnsAddress({
+      name: normalized
+    });
+
+    return address;
+  } catch (error) {
+    console.error('ENS resolution failed:', error);
+    return null;
+  }
+}
+
+// Reverse resolve: address to ENS name
+async function reverseResolveENS(address: string): Promise<string | null> {
+  try {
+    const ensName = await client.getEnsName({
+      address: address as \`0x\${string}\`
+    });
+
+    return ensName;
+  } catch (error) {
+    console.error('Reverse ENS resolution failed:', error);
+    return null;
+  }
+}
+
+// Example: Resolve vitalik.eth
+resolveENS('vitalik.eth').then(address => {
+  console.log('vitalik.eth →', address);
+  // 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
+});
+
+// Example: Reverse resolve
+reverseResolveENS('0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045').then(name => {
+  console.log('Address →', name);
+  // vitalik.eth
+});
+
+// Get ENS avatar
+async function getENSAvatar(ensName: string): Promise<string | null> {
+  try {
+    const avatar = await client.getEnsAvatar({ name: normalize(ensName) });
+    return avatar;
+  } catch (error) {
+    return null;
+  }
+}`,
   references: [
     {
       title: "ENS Documentation",

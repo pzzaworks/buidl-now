@@ -189,6 +189,49 @@ export const whitespaceRemoverConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// Trim leading and trailing whitespace from each line
+function trimLines(input: string): string {
+  return input
+    .split('\\n')
+    .map((line) => line.trim())
+    .join('\\n');
+}
+
+// Remove all whitespace characters
+function removeAllWhitespace(input: string): string {
+  return input.replace(/\\s+/g, '');
+}
+
+// Normalize whitespace (single space, trim lines, remove empty lines)
+function normalizeWhitespace(input: string): string {
+  return input
+    .split('\\n')
+    .map((line) => line.trim().replace(/\\s+/g, ' '))
+    .filter((line) => line.length > 0)
+    .join('\\n');
+}
+
+// Example usage
+const input = \`  Hello   World
+    This  is   a    test
+
+  With  extra   spaces  \`;
+
+console.log('Original:');
+console.log(input);
+
+console.log('\\nTrimmed lines:');
+console.log(trimLines(input));
+
+console.log('\\nAll whitespace removed:');
+console.log(removeAllWhitespace(input));
+
+console.log('\\nNormalized:');
+console.log(normalizeWhitespace(input));
+// Output:
+// Hello World
+// This is a test
+// With extra spaces`,
   references: [
     {
       title: "String.prototype.trim() - MDN",

@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, forwardRef } from "react";
+import { InputHTMLAttributes, forwardRef, useId } from "react";
 import { clsx } from "clsx";
 import { MdCheck } from "react-icons/md";
 
@@ -8,7 +8,8 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
 
 const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   ({ className, label, id, checked, onChange, ...props }, ref) => {
-    const checkboxId = id || `checkbox-${Math.random().toString(36).substr(2, 9)}`;
+    const generatedId = useId();
+    const checkboxId = id || generatedId;
 
     const checkboxElement = (
       <div className="relative inline-flex">

@@ -285,6 +285,86 @@ export const gasEstimatorConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// npm install viem
+
+import { parseGwei, formatEther, formatGwei } from 'viem';
+
+interface GasEstimate {
+  gasLimit: number;
+  gasPriceGwei: number;
+  totalGwei: bigint;
+  totalEth: string;
+  totalUsd: string;
+}
+
+// Estimate gas cost
+function estimateGasCost(
+  gasLimit: number,
+  gasPriceGwei: number,
+  ethPriceUsd: number
+): GasEstimate {
+  // Convert gas price to wei
+  const gasPriceWei = parseGwei(gasPriceGwei.toString());
+
+  // Calculate total gas cost in wei
+  const totalWei = BigInt(gasLimit) * gasPriceWei;
+
+  // Convert to Gwei and ETH
+  const totalGwei = totalWei / BigInt(1e9);
+  const totalEth = formatEther(totalWei);
+
+  // Calculate USD cost
+  const totalUsd = (parseFloat(totalEth) * ethPriceUsd).toFixed(2);
+
+  return {
+    gasLimit,
+    gasPriceGwei,
+    totalGwei,
+    totalEth,
+    totalUsd
+  };
+}
+
+// Common gas limits
+const GAS_LIMITS = {
+  ETH_TRANSFER: 21000,
+  ERC20_TRANSFER: 65000,
+  ERC20_APPROVE: 45000,
+  UNISWAP_SWAP: 150000,
+  NFT_MINT: 100000,
+  NFT_TRANSFER: 85000
+};
+
+// Examples
+const ethTransfer = estimateGasCost(GAS_LIMITS.ETH_TRANSFER, 20, 2500);
+console.log('ETH Transfer:');
+console.log('  Gas:', ethTransfer.gasLimit);
+console.log('  Price:', ethTransfer.gasPriceGwei, 'Gwei');
+console.log('  Cost:', ethTransfer.totalEth, 'ETH');
+console.log('  USD:', '$' + ethTransfer.totalUsd);
+
+const erc20Transfer = estimateGasCost(GAS_LIMITS.ERC20_TRANSFER, 50, 2500);
+console.log('\\nERC20 Transfer:');
+console.log('  Cost:', erc20Transfer.totalEth, 'ETH');
+console.log('  USD:', '$' + erc20Transfer.totalUsd);
+
+const uniswapSwap = estimateGasCost(GAS_LIMITS.UNISWAP_SWAP, 100, 2500);
+console.log('\\nUniswap Swap:');
+console.log('  Cost:', uniswapSwap.totalEth, 'ETH');
+console.log('  USD:', '$' + uniswapSwap.totalUsd);
+
+// Get current gas price from network
+// import { createPublicClient, http } from 'viem';
+// import { mainnet } from 'viem/chains';
+//
+// const client = createPublicClient({
+//   chain: mainnet,
+//   transport: http()
+// });
+//
+// const gasPrice = await client.getGasPrice();
+// const gasPriceGwei = formatGwei(gasPrice);
+// console.log('Current gas price:', gasPriceGwei, 'Gwei');`,
   references: [
     {
       title: "Ethereum Gas Explained",

@@ -147,6 +147,28 @@ export const base64TextConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// Encode text to Base64
+function encodeBase64(text: string): string {
+  return Buffer.from(text, 'utf-8').toString('base64');
+}
+
+// Decode Base64 to text
+function decodeBase64(base64: string): string {
+  return Buffer.from(base64, 'base64').toString('utf-8');
+}
+
+// Example usage
+const text = "Hello, World!";
+const encoded = encodeBase64(text);
+console.log(\`Encoded: \${encoded}\`); // SGVsbG8sIFdvcmxkIQ==
+
+const decoded = decodeBase64(encoded);
+console.log(\`Decoded: \${decoded}\`); // Hello, World!
+
+// With special characters
+const specialText = "Build Now 🚀";
+const encodedSpecial = encodeBase64(specialText);
+console.log(\`Encoded: \${encodedSpecial}\`); // QnVpbGQgTm93IPCfmoA=`,
   references: [
     {
       title: "MDN Web Docs: Base64",

@@ -285,6 +285,62 @@ export const jwtDecoderConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `type DecodedJWT = {
+  header: any;
+  payload: any;
+  signature: string;
+};
+
+// Decode base64url (JWT uses a URL-safe variant of base64)
+function base64UrlDecode(str: string): string {
+  // Replace URL-safe characters
+  let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+
+  // Add padding if needed
+  const padding = base64.length % 4;
+  if (padding) {
+    base64 += '='.repeat(4 - padding);
+  }
+
+  return Buffer.from(base64, 'base64').toString('utf-8');
+}
+
+// Decode JWT token
+function decodeJwt(token: string): DecodedJWT {
+  const parts = token.split('.');
+
+  if (parts.length !== 3) {
+    throw new Error('Invalid JWT format. A JWT must have exactly 3 parts separated by dots.');
+  }
+
+  const [headerB64, payloadB64, signatureB64] = parts;
+
+  try {
+    const headerJson = base64UrlDecode(headerB64);
+    const payloadJson = base64UrlDecode(payloadB64);
+
+    return {
+      header: JSON.parse(headerJson),
+      payload: JSON.parse(payloadJson),
+      signature: signatureB64,
+    };
+  } catch (e) {
+    throw new Error(\`Failed to decode JWT: \${e instanceof Error ? e.message : 'Unknown error'}\`);
+  }
+}
+
+// Example usage
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+const decoded = decodeJwt(token);
+
+console.log('Header:', JSON.stringify(decoded.header, null, 2));
+console.log('Payload:', JSON.stringify(decoded.payload, null, 2));
+console.log('Signature:', decoded.signature);
+
+// Output:
+// Header: { "alg": "HS256", "typ": "JWT" }
+// Payload: { "sub": "1234567890", "name": "John Doe", "iat": 1516239022 }`,
   references: [
     {
       title: "JWT.io - Introduction to JSON Web Tokens",

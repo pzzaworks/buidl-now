@@ -192,6 +192,53 @@ export const hexTextConfig: ToolConfig = {
       type: "code",
     },
   ],
+  codeSnippet: `// Encode text to hexadecimal
+function textToHex(text: string): string {
+  return Array.from(text)
+    .map((char) => char.charCodeAt(0).toString(16).padStart(2, '0'))
+    .join('');
+}
+
+// Decode hexadecimal to text
+function hexToText(hex: string): string {
+  // Remove any spaces or 0x prefix
+  const cleanHex = hex.replace(/\\s/g, '').replace(/^0x/, '');
+
+  // Validate hex string
+  if (!/^[0-9a-fA-F]*$/.test(cleanHex)) {
+    throw new Error('Invalid hexadecimal string');
+  }
+
+  // Must be even length
+  if (cleanHex.length % 2 !== 0) {
+    throw new Error('Hexadecimal string must have even length');
+  }
+
+  // Convert hex to text
+  let text = '';
+  for (let i = 0; i < cleanHex.length; i += 2) {
+    const hexByte = cleanHex.substr(i, 2);
+    const charCode = parseInt(hexByte, 16);
+    text += String.fromCharCode(charCode);
+  }
+
+  return text;
+}
+
+// Example usage
+const text = "Hello, World!";
+const hex = textToHex(text);
+console.log(\`Text: \${text}\`);
+console.log(\`Hex: \${hex}\`);
+// Output: 48656c6c6f2c20576f726c6421
+
+const decoded = hexToText(hex);
+console.log(\`Decoded: \${decoded}\`);
+// Output: Hello, World!
+
+// Works with 0x prefix and spaces
+console.log(hexToText("0x48656c6c6f"));        // Hello
+console.log(hexToText("48 65 6c 6c 6f"));      // Hello`,
   references: [
     {
       title: "Hexadecimal - Wikipedia",

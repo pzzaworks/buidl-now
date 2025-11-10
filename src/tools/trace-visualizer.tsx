@@ -624,6 +624,56 @@ export const traceVisualizerConfig: ToolConfig = {
   description: "Visualize transaction call traces with interactive tree view",
   category: "web3",
   component: TraceVisualizerTool,
+  codeSnippet: `// npm install viem
+
+import { createPublicClient, http } from 'viem';
+import { mainnet } from 'viem/chains';
+
+const client = createPublicClient({
+  chain: mainnet,
+  transport: http("https://eth-mainnet.g.alchemy.com/v2/YOUR_KEY")
+});
+
+// Fetch transaction trace using debug_traceTransaction
+async function getTransactionTrace(txHash: string) {
+  const trace = await client.request({
+    method: 'debug_traceTransaction',
+    params: [txHash, { tracer: 'callTracer' }]
+  });
+
+  return trace;
+}
+
+// Parse and analyze trace data
+function analyzeTrace(trace: any) {
+  let totalCalls = 0;
+  let maxDepth = 0;
+
+  function traverse(call: any, depth: number = 0) {
+    totalCalls++;
+    maxDepth = Math.max(maxDepth, depth);
+
+    console.log(\`\${" ".repeat(depth * 2)}\${call.type}: \${call.from} → \${call.to}\`);
+    console.log(\`\${" ".repeat(depth * 2)}Gas: \${call.gasUsed}\`);
+
+    if (call.calls) {
+      call.calls.forEach((subCall: any) => traverse(subCall, depth + 1));
+    }
+  }
+
+  traverse(trace);
+
+  return { totalCalls, maxDepth };
+}
+
+// Example: Trace a Uniswap swap
+const txHash = "0x123abc...";
+const trace = await getTransactionTrace(txHash);
+const analysis = analyzeTrace(trace);
+
+console.log("Total calls:", analysis.totalCalls);
+console.log("Max depth:", analysis.maxDepth);
+`,
   seo: {
     keywords: [
       "transaction trace",

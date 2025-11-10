@@ -30,6 +30,7 @@ export interface ToolConfig {
   component: ComponentType;
   sections?: ToolSection[];
   examples?: ToolExample[];
+  codeSnippet?: string;
   references?: ToolReference[];
   seo?: ToolSEO;
 }

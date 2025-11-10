@@ -144,6 +144,30 @@ export const privateKeyToAddressConfig: ToolConfig = {
   description: "Convert private key to Ethereum address",
   category: "web3",
   component: PrivateKeyToAddressTool,
+  codeSnippet: `// npm install viem
+
+import { privateKeyToAddress, privateKeyToAccount } from 'viem/accounts';
+
+// Convert private key to address
+const privateKey = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
+const address = privateKeyToAddress(privateKey as \`0x\${string}\`);
+console.log("Address:", address);
+// Example: 0xb67C268fAC7C2Fba5eD461C8085008D75F5Db8A7
+
+// Create full account object with signing capabilities
+const account = privateKeyToAccount(privateKey as \`0x\${string}\`);
+console.log("Address:", account.address);
+console.log("Public Key:", account.publicKey);
+
+// Generate a random private key (for testing only!)
+const randomBytes = new Uint8Array(32);
+crypto.getRandomValues(randomBytes);
+const randomKey = "0x" + Array.from(randomBytes)
+  .map(b => b.toString(16).padStart(2, "0"))
+  .join("");
+const randomAddress = privateKeyToAddress(randomKey as \`0x\${string}\`);
+console.log("Random address:", randomAddress);
+`,
   seo: {
     keywords: [
       "ethereum private key",

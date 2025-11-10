@@ -282,6 +282,67 @@ export const textComparerConfig: ToolConfig = {
       type: "text",
     },
   ],
+  codeSnippet: `type DiffPart = {
+  value: string;
+  type: 'added' | 'removed' | 'unchanged';
+};
+
+// Compute word-level diff using Longest Common Subsequence (LCS)
+function computeWordDiff(str1: string, str2: string): DiffPart[] {
+  const words1 = str1.split(/(\\s+)/);
+  const words2 = str2.split(/(\\s+)/);
+
+  const m = words1.length;
+  const n = words2.length;
+  const dp: number[][] = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
+
+  // Build LCS table
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (words1[i - 1] === words2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      }
+    }
+  }
+
+  // Backtrack to find diff
+  const result: DiffPart[] = [];
+  let i = m, j = n;
+
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && words1[i - 1] === words2[j - 1]) {
+      result.unshift({ value: words1[i - 1], type: 'unchanged' });
+      i--;
+      j--;
+    } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+      result.unshift({ value: words2[j - 1], type: 'added' });
+      j--;
+    } else if (i > 0) {
+      result.unshift({ value: words1[i - 1], type: 'removed' });
+      i--;
+    }
+  }
+
+  return result;
+}
+
+// Example usage
+const text1 = "The quick brown fox jumps";
+const text2 = "The quick red fox runs";
+
+const diff = computeWordDiff(text1, text2);
+
+diff.forEach((part) => {
+  if (part.type === 'added') {
+    console.log(\`+ \${part.value}\`);
+  } else if (part.type === 'removed') {
+    console.log(\`- \${part.value}\`);
+  } else {
+    console.log(\`  \${part.value}\`);
+  }
+});`,
   references: [
     {
       title: "Longest Common Subsequence Algorithm",

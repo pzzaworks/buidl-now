@@ -117,6 +117,28 @@ export const keccakHashConfig: ToolConfig = {
   description: "Calculate Keccak-256 cryptographic hash (used in Ethereum)",
   category: "web3",
   component: KeccakHashTool,
+  codeSnippet: `// npm install viem
+
+import { keccak256, toBytes } from 'viem';
+
+// Hash a text string
+const text = "Hello, World!";
+const textHash = keccak256(toBytes(text));
+console.log(textHash);
+// 0xacaf3289d7b601cbd114fb36c4d29c85bbfd5e133f14cb355c3fd8d99367964f
+
+// Hash a function signature (for getting function selector)
+const functionSig = "transfer(address,uint256)";
+const functionHash = keccak256(toBytes(functionSig));
+console.log(functionHash);
+// 0xa9059cbb2ab09eb219583f4a59a5d0623ade346d962bcd4e46b11da047c9049b
+
+// Hash hexadecimal data
+const hexData = "0xdeadbeef";
+const hexHash = keccak256(toBytes(hexData as \`0x\${string}\`));
+console.log(hexHash);
+// 0xd4fd4e189132273036449fc9e11198c739161b4c0116a9a2dccdfa1c492006f1
+`,
   seo: {
     keywords: [
       "keccak256",
