@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Albert_Sans } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/header";
@@ -10,6 +10,13 @@ const albertSans = Albert_Sans({
   display: "swap",
   variable: "--font-albert-sans",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://buidlnow.com"),
@@ -70,6 +77,7 @@ export const metadata: Metadata = {
     apple: "/buidl-now-logo.svg",
   },
   manifest: "/manifest.json",
+  themeColor: "#0a0a0a",
   robots: {
     index: true,
     follow: true,
