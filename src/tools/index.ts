@@ -75,6 +75,7 @@ import { tokenUriGeneratorConfig } from "./token-uri-generator";
 import { bytecodeDifferConfig } from "./bytecode-differ";
 import { accessControlVisualizerConfig } from "./access-control-visualizer";
 import { delegatecallAnalyzerConfig } from "./delegatecall-analyzer";
+import { jsonToonConfig } from "./json-toon";
 
 export const toolRegistry: Record<string, ToolConfig> = {
   "function-selector": functionSelectorConfig,
@@ -153,6 +154,7 @@ export const toolRegistry: Record<string, ToolConfig> = {
   "bytecode-differ": bytecodeDifferConfig,
   "access-control-visualizer": accessControlVisualizerConfig,
   "delegatecall-analyzer": delegatecallAnalyzerConfig,
+  "json-toon": jsonToonConfig,
 };
 
 export function getToolById(id: string): ToolConfig | undefined {
@@ -240,3 +242,4 @@ export { TokenUriGeneratorTool } from "./token-uri-generator";
 export { BytecodeDifferTool } from "./bytecode-differ";
 export { AccessControlVisualizerTool } from "./access-control-visualizer";
 export { DelegatecallAnalyzerTool } from "./delegatecall-analyzer";
+export { JsonToonTool } from "./json-toon";

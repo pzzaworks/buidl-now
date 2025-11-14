@@ -97,7 +97,7 @@ export const tools: Tool[] = [
   },
   {
     id: "json-yaml",
-    name: "JSON ⇔ YAML",
+    name: "JSON to YAML",
     description: "Convert between JSON and YAML formats",
     category: "converters",
     subcategory: "data-converters",
@@ -106,7 +106,7 @@ export const tools: Tool[] = [
   },
   {
     id: "xml-json",
-    name: "XML ⇔ JSON",
+    name: "XML to JSON",
     description: "Convert between XML and JSON formats",
     category: "converters",
     subcategory: "data-converters",
@@ -115,12 +115,21 @@ export const tools: Tool[] = [
   },
   {
     id: "csv-json",
-    name: "CSV ⇔ JSON",
+    name: "CSV to JSON",
     description: "Convert between CSV and JSON formats",
     category: "converters",
     subcategory: "data-converters",
     path: "/tools/csv-json",
     icon: MdTableChart,
+  },
+  {
+    id: "json-toon",
+    name: "JSON to TOON",
+    description: "Convert between JSON and TOON (Token-Oriented Object Notation) for efficient LLM communication",
+    category: "converters",
+    subcategory: "data-converters",
+    path: "/tools/json-toon",
+    icon: MdCode,
   },
   {
     id: "number-base",
