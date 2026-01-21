@@ -152,7 +152,7 @@ function HomeContent() {
             />
             <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
               {searchQuery && filteredTools.length > 0 && (
-                <kbd className="hidden sm:inline-flex items-center justify-center px-2 h-7 text-muted-foreground rounded border border-muted-foreground/30 min-w-[32px]">
+                <kbd className="hidden sm:inline-flex items-center justify-center px-2 h-7 text-muted-foreground rounded border border-muted-foreground/30 min-w-8">
                   <MdKeyboardReturn className="w-4 h-4" />
                 </kbd>
               )}
