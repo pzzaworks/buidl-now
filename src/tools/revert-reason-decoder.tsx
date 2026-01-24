@@ -481,7 +481,7 @@ export function RevertReasonDecoderTool() {
           {Object.entries(commonErrors).map(([selector, info]) => (
             <div
               key={selector}
-              className="p-3 rounded-[12px] border border-border bg-[#1a1a1a] text-sm"
+              className="p-3 rounded-[12px] border border-border bg-[var(--color-gray-0)] text-sm"
             >
               <div className="flex items-center justify-between mb-1">
                 <span className="font-mono text-blue-400">{selector}</span>
@@ -504,7 +504,7 @@ export function RevertReasonDecoderTool() {
           {Object.entries(panicCodes).map(([code, description]) => (
             <div
               key={code}
-              className="p-3 rounded-[12px] border border-border bg-[#1a1a1a] text-sm"
+              className="p-3 rounded-[12px] border border-border bg-[var(--color-gray-0)] text-sm"
             >
               <div className="flex items-start gap-3">
                 <span className="font-mono text-[var(--color-red-500)] shrink-0">{code}</span>

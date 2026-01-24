@@ -84,43 +84,43 @@ export function GeometricBackground() {
         />
       </svg>
 
-      {/* Corner marks - Top Left (rounded corner) */}
-      <div className="absolute top-6 left-6 pointer-events-none">
+      {/* Corner marks - Top Left (rounded corner) - Desktop only */}
+      <div className="hidden lg:block absolute top-6 left-6 pointer-events-none">
         <svg width="28" height="28" viewBox="0 0 28 28">
           <path d="M 1 28 L 1 12 Q 1 1 12 1 L 28 1" stroke="var(--color-gray-300)" strokeWidth="1.5" fill="none" />
         </svg>
       </div>
 
-      {/* Corner marks - Top Right (rounded corner) */}
-      <div className="absolute top-6 right-6 pointer-events-none">
+      {/* Corner marks - Top Right (rounded corner) - Desktop only */}
+      <div className="hidden lg:block absolute top-6 right-6 pointer-events-none">
         <svg width="28" height="28" viewBox="0 0 28 28">
           <path d="M 0 1 L 16 1 Q 27 1 27 12 L 27 28" stroke="var(--color-gray-300)" strokeWidth="1.5" fill="none" />
         </svg>
       </div>
 
-      {/* Corner marks - Bottom Left (rounded corner) */}
-      <div className="absolute bottom-6 left-6 pointer-events-none">
+      {/* Corner marks - Bottom Left (rounded corner) - Desktop only */}
+      <div className="hidden lg:block absolute bottom-6 left-6 pointer-events-none">
         <svg width="28" height="28" viewBox="0 0 28 28">
           <path d="M 1 0 L 1 16 Q 1 27 12 27 L 28 27" stroke="var(--color-gray-300)" strokeWidth="1.5" fill="none" />
         </svg>
       </div>
 
-      {/* Corner marks - Bottom Right (rounded corner) */}
-      <div className="absolute bottom-6 right-6 pointer-events-none">
+      {/* Corner marks - Bottom Right (rounded corner) - Desktop only */}
+      <div className="hidden lg:block absolute bottom-6 right-6 pointer-events-none">
         <svg width="28" height="28" viewBox="0 0 28 28">
           <path d="M 0 27 L 16 27 Q 27 27 27 16 L 27 0" stroke="var(--color-gray-300)" strokeWidth="1.5" fill="none" />
         </svg>
       </div>
 
-      {/* Side marks - Left (only vertical line) */}
-      <div className="absolute left-6 top-1/2 -translate-y-1/2 pointer-events-none">
+      {/* Side marks - Left (only vertical line) - Desktop only */}
+      <div className="hidden lg:block absolute left-6 top-1/2 -translate-y-1/2 pointer-events-none">
         <svg width="4" height="24" viewBox="0 0 4 24">
           <path d="M 2 0 L 2 24" stroke="var(--color-gray-300)" strokeWidth="1.5" fill="none" />
         </svg>
       </div>
 
-      {/* Side marks - Right (only vertical line) */}
-      <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none">
+      {/* Side marks - Right (only vertical line) - Desktop only */}
+      <div className="hidden lg:block absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none">
         <svg width="4" height="24" viewBox="0 0 4 24">
           <path d="M 2 0 L 2 24" stroke="var(--color-gray-300)" strokeWidth="1.5" fill="none" />
         </svg>

@@ -20,7 +20,7 @@ export function Header() {
   }, []);
 
   return (
-    <div className="lg:fixed lg:top-0 lg:left-0 lg:p-10 z-50">
+    <div className="global-header fixed top-0 left-0 p-6 md:p-10 z-50">
       <Link href="/" className="flex items-center gap-2 text-foreground hover:opacity-50 transition-opacity">
         <Image
           src="/buidl-now-logo.svg"

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/buidl-now-logo.svg" alt="Buidl Now" width="200" />
+  <img src="public/favicon.png" alt="Buidl Now" width="200" />
 </p>
 
 Buidl Now! Developer tools for builders who ship fast. A comprehensive suite of developer tools and Web3 utilities.
@@ -109,4 +109,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Buidl Team - [https://buidlnow.com](https://buidlnow.com)
 
-Project Link: [https://github.com/pzzaworks/buidl-now](https://github.com/pzzaworks/buidl-now) 
+Project Link: [https://github.com/pzzaworks/buidl-now](https://github.com/pzzaworks/buidl-now)

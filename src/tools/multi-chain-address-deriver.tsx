@@ -182,12 +182,10 @@ export function MultiChainAddressDeriverTool() {
                 value={mnemonic}
                 onChange={(e) => setMnemonic(e.target.value)}
                 placeholder="word1 word2 word3 ... word12"
-                className="flex w-full rounded-[12px] border border-border bg-[#1a1a1a] px-3 py-2 text-sm font-mono
-                  shadow-[0_1px_2px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.05)]
-                  placeholder:text-muted-foreground
-                  focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500
-                  focus-visible:border-blue-500 focus-visible:shadow-[0_0_0_3px_rgba(59,130,246,0.1)]
-                  resize-none"
+                className="flex w-full rounded-[12px] border border-[var(--color-gray-200)] bg-[var(--color-gray-0)] px-4 py-3 text-sm font-mono
+                  placeholder:text-[var(--color-gray-400)]
+                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-blue-500)]/20 focus-visible:border-[var(--color-blue-500)]
+                  transition-all duration-200 resize-none"
                 rows={3}
               />
               <div className="text-xs text-muted-foreground mt-1">

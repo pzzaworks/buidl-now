@@ -103,26 +103,15 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${albertSans.variable} antialiased overflow-x-hidden`}>
         <GeometricBackground />
-        <div className="relative z-10 min-h-screen w-full flex flex-col">
-          {/* Mobile Header Row */}
-          <div className="lg:hidden flex items-center justify-between p-4">
-            <Header />
-            <ThemeToggle />
-          </div>
-          {/* Desktop Header */}
-          <div className="hidden lg:block">
-            <Header />
-          </div>
-          <main className="flex-1 w-full">
+        <div className="relative z-10 min-h-screen w-full">
+          <Header />
+          <main className="min-h-screen w-full">
             {children}
           </main>
           <Footer />
         </div>
         <ScrollToTop />
-        {/* Desktop Theme Toggle */}
-        <div className="hidden lg:block">
-          <ThemeToggle />
-        </div>
+        <ThemeToggle />
       </body>
     </html>
   );

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   * {
     margin: 0;
@@ -193,4 +195,13 @@ html.dark {
 
   --color-red-50: #450a0a !important;
   --color-red-200: #991b1b !important;
+}
+
+/* Hide global header/footer/theme-toggle on mobile for tool pages */
+@media (max-width: 1023px) {
+  body.tool-page .global-header,
+  body.tool-page .global-footer,
+  body.tool-page .global-theme-toggle {
+    display: none !important;
+  }
 }

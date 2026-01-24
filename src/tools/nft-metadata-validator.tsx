@@ -313,14 +313,14 @@ export function NftMetadataValidatorTool() {
       {validationResult && (
         <div className="space-y-4">
           {/* Score */}
-          <div className="p-4 rounded-[12px] border border-border bg-[#1a1a1a]">
+          <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Compliance Score</span>
               <span className={`text-lg font-bold ${getScoreColor(validationResult.score)}`}>
                 {validationResult.score}%
               </span>
             </div>
-            <div className="mt-2 h-2 bg-[#0a0a0a] rounded-[12px] overflow-hidden">
+            <div className="mt-2 h-2 bg-[var(--color-gray-100)] rounded-[12px] overflow-hidden">
               <div
                 className={`h-full transition-all ${
                   validationResult.score >= 80
@@ -383,10 +383,10 @@ export function NftMetadataValidatorTool() {
           {validationResult.metadata && (
             <div className="space-y-3">
               <div className="text-sm font-medium">OpenSea Preview</div>
-              <div className="p-4 rounded-[12px] border border-border bg-[#1a1a1a]">
+              <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
                 {/* Image */}
                 {validationResult.metadata.image && (
-                  <div className="mb-3 p-3 bg-[#0a0a0a] rounded-[12px] text-center">
+                  <div className="mb-3 p-3 bg-[var(--color-gray-100)] rounded-[12px] text-center">
                     <div className="text-xs text-muted-foreground">
                       Image: {validationResult.metadata.image.substring(0, 50)}...
                     </div>
@@ -414,7 +414,7 @@ export function NftMetadataValidatorTool() {
                           (attr: MetadataAttribute, idx: number) => (
                             <div
                               key={idx}
-                              className="p-2 rounded-[12px] bg-[#0a0a0a] border border-border"
+                              className="p-2 rounded-[12px] bg-[var(--color-gray-100)] border border-border"
                             >
                               <div className="text-xs text-blue-400">
                                 {attr.trait_type || "Unnamed"}

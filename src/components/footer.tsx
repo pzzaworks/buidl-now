@@ -6,7 +6,7 @@ export function Footer() {
   return (
     <>
       {/* Mobile Footer - Centered */}
-      <div className="md:hidden fixed bottom-6 left-0 right-0 flex flex-col items-center gap-4 z-50">
+      <div className="global-footer lg:hidden fixed bottom-6 left-0 right-0 flex flex-col items-center gap-4 z-50">
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
           <span>
             Built by{" "}
@@ -34,7 +34,7 @@ export function Footer() {
       </div>
 
       {/* Desktop Footer - Left: Built by, Right: GitHub */}
-      <div className="hidden md:block fixed bottom-10 left-10 z-50">
+      <div className="hidden lg:block fixed bottom-10 left-10 z-50">
         <span className="text-sm text-muted-foreground">
           Built by{" "}
           <a
@@ -48,7 +48,7 @@ export function Footer() {
         </span>
       </div>
 
-      <div className="hidden md:block fixed bottom-10 right-10 z-50">
+      <div className="hidden lg:block fixed bottom-10 right-10 z-50">
         <a
           href="https://github.com/pzzaworks/buidl-now"
           target="_blank"

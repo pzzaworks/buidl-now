@@ -133,7 +133,7 @@ export function JwtDecoderTool() {
                 <Input
                   value={decoded.header}
                   readOnly
-                  className="font-mono text-xs bg-[#1a1a1a]"
+                  className="font-mono text-xs bg-[var(--color-gray-0)]"
                 />
               </div>
               <div>
@@ -142,7 +142,7 @@ export function JwtDecoderTool() {
                   value={formatJSON(decoded.headerDecoded)}
                   readOnly
                   showCopy
-                  className="font-mono text-xs bg-[#1a1a1a] min-h-[80px]"
+                  className="font-mono text-xs bg-[var(--color-gray-0)] min-h-[80px]"
                 />
               </div>
             </div>
@@ -159,7 +159,7 @@ export function JwtDecoderTool() {
                 <Input
                   value={decoded.payload}
                   readOnly
-                  className="font-mono text-xs bg-[#1a1a1a]"
+                  className="font-mono text-xs bg-[var(--color-gray-0)]"
                 />
               </div>
               <div>
@@ -168,7 +168,7 @@ export function JwtDecoderTool() {
                   value={formatJSON(decoded.payloadDecoded)}
                   readOnly
                   showCopy
-                  className="font-mono text-xs bg-[#1a1a1a] min-h-[120px]"
+                  className="font-mono text-xs bg-[var(--color-gray-0)] min-h-[120px]"
                 />
               </div>
 
@@ -214,7 +214,7 @@ export function JwtDecoderTool() {
               <Input
                 value={decoded.signature}
                 readOnly
-                className="font-mono text-xs bg-[#1a1a1a]"
+                className="font-mono text-xs bg-[var(--color-gray-0)]"
               />
               <div className="mt-2 text-xs text-muted-foreground">
                 The signature is used to verify that the sender of the JWT is who it says

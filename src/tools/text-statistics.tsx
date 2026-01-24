@@ -238,12 +238,12 @@ export function TextStatisticsTool() {
                 <div className="space-y-2">
                   {charFrequency.map(({ char, count, percentage }, index) => (
                     <div key={index} className="flex items-center gap-3">
-                      <div className="text-sm font-mono w-8 text-center bg-[#1a1a1a] px-2 py-1 rounded-[12px]">
+                      <div className="text-sm font-mono w-8 text-center bg-[var(--color-gray-0)] px-2 py-1 rounded-[12px]">
                         {char}
                       </div>
                       <div className="flex-1 flex items-center gap-2">
                         <div className="flex-1">
-                          <div className="h-2 bg-[#1a1a1a] rounded-[12px] overflow-hidden">
+                          <div className="h-2 bg-[var(--color-gray-0)] rounded-[12px] overflow-hidden">
                             <div
                               className="h-full bg-blue-500"
                               style={{

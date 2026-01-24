@@ -19,7 +19,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           variant === "primary" && [
             "bg-[var(--color-gray-0)] text-[var(--color-gray-950)]",
             "border border-[var(--color-blue-500)]",
-            "ring-2 ring-[var(--color-blue-500)]/20",
+            "shadow-[0_0_0_3px_rgba(51,92,255,0.2)]",
             "hover:bg-[var(--color-blue-50)] active:bg-[var(--color-blue-100)]",
           ],
           variant === "secondary" && [
@@ -29,9 +29,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           ],
           // Sizes
           {
-            "h-9 px-4 text-sm": size === "sm",
-            "h-10 px-4 text-sm": size === "md",
-            "h-11 px-5 text-[15px]": size === "lg",
+            "h-9 min-h-9 px-4 text-sm": size === "sm",
+            "h-11 min-h-11 px-4 text-sm": size === "md",
+            "h-12 min-h-12 px-5 text-[15px]": size === "lg",
           },
           className
         )}

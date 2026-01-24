@@ -9,7 +9,10 @@ import { ToolRenderer } from "./tool-renderer";
 import { ToolStructuredData } from "@/components/structured-data";
 import { Code } from "@/components/ui/code";
 import { MdCode, MdClose, MdArrowBack, MdOpenInNew, MdChevronLeft, MdChevronRight } from "react-icons/md";
-import { FiInfo } from "react-icons/fi";
+import { FiInfo, FiSun, FiMoon } from "react-icons/fi";
+import { FaGithub } from "react-icons/fa";
+import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 type ViewMode = "tool" | "info" | "code";
@@ -26,9 +29,26 @@ export default function ToolPage({
 
   const [viewMode, setViewMode] = useState<ViewMode>("tool");
   const [mounted, setMounted] = useState(false);
+  const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    // Add class to hide global header/footer on mobile for tools page
+    document.body.classList.add('tool-page');
+
+    // Track dark mode
+    const checkDarkMode = () => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    };
+    checkDarkMode();
+
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+
+    return () => {
+      document.body.classList.remove('tool-page');
+      observer.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -74,23 +94,21 @@ export default function ToolPage({
   const ToolCardContent = () => (
     <>
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--color-gray-100)] shrink-0">
-        <div className="flex items-center gap-3">
-          {viewMode !== "tool" && (
-            <button
-              onClick={() => setViewMode("tool")}
-              className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] flex items-center justify-center transition-colors cursor-pointer shrink-0"
-              title="Back"
-            >
-              <MdArrowBack style={{ width: 20, height: 20 }} />
-            </button>
-          )}
-          <div>
+      <div className="px-5 py-4 border-b border-[var(--color-gray-100)] shrink-0">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {viewMode !== "tool" && (
+              <button
+                onClick={() => setViewMode("tool")}
+                className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] flex items-center justify-center transition-colors cursor-pointer shrink-0"
+                title="Back"
+              >
+                <MdArrowBack style={{ width: 20, height: 20 }} />
+              </button>
+            )}
             <h1 className="text-base font-semibold">{getTitle()}</h1>
-            <p className="text-xs text-muted-foreground">{getDescription()}</p>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
           {viewMode === "tool" && (
             <>
               {hasInfo && (
@@ -115,12 +133,14 @@ export default function ToolPage({
           )}
           <button
             onClick={() => router.push("/")}
-            className="hidden lg:flex w-10 h-10 min-w-[40px] min-h-[40px] rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] items-center justify-center transition-colors cursor-pointer shrink-0"
+            className="flex w-10 h-10 min-w-[40px] min-h-[40px] rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] items-center justify-center transition-colors cursor-pointer shrink-0"
             title="Close (ESC)"
           >
             <MdClose style={{ width: 20, height: 20 }} />
           </button>
+          </div>
         </div>
+        <p className="text-xs text-muted-foreground mt-2">{getDescription()}</p>
       </div>
 
       {/* Content */}
@@ -147,7 +167,7 @@ export default function ToolPage({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.15 }}
-              className="space-y-6 [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:text-[var(--color-gray-950)] [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-[var(--color-gray-950)] [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-[var(--color-gray-950)] [&_h4]:text-base [&_h4]:font-semibold [&_h4]:text-[var(--color-gray-950)] [&_h5]:text-sm [&_h5]:font-semibold [&_h5]:text-[var(--color-gray-950)] [&_h6]:text-sm [&_h6]:font-medium [&_h6]:text-[var(--color-gray-950)]"
+              className="p-2 space-y-6 [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:text-[var(--color-gray-950)] [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-[var(--color-gray-950)] [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-[var(--color-gray-950)] [&_h4]:text-base [&_h4]:font-semibold [&_h4]:text-[var(--color-gray-950)] [&_h5]:text-sm [&_h5]:font-semibold [&_h5]:text-[var(--color-gray-950)] [&_h6]:text-sm [&_h6]:font-medium [&_h6]:text-[var(--color-gray-950)]"
             >
               {/* Sections */}
               {tool.sections && tool.sections.length > 0 && (
@@ -234,9 +254,9 @@ export default function ToolPage({
   );
 
   const desktopModal = (
-    <div className="hidden lg:flex fixed inset-0 z-[9999] items-center justify-center">
+    <div className="hidden lg:flex fixed inset-0 z-[9999] items-center justify-center pointer-events-none">
       {/* Tool Modal Container with prev/next beside it */}
-      <div className="relative w-[90%] max-w-2xl">
+      <div className="relative w-[90%] max-w-2xl pointer-events-auto">
         {/* Prev Button - beside modal */}
         {prevTool && (
           <button
@@ -288,33 +308,100 @@ export default function ToolPage({
       {/* Desktop: Portal to body */}
       {mounted && createPortal(desktopModal, document.body)}
 
-      {/* Mobile: Normal Page Layout */}
-      <div className="lg:hidden pb-8 px-4">
-        {/* Tool Card */}
-        <div className="bg-[var(--color-gray-0)] rounded-[20px] overflow-hidden flex flex-col border border-[var(--color-gray-200)] shadow-lg shadow-black/5 max-w-2xl mx-auto">
-          <ToolCardContent />
+      {/* Mobile: Normal Page Layout with own header/footer */}
+      <div className="lg:hidden min-h-screen flex flex-col">
+        {/* Mobile Header */}
+        <div className="flex items-center justify-between p-4">
+          <Link href="/" className="flex items-center gap-2 text-foreground hover:opacity-50 transition-opacity">
+            <Image
+              src="/buidl-now-logo.svg"
+              alt="Buidl Now"
+              width={32}
+              height={32}
+              className="w-8 h-8"
+              style={{ filter: 'var(--logo-filter)' }}
+            />
+            <div className="flex flex-row items-center gap-1">
+              <span className="text-md font-medium">Buidl</span>
+              <span className="text-md font-normal italic">Now!</span>
+            </div>
+          </Link>
+          <button
+            type="button"
+            onClick={() => {
+              if (isDark) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+              } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+              }
+            }}
+            className="w-10 h-10 rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] flex items-center justify-center cursor-pointer transition-colors"
+          >
+            {isDark ? (
+              <FiSun className="w-5 h-5" />
+            ) : (
+              <FiMoon className="w-5 h-5" />
+            )}
+          </button>
         </div>
 
-        {/* Mobile Prev/Next Buttons */}
-        <div className="flex justify-center gap-4 mt-6 max-w-2xl mx-auto">
-          {prevTool && (
-            <button
-              onClick={() => router.push(prevTool.path)}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-[16px] bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] cursor-pointer"
+        {/* Content */}
+        <div className="flex-1 px-4 pb-4">
+          {/* Tool Card */}
+          <div className="bg-[var(--color-gray-0)] rounded-[20px] overflow-hidden flex flex-col border border-[var(--color-gray-200)] shadow-lg shadow-black/5 max-w-2xl mx-auto">
+            <ToolCardContent />
+          </div>
+
+          {/* Mobile Prev/Next Buttons */}
+          <div className="flex flex-col gap-3 mt-6 max-w-2xl mx-auto">
+            {prevTool && (
+              <button
+                onClick={() => router.push(prevTool.path)}
+                className="flex items-center justify-center gap-2 px-4 py-3 rounded-[16px] bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] cursor-pointer"
+              >
+                <MdChevronLeft className="w-5 h-5" />
+                <span className="text-sm truncate">{prevTool.name}</span>
+              </button>
+            )}
+            {nextTool && (
+              <button
+                onClick={() => router.push(nextTool.path)}
+                className="flex items-center justify-center gap-2 px-4 py-3 rounded-[16px] bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] cursor-pointer"
+              >
+                <span className="text-sm truncate">{nextTool.name}</span>
+                <MdChevronRight className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Mobile Footer */}
+        <div className="py-6 flex flex-col items-center gap-4">
+          <div className="flex items-center gap-3 text-sm text-muted-foreground">
+            <span>
+              Built by{" "}
+              <a
+                href="https://pzza.works"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-foreground hover:opacity-50 transition-opacity"
+              >
+                Berke
+              </a>
+            </span>
+            <span>·</span>
+            <a
+              href="https://github.com/pzzaworks/buidl-now"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 text-foreground hover:opacity-50 transition-opacity"
             >
-              <MdChevronLeft className="w-5 h-5" />
-              <span className="text-sm truncate">{prevTool.name}</span>
-            </button>
-          )}
-          {nextTool && (
-            <button
-              onClick={() => router.push(nextTool.path)}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-[16px] bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] cursor-pointer"
-            >
-              <span className="text-sm truncate">{nextTool.name}</span>
-              <MdChevronRight className="w-5 h-5" />
-            </button>
-          )}
+              <FaGithub className="w-4 h-4" />
+              <span>GitHub</span>
+            </a>
+          </div>
         </div>
       </div>
     </>

@@ -301,7 +301,7 @@ export function TokenUriGeneratorTool() {
           {/* Format Conversion Guide */}
           <div className="space-y-3">
             <div className="text-sm font-medium">Format Conversion Examples</div>
-            <div className="p-4 rounded-[12px] border border-border bg-[#1a1a1a] space-y-2 text-xs font-mono">
+            <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)] space-y-2 text-xs font-mono">
               <div>
                 <span className="text-blue-400">ipfs://</span>
                 <span className="text-muted-foreground"> → </span>
@@ -336,7 +336,7 @@ export function TokenUriGeneratorTool() {
           <div className="space-y-3">
             <div className="text-sm font-medium">Storage Type Comparison</div>
             <div className="grid gap-3">
-              <div className="p-3 rounded-[12px] border border-border bg-[#1a1a1a]">
+              <div className="p-3 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
                 <div className="font-medium text-sm mb-1">IPFS</div>
                 <div className="text-xs text-muted-foreground">
                   Pros: Decentralized, content-addressed, widely supported
@@ -344,7 +344,7 @@ export function TokenUriGeneratorTool() {
                   Cons: Requires pinning service, not permanent by default
                 </div>
               </div>
-              <div className="p-3 rounded-[12px] border border-border bg-[#1a1a1a]">
+              <div className="p-3 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
                 <div className="font-medium text-sm mb-1">Arweave</div>
                 <div className="text-xs text-muted-foreground">
                   Pros: Permanent storage, pay once
@@ -352,7 +352,7 @@ export function TokenUriGeneratorTool() {
                   Cons: Higher upfront cost, less mature ecosystem
                 </div>
               </div>
-              <div className="p-3 rounded-[12px] border border-border bg-[#1a1a1a]">
+              <div className="p-3 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
                 <div className="font-medium text-sm mb-1">Data URI</div>
                 <div className="text-xs text-muted-foreground">
                   Pros: Fully on-chain, immutable, no external dependencies

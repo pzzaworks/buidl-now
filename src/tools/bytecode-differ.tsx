@@ -296,7 +296,7 @@ export function BytecodeDifferTool() {
       {result && (
         <div className="space-y-4">
           {/* Similarity Score */}
-          <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[#2a2a2a]">
+          <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[var(--color-gray-200)]">
             <div className="flex items-center justify-between mb-2">
               <Label className="text-sm">Similarity Score</Label>
               <span className={`text-lg font-bold ${
@@ -307,7 +307,7 @@ export function BytecodeDifferTool() {
                 {result.similarity}%
               </span>
             </div>
-            <div className="w-full bg-[#1a1a1a] rounded-[12px] h-2 overflow-hidden">
+            <div className="w-full bg-[var(--color-gray-0)] rounded-[12px] h-2 overflow-hidden">
               <div
                 className={`h-full transition-all ${
                   result.similarity === 100 ? "bg-green-500" :
@@ -334,7 +334,7 @@ export function BytecodeDifferTool() {
 
           {/* Metadata */}
           {(result.metadata1 || result.metadata2) && (
-            <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[#2a2a2a]">
+            <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[var(--color-gray-200)]">
               <Label className="text-sm mb-2 block">Metadata Hash</Label>
               <div className="space-y-2">
                 {result.metadata1 && (
@@ -358,7 +358,7 @@ export function BytecodeDifferTool() {
           )}
 
           {/* Diff View */}
-          <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[#2a2a2a]">
+          <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[var(--color-gray-200)]">
             <div className="flex items-center justify-between mb-3">
               <Label className="text-sm">Diff View</Label>
               <div className="flex gap-3 text-xs">
@@ -378,10 +378,10 @@ export function BytecodeDifferTool() {
             </div>
             <div className="max-h-[400px] overflow-auto">
               <div className="grid grid-cols-2 gap-2 font-mono text-xs">
-                <div className="text-gray-400 font-semibold pb-2 border-b border-[#2a2a2a]">
+                <div className="text-gray-400 font-semibold pb-2 border-b border-[var(--color-gray-200)]">
                   Bytecode 1
                 </div>
-                <div className="text-gray-400 font-semibold pb-2 border-b border-[#2a2a2a]">
+                <div className="text-gray-400 font-semibold pb-2 border-b border-[var(--color-gray-200)]">
                   Bytecode 2
                 </div>
                 {result.differences.map((diff, idx) => (

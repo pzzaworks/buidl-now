@@ -521,11 +521,11 @@ export function TraceVisualizerTool() {
         <div className="space-y-4">
           {/* Statistics */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="p-3 rounded-[12px] border border-border bg-[#1a1a1a]">
+            <div className="p-3 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
               <div className="text-xs text-muted-foreground mb-1">Total Calls</div>
               <div className="text-base font-mono">{countCalls(parsedTrace)}</div>
             </div>
-            <div className="p-3 rounded-[12px] border border-border bg-[#1a1a1a]">
+            <div className="p-3 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
               <div className="text-xs text-muted-foreground mb-1">Max Depth</div>
               <div className="text-base font-mono">
                 {Math.max(
@@ -535,7 +535,7 @@ export function TraceVisualizerTool() {
                 )}
               </div>
             </div>
-            <div className="p-3 rounded-[12px] border border-border bg-[#1a1a1a]">
+            <div className="p-3 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
               <div className="text-xs text-muted-foreground mb-1">Total Gas</div>
               <div className="text-base font-mono">
                 {calculateTotalGas(parsedTrace).toLocaleString()}
@@ -559,7 +559,7 @@ export function TraceVisualizerTool() {
           </div>
 
           {/* Legend */}
-          <div className="p-3 rounded-[12px] border border-border bg-[#1a1a1a]">
+          <div className="p-3 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
             <div className="text-xs font-medium mb-2">Call Type Legend</div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
               <div className="flex items-center gap-2">

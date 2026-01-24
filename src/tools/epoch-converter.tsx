@@ -10,7 +10,7 @@ import { ToolConfig } from "@/types/tool";
 export function EpochConverterTool() {
   const [timestamp, setTimestamp] = useState("");
   const [humanDate, setHumanDate] = useState("");
-  const [currentTime, setCurrentTime] = useState(Date.now());
+  const [currentTime, setCurrentTime] = useState<number | null>(null);
 
   // Manual date input
   const [year, setYear] = useState("");
@@ -29,6 +29,7 @@ export function EpochConverterTool() {
   const [timeBreakdown, setTimeBreakdown] = useState("");
 
   useEffect(() => {
+    setCurrentTime(Date.now());
     const interval = setInterval(() => {
       setCurrentTime(Date.now());
     }, 1000);
@@ -168,9 +169,11 @@ export function EpochConverterTool() {
         <div className="text-sm text-muted-foreground mb-1">
           The current Unix epoch time is
         </div>
-        <div className="font-mono text-lg font-bold">{Math.floor(currentTime / 1000)}</div>
+        <div className="font-mono text-lg font-bold">
+          {currentTime !== null ? Math.floor(currentTime / 1000) : "—"}
+        </div>
         <div className="text-xs text-muted-foreground mt-2">
-          {new Date(currentTime).toUTCString()}
+          {currentTime !== null ? new Date(currentTime).toUTCString() : "—"}
         </div>
       </div>
 

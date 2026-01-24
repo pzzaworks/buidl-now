@@ -89,7 +89,7 @@ export function TokenLaunchCalculatorTool() {
             {liqPercent >= 10 && `${liqPercent}%`}
           </div>
           <div
-            className="bg-[#1a1a1a] flex items-center justify-center text-xs font-semibold"
+            className="bg-[var(--color-gray-0)] flex items-center justify-center text-xs font-semibold"
             style={{ width: `${remaining}%` }}
           >
             {remaining >= 10 && `${remaining.toFixed(1)}%`}
@@ -101,7 +101,7 @@ export function TokenLaunchCalculatorTool() {
             <span className="text-muted-foreground">Liquidity Pool: {liqPercent}%</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-[#1a1a1a] border border-border rounded-[12px]"></div>
+            <div className="w-3 h-3 bg-[var(--color-gray-0)] border border-border rounded-[12px]"></div>
             <span className="text-muted-foreground">Remaining: {remaining.toFixed(1)}%</span>
           </div>
         </div>

@@ -423,7 +423,7 @@ export function AccessControlVisualizerTool() {
       {result && (
         <div className="space-y-4">
           {/* Access Control Type */}
-          <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[#2a2a2a]">
+          <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[var(--color-gray-200)]">
             <Label className="text-sm mb-2 block">Access Control Type</Label>
             <div className="text-base font-bold text-blue-400">{result.type}</div>
           </div>
@@ -447,13 +447,13 @@ export function AccessControlVisualizerTool() {
 
           {/* Role Hierarchy */}
           {result.hierarchy.length > 0 && (
-            <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[#2a2a2a]">
+            <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[var(--color-gray-200)]">
               <Label className="text-sm mb-3 block">Role Hierarchy</Label>
               <div className="space-y-2">
                 {result.hierarchy.map((item, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center gap-3 p-3 rounded-[12px] bg-[#1a1a1a] border border-[#2a2a2a]"
+                    className="flex items-center gap-3 p-3 rounded-[12px] bg-[var(--color-gray-0)] border border-[var(--color-gray-200)]"
                     style={{ marginLeft: `${item.level * 20}px` }}
                   >
                     <div className="flex-1">
@@ -475,13 +475,13 @@ export function AccessControlVisualizerTool() {
 
           {/* Roles and Functions */}
           {result.roles.length > 0 && (
-            <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[#2a2a2a]">
+            <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[var(--color-gray-200)]">
               <Label className="text-sm mb-3 block">Roles and Functions</Label>
               <div className="space-y-4">
                 {result.roles.map((role, idx) => (
                   <div
                     key={idx}
-                    className="p-3 rounded-[12px] bg-[#1a1a1a] border border-[#2a2a2a]"
+                    className="p-3 rounded-[12px] bg-[var(--color-gray-0)] border border-[var(--color-gray-200)]"
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div>
@@ -521,7 +521,7 @@ export function AccessControlVisualizerTool() {
 
           {/* Public Admin Functions */}
           {result.publicAdminFunctions.length > 0 && (
-            <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[#2a2a2a]">
+            <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[var(--color-gray-200)]">
               <Label className="text-sm mb-3 block">State-Changing Functions</Label>
               <div className="text-xs text-gray-400 mb-3">
                 Verify these functions have proper access control modifiers
