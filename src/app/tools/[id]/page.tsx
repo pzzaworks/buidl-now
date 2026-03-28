@@ -323,12 +323,11 @@ export default function ToolPage({
         <div className="flex items-center justify-between p-6">
           <Link href="/" className="flex items-center gap-2 text-foreground hover:opacity-50 transition-opacity">
             <Image
-              src="/buidl-now.svg"
+              src={isDark ? "/buidl-now.svg" : "/buidl-now-black.svg"}
               alt="Buidl Now"
               width={32}
               height={32}
               className="w-8 h-8"
-              style={{ filter: isDark ? "invert(1)" : "none" }}
             />
             <div className="flex flex-row items-center gap-1 font-semibold" style={{ fontFamily: 'var(--font-turret), sans-serif' }}>
               <span className="text-md">Buidl</span>
