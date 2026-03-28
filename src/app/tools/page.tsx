@@ -94,7 +94,7 @@ export default function AllToolsPage() {
       <div className="flex items-center justify-between p-6">
         <Link href="/" className="flex items-center gap-2 text-foreground hover:opacity-50 transition-opacity">
           <Image
-            src="/buidl-now-logo.svg"
+            src="/buidl-now.svg"
             alt="Buidl Now"
             width={32}
             height={32}
