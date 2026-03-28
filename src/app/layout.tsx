@@ -53,9 +53,9 @@ export const metadata: Metadata = {
     "json formatter",
     "crypto tools",
   ],
-  authors: [{ name: "Buidl Now!" }],
-  creator: "Buidl Now!",
-  publisher: "Buidl Now!",
+  authors: [{ name: "Berke (pzzaworks)", url: "https://pzza.works" }],
+  creator: "Berke (pzzaworks)",
+  publisher: "Berke (pzzaworks)",
   openGraph: {
     type: "website",
     locale: "en_US",
