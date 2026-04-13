@@ -1,11 +1,18 @@
 "use client";
 
 import type { CSSProperties, ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
+import { Children, isValidElement, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { BuidlWordmark } from "@/components/buidl-wordmark";
 import { Code } from "@/components/ui/code";
 import {
   OrganizationStructuredData,
@@ -229,6 +236,25 @@ function normalizeText(value: string): string {
   return value.replace(/\s+/g, " ").trim();
 }
 
+function extractTextContent(content: ReactNode): string {
+  const text = Children.toArray(content)
+    .map((node) => {
+      if (typeof node === "string" || typeof node === "number") {
+        return String(node);
+      }
+
+      if (isValidElement<{ children?: ReactNode }>(node)) {
+        return extractTextContent(node.props.children);
+      }
+
+      return "";
+    })
+    .filter(Boolean)
+    .join(" ");
+
+  return normalizeText(text);
+}
+
 function truncateText(value: string, maxLength: number): string {
   if (value.length <= maxLength) {
     return value;
@@ -238,21 +264,64 @@ function truncateText(value: string, maxLength: number): string {
 }
 
 function summarizeContent(content: ReactNode | string, title: string): string {
-  if (typeof content === "string") {
-    return truncateText(normalizeText(content), 200);
+  const summarySource =
+    typeof content === "string"
+      ? normalizeText(content)
+      : extractTextContent(content);
+
+  if (summarySource) {
+    return truncateText(summarySource, 220);
   }
 
-  return `Includes ${title.toLowerCase()} guidance, practical notes, and live examples for this utility.`;
+  return `Practical guidance for ${title.toLowerCase()} in this tool.`;
+}
+
+function formatList(items: string[]): string {
+  if (items.length === 0) {
+    return "";
+  }
+
+  if (items.length === 1) {
+    return items[0];
+  }
+
+  if (items.length === 2) {
+    return `${items[0]} and ${items[1]}`;
+  }
+
+  return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`;
+}
+
+function buildExamplesSummary(
+  examples: { content: ReactNode | string; title: string }[],
+): string | null {
+  const exampleTitles = examples
+    .map((example) => normalizeText(example.title))
+    .filter(Boolean)
+    .slice(0, 3);
+
+  if (exampleTitles.length > 0) {
+    return `Covers ${formatList(exampleTitles)} so you can compare common inputs and outputs quickly.`;
+  }
+
+  const examplePreview = examples
+    .map((example) => summarizeContent(example.content, example.title))
+    .filter(Boolean)
+    .slice(0, 2);
+
+  if (examplePreview.length > 0) {
+    return truncateText(examplePreview.join(" "), 220);
+  }
+
+  return null;
 }
 
 function buildToolStoryRows({
-  hasCode,
   overrideRows,
   sections,
-  exampleCount,
+  examples,
 }: {
-  exampleCount: number;
-  hasCode: boolean;
+  examples: { content: ReactNode | string; title: string }[];
   overrideRows?: ToolStoryRow[];
   sections: { content: ReactNode | string; title: string }[];
 }): ToolStoryRow[] {
@@ -265,17 +334,12 @@ function buildToolStoryRows({
     title: section.title,
   }));
 
-  if (rows.length < 3 && exampleCount > 0) {
-    rows.push({
-      title: "Examples",
-      body: `Includes ${exampleCount} copy-ready example${exampleCount === 1 ? "" : "s"} for common builder workflows.`,
-    });
-  }
+  const examplesSummary = buildExamplesSummary(examples);
 
-  if (rows.length < 3 && hasCode) {
+  if (rows.length < 3 && examplesSummary) {
     rows.push({
-      title: "Implementation",
-      body: "Comes with a copy-ready TypeScript snippet you can drop into scripts, apps, and contract tooling.",
+      title: examples.length === 1 ? "Sample Case" : "Sample Cases",
+      body: examplesSummary,
     });
   }
 
@@ -441,8 +505,7 @@ export function HomePageClient({
     homepageToolOverrides[selectedToolId] ??
     homepageToolOverrides[activeToolMeta?.id ?? ""];
   const toolStoryRows = buildToolStoryRows({
-    exampleCount: toolExamples.length,
-    hasCode: Boolean(toolCodeSnippet),
+    examples: toolExamples,
     overrideRows: activeHomepageOverride?.storyRows,
     sections: toolSections,
   });
@@ -466,6 +529,19 @@ export function HomePageClient({
     const haystack = `${tool.name} ${tool.description}`.toLowerCase();
     return haystack.includes(normalizedToolSearch);
   });
+
+  const { scrollY } = useScroll();
+  const heroWordmarkOpacity = useTransform(scrollY, [0, 220, 520], [1, 0.95, 0.36]);
+  const heroCopyY = useTransform(scrollY, [0, 420], [0, -88]);
+  const heroCopyX = useTransform(scrollY, [0, 420], [0, 24]);
+  const heroCopyOpacity = useTransform(scrollY, [0, 160, 420], [1, 0.9, 0.18]);
+  const heroHeadingY = useTransform(scrollY, [0, 420], [0, -34]);
+  const heroHeadingX = useTransform(scrollY, [0, 420], [0, 14]);
+  const heroBodyY = useTransform(scrollY, [0, 420], [0, -22]);
+  const heroBodyX = useTransform(scrollY, [0, 420], [0, 8]);
+  const heroActionsY = useTransform(scrollY, [0, 420], [0, -12]);
+  const heroActionsX = useTransform(scrollY, [0, 420], [0, 4]);
+  const heroActionsOpacity = useTransform(scrollY, [0, 180, 420], [1, 0.9, 0.58]);
 
   useEffect(() => {
     if (shouldReduceMotion) {
@@ -610,25 +686,54 @@ export function HomePageClient({
 
         <section className="min-h-[calc(100svh-84px)] border-b border-[#202020] bg-[#f0fb29]">
           <div className="mx-auto flex min-h-[calc(100svh-84px)] w-full max-w-[1920px] flex-col px-6 pb-[72px] pt-8 lg:px-16 lg:pb-20 lg:pt-8">
-            <motion.img
-              src="/buidl-text.svg"
-              alt="Buidl Now text"
+            <motion.div
               className="w-full max-w-[1420px]"
+              style={
+                shouldReduceMotion
+                  ? undefined
+                  : {
+                      opacity: heroWordmarkOpacity,
+                    }
+              }
               initial={shouldReduceMotion ? false : "hidden"}
               animate={shouldReduceMotion || isPageReady ? "visible" : "hidden"}
               variants={shouldReduceMotion ? undefined : heroWordmarkVariants}
-            />
+            >
+              <BuidlWordmark
+                animateLetters={shouldReduceMotion || isPageReady}
+                className="h-auto w-full text-[#202020]"
+                enableScrollWave
+                scrollY={scrollY}
+              />
+            </motion.div>
 
             <div className="flex flex-1 items-end justify-start pt-10 lg:pt-[72px]">
               <motion.div
                 className="max-w-[710px]"
+                style={
+                  shouldReduceMotion
+                    ? undefined
+                    : {
+                        x: heroCopyX,
+                        y: heroCopyY,
+                        opacity: heroCopyOpacity,
+                      }
+                }
                 variants={shouldReduceMotion ? undefined : heroCopyVariants}
                 initial={shouldReduceMotion ? false : "hidden"}
                 animate={shouldReduceMotion || isPageReady ? "visible" : "hidden"}
               >
                 <motion.h1
                   className="text-[40px] font-medium leading-[46px] tracking-[-2.5px] text-[#202020]"
-                  style={sansStyle}
+                  style={
+                    shouldReduceMotion
+                      ? sansStyle
+                      : {
+                          ...sansStyle,
+                          x: heroHeadingX,
+                          y: heroHeadingY,
+                        }
+                  }
                   variants={shouldReduceMotion ? undefined : fadeUpVariants}
                 >
                   The developer tools you reach for every day, all in one
@@ -637,7 +742,15 @@ export function HomePageClient({
 
                 <motion.p
                   className="mt-8 max-w-[690px] text-[18px] leading-8 text-[#202020]"
-                  style={sansStyle}
+                  style={
+                    shouldReduceMotion
+                      ? sansStyle
+                      : {
+                          ...sansStyle,
+                          x: heroBodyX,
+                          y: heroBodyY,
+                        }
+                  }
                   variants={shouldReduceMotion ? undefined : fadeUpVariants}
                 >
                   Converters, formatters, hashes, validators, and the small
@@ -647,6 +760,15 @@ export function HomePageClient({
 
                 <motion.div
                   className="mt-10 flex flex-wrap items-center gap-4"
+                  style={
+                    shouldReduceMotion
+                      ? undefined
+                      : {
+                          x: heroActionsX,
+                          y: heroActionsY,
+                          opacity: heroActionsOpacity,
+                        }
+                  }
                   variants={shouldReduceMotion ? undefined : fadeUpVariants}
                 >
                   <button
@@ -841,7 +963,7 @@ export function HomePageClient({
                       className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]/72"
                       style={monoStyle}
                     >
-                      / Live Tool
+                      / {activeToolName || "Live Tool"}
                     </div>
                   </div>
 
@@ -1071,18 +1193,19 @@ export function HomePageClient({
             variants={shouldReduceMotion ? undefined : staggerParentVariants}
           >
             <motion.div
-              className="flex items-center gap-4 sm:items-end sm:gap-8"
+              className="flex items-end gap-4 sm:gap-8"
               variants={shouldReduceMotion ? undefined : fadeUpVariants}
             >
               <img
                 src="/buildnow-inv.svg"
                 alt="Buidl Now icon"
-                className="h-[56px] w-auto shrink-0 sm:h-[132px] lg:h-[160px]"
+                className="h-[64px] w-auto shrink-0 sm:h-[148px] lg:h-[176px]"
               />
-              <img
-                src="/buidl-text.svg"
-                alt="Buidl Now text"
-                className="min-w-0 flex-1 max-w-[1280px]"
+              <BuidlWordmark
+                animateLetters
+                animateOnView
+                className="min-w-0 flex-1 max-w-[1280px] text-[#202020]"
+                enableScrollWave={false}
               />
             </motion.div>
 
