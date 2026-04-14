@@ -16,47 +16,44 @@ Buidl Now! Developer tools for builders who ship fast. A comprehensive suite of 
 ## Getting Started
 
 ```bash
-# Install dependencies
 npm install
-
-# Run development server
 npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the application.
+Open [http://localhost:3100](http://localhost:3100) to see the application.
 
 ## Tech Stack
 
-- **Framework:** Next.js 16.0.0
+- **Framework:** Next.js 16.1.0
 - **React:** 19.2.0
 - **Styling:** Tailwind CSS 4.1.16
 - **TypeScript:** 5.9.3
 - **Web3:** Viem 2.38.5, Wagmi 2.19.0
+- **Testing:** Vitest
 
 ## Project Structure
 
 ```
 src/
 ├── app/                    # Next.js app directory
+│   ├── api/ens/route.ts   # ENS resolution API
 │   ├── tools/[id]/        # Dynamic tool pages
+│   ├── tools/page.tsx     # Tools index redirect
 │   └── page.tsx           # Home page
 ├── components/            # React components
 │   ├── ui/               # UI components
 │   ├── header.tsx
-│   └── footer.tsx
+│   ├── footer.tsx
+│   └── layout-shell.tsx
 ├── tools/                # Tool implementations
 │   ├── function-selector.tsx
 │   ├── base64-text.tsx
 │   ├── hash-generator.tsx
 │   ├── keccak-hash.tsx
+│   ├── __tests__/        # Tool tests
 │   └── index.ts
-├── lib/                  # Utilities
+├── lib/                  # Utilities and tool metadata
+│   └── tools-list.ts
 └── types/                # TypeScript types
 ```
 
@@ -96,6 +93,8 @@ export const toolRegistry = {
 ```
 
 3. Add to the tools list in `src/lib/tools-list.ts`
+
+4. Optionally add a test in `src/tools/__tests__/`
 
 ## 🤝 Contributing
 
