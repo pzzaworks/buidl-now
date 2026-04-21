@@ -1258,15 +1258,7 @@ export function HomePageClient({
                 className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]/72"
                 style={monoStyle}
               >
-                Built by{" "}
-                <a
-                  href="https://pzza.works"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-[#202020]"
-                >
-                  berke
-                </a>
+                © 2026 Buidl Now. All rights reserved.
               </span>
             </motion.div>
           </RevealSection>

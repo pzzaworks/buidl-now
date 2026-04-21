@@ -8,23 +8,14 @@ import { MdApps } from "react-icons/md";
 export function Footer() {
   const pathname = usePathname();
   const isToolsPage = pathname?.startsWith("/tools");
+  const copyrightLabel = "© 2026 Buidl Now. All rights reserved.";
 
   return (
     <>
       {/* Mobile Footer - Centered */}
       <div className={`global-footer lg:hidden ${isToolsPage ? "relative mt-4 pb-4" : "fixed bottom-6"} left-0 right-0 flex flex-col items-center gap-4 z-50`}>
         <div className="flex items-center gap-3 text-sm text-muted-foreground font-semibold" style={{ fontFamily: 'var(--font-turret), sans-serif' }}>
-          <span>
-            Built by{" "}
-            <a
-              href="https://pzza.works"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-foreground hover:opacity-50 transition-opacity"
-            >
-              Berke
-            </a>
-          </span>
+          <span className="text-foreground">{copyrightLabel}</span>
           {pathname === "/tools" ? null : (
             <>
               <span>·</span>
@@ -53,16 +44,8 @@ export function Footer() {
 
       {/* Desktop Footer - Left: Built by, Right: GitHub */}
       <div className="hidden lg:block fixed bottom-10 left-10 z-50">
-        <span className="text-sm text-muted-foreground font-semibold" style={{ fontFamily: 'var(--font-turret), sans-serif' }}>
-          Built by{" "}
-          <a
-            href="https://pzza.works"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-foreground hover:opacity-50 transition-opacity"
-          >
-            Berke
-          </a>
+        <span className="text-sm text-foreground font-semibold" style={{ fontFamily: 'var(--font-turret), sans-serif' }}>
+          {copyrightLabel}
         </span>
       </div>
 
