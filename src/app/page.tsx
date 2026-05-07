@@ -685,27 +685,29 @@ export function HomePageClient({
         </header>
 
         <section className="min-h-[calc(100svh-84px)] border-b border-[#202020] bg-[#f0fb29]">
-          <div className="mx-auto flex min-h-[calc(100svh-84px)] w-full max-w-[1920px] flex-col px-6 pb-[72px] pt-8 lg:px-16 lg:pb-20 lg:pt-8">
-            <motion.div
-              className="w-full max-w-[1420px]"
-              style={
-                shouldReduceMotion
-                  ? undefined
-                  : {
-                      opacity: heroWordmarkOpacity,
-                    }
-              }
-              initial={shouldReduceMotion ? false : "hidden"}
-              animate={shouldReduceMotion || isPageReady ? "visible" : "hidden"}
-              variants={shouldReduceMotion ? undefined : heroWordmarkVariants}
-            >
-              <BuidlWordmark
-                animateLetters={shouldReduceMotion || isPageReady}
-                className="h-auto w-full text-[#202020]"
-                enableScrollWave
-                scrollY={scrollY}
-              />
-            </motion.div>
+          <div className="relative mx-auto flex min-h-[calc(100svh-84px)] w-full max-w-[1920px] flex-col px-6 pb-[72px] pt-8 lg:px-16 lg:pb-20 lg:pt-8">
+            <div className="w-full md:absolute md:left-6 md:top-[32%] md:max-w-[calc(100%-48px)] md:-translate-y-1/2 lg:left-16 lg:max-w-[calc(100%-128px)]">
+              <motion.div
+                className="w-full max-w-[1420px]"
+                style={
+                  shouldReduceMotion
+                    ? undefined
+                    : {
+                        opacity: heroWordmarkOpacity,
+                      }
+                }
+                initial={shouldReduceMotion ? false : "hidden"}
+                animate={shouldReduceMotion || isPageReady ? "visible" : "hidden"}
+                variants={shouldReduceMotion ? undefined : heroWordmarkVariants}
+              >
+                <BuidlWordmark
+                  animateLetters={shouldReduceMotion || isPageReady}
+                  className="h-auto w-full text-[#202020]"
+                  enableScrollWave
+                  scrollY={scrollY}
+                />
+              </motion.div>
+            </div>
 
             <div className="flex flex-1 items-end justify-start pt-10 lg:pt-[72px]">
               <motion.div
