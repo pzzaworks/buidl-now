@@ -29,49 +29,49 @@ export function MultiChainAddressDeriverTool() {
     {
       chain: "Ethereum",
       chainId: 1,
-      iconPath: "/icons/networks/ethereum.svg",
+      iconPath: "/icons/networks/ethereum.svg?v=20260517",
       rpcUrl: "https://eth.llamarpc.com",
       explorer: "https://etherscan.io/address/",
     },
     {
       chain: "BSC",
       chainId: 56,
-      iconPath: "/icons/networks/binance-smart-chain.svg",
+      iconPath: "/icons/networks/binance-smart-chain.svg?v=20260517",
       rpcUrl: "https://bsc-dataseed.binance.org",
       explorer: "https://bscscan.com/address/",
     },
     {
       chain: "Polygon",
       chainId: 137,
-      iconPath: "/icons/networks/polygon.svg",
+      iconPath: "/icons/networks/polygon.svg?v=20260517",
       rpcUrl: "https://polygon-rpc.com",
       explorer: "https://polygonscan.com/address/",
     },
     {
       chain: "Arbitrum",
       chainId: 42161,
-      iconPath: "/icons/networks/arbitrum-one.svg",
+      iconPath: "/icons/networks/arbitrum-one.svg?v=20260517",
       rpcUrl: "https://arb1.arbitrum.io/rpc",
       explorer: "https://arbiscan.io/address/",
     },
     {
       chain: "Optimism",
       chainId: 10,
-      iconPath: "/icons/networks/optimism.svg",
+      iconPath: "/icons/networks/optimism.svg?v=20260517",
       rpcUrl: "https://mainnet.optimism.io",
       explorer: "https://optimistic.etherscan.io/address/",
     },
     {
       chain: "Avalanche",
       chainId: 43114,
-      iconPath: "/icons/networks/avalanche.svg",
+      iconPath: "/icons/networks/avalanche.svg?v=20260517",
       rpcUrl: "https://api.avax.network/ext/bc/C/rpc",
       explorer: "https://snowtrace.io/address/",
     },
     {
       chain: "Base",
       chainId: 8453,
-      iconPath: "/icons/networks/base.svg",
+      iconPath: "/icons/networks/base.svg?v=20260517",
       rpcUrl: "https://mainnet.base.org",
       explorer: "https://basescan.org/address/",
     },
@@ -270,7 +270,7 @@ export function MultiChainAddressDeriverTool() {
                   <a
                     href={`${chain.explorer}${chain.address}`}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="nofollow noopener noreferrer"
                     className="text-xs text-blue-400 hover:text-blue-300 underline"
                   >
                     View on Explorer

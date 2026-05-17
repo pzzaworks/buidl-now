@@ -278,7 +278,7 @@ export function ProxyImplementationCheckerTool() {
               <a
                 href={getEtherscanLink(proxyAddress)}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="nofollow noopener noreferrer"
                 className="block text-sm text-blue-400 hover:text-blue-300 underline"
               >
                 View Proxy on Etherscan →
@@ -286,7 +286,7 @@ export function ProxyImplementationCheckerTool() {
               <a
                 href={getEtherscanLink(proxyInfo.implementationAddress)}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="nofollow noopener noreferrer"
                 className="block text-sm text-blue-400 hover:text-blue-300 underline"
               >
                 View Implementation on Etherscan →
@@ -295,7 +295,7 @@ export function ProxyImplementationCheckerTool() {
                 <a
                   href={getEtherscanLink(proxyInfo.adminAddress)}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="nofollow noopener noreferrer"
                   className="block text-sm text-blue-400 hover:text-blue-300 underline"
                 >
                   View Admin on Etherscan →

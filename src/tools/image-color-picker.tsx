@@ -16,6 +16,10 @@ interface PickedColor {
 export function ImageColorPickerTool() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
+  const [imageDimensions, setImageDimensions] = useState({
+    height: 1,
+    width: 1,
+  });
   const [pickedColor, setPickedColor] = useState<PickedColor | null>(null);
   const [dominantColors, setDominantColors] = useState<PickedColor[]>([]);
   const [error, setError] = useState("");
@@ -92,6 +96,15 @@ export function ImageColorPickerTool() {
     reader.onload = (e) => {
       const url = e.target?.result as string;
       setImageUrl(url);
+
+      const image = new window.Image();
+      image.onload = () => {
+        setImageDimensions({
+          height: image.naturalHeight || 1,
+          width: image.naturalWidth || 1,
+        });
+      };
+      image.src = url;
     };
     reader.readAsDataURL(file);
   };
@@ -214,6 +227,8 @@ export function ImageColorPickerTool() {
                 ref={imageRef}
                 src={imageUrl}
                 alt="Color picker"
+                width={imageDimensions.width}
+                height={imageDimensions.height}
                 onClick={handleImageClick}
                 className="max-w-full max-h-96 object-contain cursor-crosshair"
               />

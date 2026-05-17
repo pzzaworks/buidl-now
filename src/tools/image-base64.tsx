@@ -10,6 +10,10 @@ export function ImageBase64Tool() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [base64String, setBase64String] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
+  const [previewDimensions, setPreviewDimensions] = useState({
+    height: 1,
+    width: 1,
+  });
   const [originalSize, setOriginalSize] = useState(0);
   const [encodedSize, setEncodedSize] = useState(0);
   const [error, setError] = useState("");
@@ -49,6 +53,15 @@ export function ImageBase64Tool() {
       setBase64String(result);
       setPreviewUrl(result);
       setEncodedSize(result.length);
+
+      const image = new window.Image();
+      image.onload = () => {
+        setPreviewDimensions({
+          height: image.naturalHeight || 1,
+          width: image.naturalWidth || 1,
+        });
+      };
+      image.src = result;
     };
     reader.onerror = () => {
       setError("Failed to read file");
@@ -60,6 +73,7 @@ export function ImageBase64Tool() {
     setSelectedFile(null);
     setBase64String("");
     setPreviewUrl("");
+    setPreviewDimensions({ height: 1, width: 1 });
     setOriginalSize(0);
     setEncodedSize(0);
     setError("");
@@ -102,6 +116,8 @@ export function ImageBase64Tool() {
               <img
                 src={previewUrl}
                 alt="Preview"
+                width={previewDimensions.width}
+                height={previewDimensions.height}
                 className="max-w-full max-h-64 object-contain"
               />
             </div>

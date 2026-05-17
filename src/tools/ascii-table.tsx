@@ -84,7 +84,7 @@ function generateAsciiTable(): AsciiChar[] {
 export function AsciiTableTool() {
   const [search, setSearch] = useState("");
   const [rangeStart, setRangeStart] = useState("");
-  const [rangeEnd, setRangeEnd] = useState("");
+  const [rangeEnd, setRangeEnd] = useState("63");
   const [filterType, setFilterType] = useState<"all" | "printable" | "control">("all");
 
   const asciiTable = useMemo(() => generateAsciiTable(), []);
@@ -263,20 +263,20 @@ export const asciiTableConfig: ToolConfig = {
       title: "How does it work?",
       content: (
         <>
-          <h4 className="text-base font-semibold mb-2">Character Categories</h4>
+          <h3 className="text-base font-semibold mb-2">Character Categories</h3>
           <ul className="list-disc list-inside space-y-1 mb-4">
             <li><strong>Control Characters (0-31, 127):</strong> Non-printable characters used for text formatting and device control</li>
             <li><strong>Printable Characters (32-126):</strong> Letters, digits, punctuation, and space</li>
           </ul>
 
-          <h4 className="text-base font-semibold mb-2">Common Ranges</h4>
+          <h3 className="text-base font-semibold mb-2">Common Ranges</h3>
           <ul className="list-disc list-inside space-y-1 mb-4">
             <li>48-57: Digits 0-9</li>
             <li>65-90: Uppercase letters A-Z</li>
             <li>97-122: Lowercase letters a-z</li>
           </ul>
 
-          <h4 className="text-base font-semibold mb-2">Number Representations</h4>
+          <h3 className="text-base font-semibold mb-2">Number Representations</h3>
           <ul className="list-disc list-inside space-y-1">
             <li><strong>Decimal:</strong> Base 10, human-readable</li>
             <li><strong>Hexadecimal:</strong> Base 16, commonly used in programming</li>

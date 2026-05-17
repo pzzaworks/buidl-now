@@ -10,6 +10,7 @@ import {
   useScroll,
   useTransform,
 } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { BuidlWordmark } from "@/components/buidl-wordmark";
@@ -19,6 +20,7 @@ import {
   WebsiteStructuredData,
 } from "@/components/structured-data";
 import { tools } from "@/lib/tools-list";
+import { externalLinkRel } from "@/lib/seo";
 import { getToolById } from "@/tools";
 import { type Tool } from "@/types/tools";
 
@@ -349,12 +351,12 @@ function buildToolStoryRows({
 function SectionLabel({ title }: { title: string }) {
   return (
     <div className="flex items-center justify-between border-t border-[#202020] pt-4">
-      <span
+      <h2
         className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]"
         style={monoStyle}
       >
         {title}
-      </span>
+      </h2>
       <span
         className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]"
         style={monoStyle}
@@ -379,7 +381,7 @@ function ActionLink({
       <a
         href={action.href}
         target="_blank"
-        rel="noreferrer"
+        rel={externalLinkRel}
         className={className}
       >
         {action.label}
@@ -664,9 +666,11 @@ export function HomePageClient({
               className="inline-flex items-center justify-center"
               aria-label="Buidl Now home"
             >
-              <img
-                src="/buildnow-inv.svg"
+              <Image
+                src="/buildnow-inv.svg?v=20260517"
                 alt="Buidl Now icon"
+                width={27}
+                height={48}
                 className="h-12 w-auto"
               />
             </Link>
@@ -684,9 +688,9 @@ export function HomePageClient({
           </motion.div>
         </header>
 
-        <section className="min-h-[calc(100svh-84px)] border-b border-[#202020] bg-[#f0fb29]">
-          <div className="relative mx-auto flex min-h-[calc(100svh-84px)] w-full max-w-[1920px] flex-col px-6 pb-[72px] pt-8 lg:px-16 lg:pb-20 lg:pt-8">
-            <div className="w-full md:absolute md:left-6 md:top-[32%] md:max-w-[calc(100%-48px)] md:-translate-y-1/2 lg:left-16 lg:max-w-[calc(100%-128px)]">
+        <section className="min-h-[calc(100svh-84px)] border-b border-[#202020] bg-[#f0fb29] sm:min-h-[max(calc(100svh-84px),42rem)] lg:min-h-[max(calc(100svh-84px),44rem)]">
+          <div className="relative mx-auto flex min-h-[calc(100svh-84px)] w-full max-w-[1920px] flex-col px-6 pb-[72px] pt-8 sm:min-h-[max(calc(100svh-84px),42rem)] lg:min-h-[max(calc(100svh-84px),44rem)] lg:px-16 lg:pb-20 lg:pt-8">
+            <div className="w-full sm:absolute sm:left-6 sm:top-[22%] sm:max-w-[calc(100%-48px)] sm:-translate-y-1/2 lg:left-16 lg:top-[23%] lg:max-w-[calc(100%-128px)] 2xl:top-[32%]">
               <motion.div
                 className="w-full max-w-[1420px]"
                 style={
@@ -792,7 +796,7 @@ export function HomePageClient({
                   <a
                     href="https://github.com/pzzaworks/buidl-now"
                     target="_blank"
-                    rel="noreferrer"
+                    rel={externalLinkRel}
                     className="inline-flex rounded-none border border-[#202020] px-8 py-6 text-[13px] font-medium uppercase tracking-[0.22em] text-[#202020] transition-colors hover:bg-[#202020] hover:text-[#f0fb29]"
                     style={monoStyle}
                   >
@@ -1198,9 +1202,11 @@ export function HomePageClient({
               className="flex items-end gap-4 sm:gap-8"
               variants={shouldReduceMotion ? undefined : fadeUpVariants}
             >
-              <img
-                src="/buildnow-inv.svg"
+              <Image
+                src="/buildnow-inv.svg?v=20260517"
                 alt="Buidl Now icon"
+                width={99}
+                height={176}
                 className="h-[64px] w-auto shrink-0 sm:h-[148px] lg:h-[176px]"
               />
               <BuidlWordmark

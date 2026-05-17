@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import {
   Chakra_Petch,
   IBM_Plex_Mono,
@@ -27,6 +28,7 @@ const ibmPlexMono = IBM_Plex_Mono({
   variable: "--font-ibm-plex-mono",
   weight: ["300", "400", "500", "600", "700"],
 });
+const shouldLoadAnalytics = process.env.NODE_ENV === "production";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -47,7 +49,7 @@ export const metadata: Metadata = {
     template: "%s | Buidl Now!",
   },
   description:
-    "Free online developer tools to convert, encode, decode, hash, format, validate, and inspect everyday data.",
+    "Free online developer tools to convert, encode, decode, hash, format, validate, and inspect everyday data in a fast browser workspace for builders.",
   keywords: [
     "developer tools",
     "online tools",
@@ -72,7 +74,7 @@ export const metadata: Metadata = {
     siteName: "Buidl Now!",
     title: "Buidl Now! - Developer Tools for Builders Who Ship Fast",
     description:
-      "Free online developer tools to convert, encode, decode, hash, format, validate, and inspect everyday data.",
+      "Free online developer tools to convert, encode, decode, hash, format, validate, and inspect everyday data in a fast browser workspace for builders.",
     images: [
       {
         url: "/og-image.png",
@@ -86,7 +88,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Buidl Now! - Developer Tools for Builders Who Ship Fast",
     description:
-      "Free online developer tools to convert, encode, decode, hash, format, validate, and inspect everyday data.",
+      "Free online developer tools to convert, encode, decode, hash, format, validate, and inspect everyday data in a fast browser workspace for builders.",
     images: ["/og-image.png"],
   },
   robots: {
@@ -115,6 +117,13 @@ export default function RootLayout({
       <body
         className={`${turretRoad.variable} ${chakraPetch.variable} ${ibmPlexMono.variable} overflow-x-hidden antialiased`}
       >
+        {shouldLoadAnalytics ? (
+          <Script
+            src="/api/rybbit/script.js"
+            data-site-id="3988064a6374"
+            strategy="afterInteractive"
+          />
+        ) : null}
         <LayoutShell>{children}</LayoutShell>
       </body>
     </html>

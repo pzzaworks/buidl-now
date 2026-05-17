@@ -14,11 +14,11 @@ interface Chain {
 }
 
 const chains: Chain[] = [
-  { id: "ethereum", name: "Ethereum", blockTime: 12, iconPath: "/icons/networks/ethereum.svg" },
-  { id: "polygon", name: "Polygon", blockTime: 2, iconPath: "/icons/networks/polygon.svg" },
-  { id: "bsc", name: "BSC", blockTime: 3, iconPath: "/icons/networks/binance-smart-chain.svg" },
-  { id: "arbitrum", name: "Arbitrum", blockTime: 0.25, iconPath: "/icons/networks/arbitrum-one.svg" },
-  { id: "optimism", name: "Optimism", blockTime: 2, iconPath: "/icons/networks/optimism.svg" },
+  { id: "ethereum", name: "Ethereum", blockTime: 12, iconPath: "/icons/networks/ethereum.svg?v=20260517" },
+  { id: "polygon", name: "Polygon", blockTime: 2, iconPath: "/icons/networks/polygon.svg?v=20260517" },
+  { id: "bsc", name: "BSC", blockTime: 3, iconPath: "/icons/networks/binance-smart-chain.svg?v=20260517" },
+  { id: "arbitrum", name: "Arbitrum", blockTime: 0.25, iconPath: "/icons/networks/arbitrum-one.svg?v=20260517" },
+  { id: "optimism", name: "Optimism", blockTime: 2, iconPath: "/icons/networks/optimism.svg?v=20260517" },
 ];
 
 type ConversionMode = "block-to-time" | "time-to-block";

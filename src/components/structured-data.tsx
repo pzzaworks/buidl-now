@@ -1,4 +1,5 @@
 import { Tool } from "@/types/tools";
+import { buildToolSeoDescription } from "@/lib/seo";
 
 interface ToolStructuredDataProps {
   tool: Tool;
@@ -9,7 +10,7 @@ export function ToolStructuredData({ tool }: ToolStructuredDataProps) {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     name: tool.name,
-    description: tool.description,
+    description: buildToolSeoDescription(tool),
     url: `https://buidlnow.com${tool.path}`,
     applicationCategory: "DeveloperApplication",
     operatingSystem: "Any",

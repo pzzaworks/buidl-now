@@ -16,7 +16,7 @@ export function Header() {
     <div className="global-header fixed top-0 left-0 p-5 md:p-8 z-50">
       <Link href="/" className="flex items-center gap-2 text-foreground hover:opacity-50 transition-opacity">
         <Image
-          src="/buildnow-inv.svg"
+          src="/buildnow-inv.svg?v=20260517"
           alt="Buidl Now"
           width={27}
           height={48}

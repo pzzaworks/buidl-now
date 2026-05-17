@@ -123,7 +123,7 @@ export const functionSelectorConfig: ToolConfig = {
             <a
               href="https://www.4byte.directory/"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="nofollow noopener noreferrer"
               className="text-blue-400 hover:text-blue-300 hover:underline"
             >
               Ethereum Signature Database

@@ -283,7 +283,7 @@ export function MorseCodeTool() {
 
       {/* Morse Code Reference */}
       <div className="p-4 rounded-[12px] border border-[var(--color-gray-200)] bg-[var(--color-gray-50)]">
-        <h4 className="text-sm font-semibold mb-3">Morse Code Reference</h4>
+        <h3 className="text-sm font-semibold mb-3">Morse Code Reference</h3>
         <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-9 gap-2 text-xs font-mono">
           {Object.entries(MORSE_CODE).slice(0, 36).map(([char, code]) => (
             <div
@@ -332,7 +332,7 @@ export const morseCodeConfig: ToolConfig = {
       title: "How does it work?",
       content: (
         <>
-          <h4 className="text-base font-semibold mb-2">Signal Timing</h4>
+          <h3 className="text-base font-semibold mb-2">Signal Timing</h3>
           <ul className="list-disc list-inside space-y-1 mb-4">
             <li>A dot (.) is one unit of time</li>
             <li>A dash (-) is three units of time</li>
@@ -341,14 +341,14 @@ export const morseCodeConfig: ToolConfig = {
             <li>Space between words: seven units (represented as /)</li>
           </ul>
 
-          <h4 className="text-base font-semibold mb-2">Common Codes</h4>
+          <h3 className="text-base font-semibold mb-2">Common Codes</h3>
           <ul className="list-disc list-inside space-y-1 mb-4">
             <li><strong>SOS:</strong> ... --- ... (international distress signal)</li>
             <li><strong>E:</strong> . (shortest letter - most common in English)</li>
             <li><strong>T:</strong> - (second most common letter)</li>
           </ul>
 
-          <h4 className="text-base font-semibold mb-2">Use Cases</h4>
+          <h3 className="text-base font-semibold mb-2">Use Cases</h3>
           <ul className="list-disc list-inside space-y-1">
             <li>Emergency communication</li>
             <li>Amateur radio (ham radio)</li>

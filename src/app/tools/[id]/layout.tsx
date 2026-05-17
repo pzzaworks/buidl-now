@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { tools } from "@/lib/tools-list";
+import { buildToolSeoDescription } from "@/lib/seo";
 import { getToolById } from "@/tools";
 
 type Props = {
@@ -20,7 +21,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   // Use SEO overrides from toolConfig if available
   const title = toolConfig?.seo?.title || tool.name;
-  const description = toolConfig?.seo?.description || tool.description;
+  const description = buildToolSeoDescription(
+    tool,
+    toolConfig?.seo?.description || tool.description,
+  );
   const url = `https://buidlnow.com${tool.path}`;
 
   // Build keywords array

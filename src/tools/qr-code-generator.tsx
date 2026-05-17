@@ -12,6 +12,7 @@ export function QrCodeGeneratorTool() {
   const [input, setInput] = useState("");
   const [size, setSize] = useState("256");
   const [qrDataUrl, setQrDataUrl] = useState("");
+  const [qrImageSize, setQrImageSize] = useState(256);
   const [error, setError] = useState("");
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -33,6 +34,7 @@ export function QrCodeGeneratorTool() {
         },
       });
       setQrDataUrl(dataUrl);
+      setQrImageSize(qrSize);
       setError("");
     } catch (e) {
       setError("Failed to generate QR code");
@@ -90,7 +92,13 @@ export function QrCodeGeneratorTool() {
       {qrDataUrl && (
         <div className="space-y-4">
           <div className="flex flex-col items-center justify-center p-6 bg-[var(--color-gray-0)] rounded-[12px]">
-            <img src={qrDataUrl} alt="QR Code" className="max-w-full" />
+            <img
+              src={qrDataUrl}
+              alt="QR Code"
+              width={qrImageSize}
+              height={qrImageSize}
+              className="max-w-full"
+            />
           </div>
           <Button onClick={handleDownload} className="w-full">
             Download QR Code

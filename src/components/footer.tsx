@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaGithub } from "react-icons/fa";
 import { MdApps } from "react-icons/md";
+import { externalLinkRel } from "@/lib/seo";
 
 export function Footer() {
   const pathname = usePathname();
@@ -32,7 +33,7 @@ export function Footer() {
           <a
             href="https://github.com/pzzaworks/buidl-now"
             target="_blank"
-            rel="noopener noreferrer"
+            rel={externalLinkRel}
             className="flex items-center gap-1 text-foreground hover:opacity-50 transition-opacity"
             aria-label="GitHub Repository"
           >
@@ -53,7 +54,7 @@ export function Footer() {
         <a
           href="https://github.com/pzzaworks/buidl-now"
           target="_blank"
-          rel="noopener noreferrer"
+          rel={externalLinkRel}
           className="flex items-center gap-1 text-sm text-foreground hover:opacity-50 transition-opacity font-semibold"
           style={{ fontFamily: 'var(--font-turret), sans-serif' }}
           aria-label="GitHub Repository"

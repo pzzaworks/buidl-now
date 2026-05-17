@@ -310,21 +310,21 @@ export function FaviconGeneratorTool() {
           {dataUrl && (
             <>
               <div className="flex flex-col items-center gap-1">
-                <img src={dataUrl} alt="Favicon Preview" className="w-16 h-16" />
+                <img src={dataUrl} alt="Favicon Preview" width={64} height={64} className="w-16 h-16" />
                 <span className="text-xs text-[var(--color-gray-500)]">64x64</span>
               </div>
               <div className="flex flex-col items-center gap-1">
-                <img src={dataUrl} alt="Favicon Preview" className="w-8 h-8" />
+                <img src={dataUrl} alt="Favicon Preview" width={32} height={32} className="w-8 h-8" />
                 <span className="text-xs text-[var(--color-gray-500)]">32x32</span>
               </div>
               <div className="flex flex-col items-center gap-1">
-                <img src={dataUrl} alt="Favicon Preview" className="w-4 h-4" />
+                <img src={dataUrl} alt="Favicon Preview" width={16} height={16} className="w-4 h-4" />
                 <span className="text-xs text-[var(--color-gray-500)]">16x16</span>
               </div>
               <div className="flex items-center gap-2 ml-auto">
                 <span className="text-sm text-[var(--color-gray-500)]">Browser tab:</span>
                 <div className="flex items-center gap-2 px-3 py-1 bg-white rounded-t-[8px] border border-b-0 border-[var(--color-gray-200)]">
-                  <img src={dataUrl} alt="Tab" className="w-4 h-4" />
+                  <img src={dataUrl} alt="Tab" width={16} height={16} className="w-4 h-4" />
                   <span className="text-xs text-[var(--color-gray-600)]">My Site</span>
                 </div>
               </div>
