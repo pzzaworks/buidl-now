@@ -21,7 +21,12 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN npm run build
+RUN (while sleep 30; do echo "Next.js build still running..."; done) & \
+  heartbeat="$!"; \
+  npm run build; \
+  status="$?"; \
+  kill "$heartbeat"; \
+  exit "$status"
 
 # Production image, copy all the files and run next
 FROM node:22.13.1-alpine AS runner
