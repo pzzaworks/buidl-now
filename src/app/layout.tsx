@@ -119,9 +119,9 @@ export default function RootLayout({
       >
         {shouldLoadAnalytics ? (
           <Script
-            src="/api/rybbit/script.js"
-            data-site-id="3988064a6374"
-            strategy="afterInteractive"
+            src="https://analytics.pzza.works/api/script.js"
+            data-site-id="site-buidlnow"
+            strategy="beforeInteractive"
           />
         ) : null}
         <LayoutShell>{children}</LayoutShell>
