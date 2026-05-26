@@ -119,7 +119,7 @@ export default function RootLayout({
       >
         {shouldLoadAnalytics ? (
           <Script
-            src="https://analytics.pzza.works/api/script.js"
+            src="/api/rybbit/script.js"
             data-site-id="site-buidlnow"
             strategy="beforeInteractive"
           />
