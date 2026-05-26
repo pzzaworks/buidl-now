@@ -18,8 +18,6 @@
 .DS_Store
 *.pem
 *.sh
-.dockerignore
-Dockerfile
 docker-compose.yml
 
 # debug
