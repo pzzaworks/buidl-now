@@ -114,6 +114,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Warm up the connection to the analytics origin used in production so
+            the beacon request does not pay the full DNS + TLS cost on first
+            send. Only emitted when analytics is actually loaded. */}
+        {shouldLoadAnalytics ? (
+          <>
+            <link
+              rel="preconnect"
+              href="https://analytics.pzza.works"
+              crossOrigin="anonymous"
+            />
+            <link rel="dns-prefetch" href="https://analytics.pzza.works" />
+          </>
+        ) : null}
+      </head>
       <body
         className={`${turretRoad.variable} ${chakraPetch.variable} ${ibmPlexMono.variable} overflow-x-hidden antialiased`}
       >

@@ -2,6 +2,31 @@ import { Tool } from "@/types/tools";
 import { buildToolSeoDescription, getToolCategoryLabel } from "@/lib/seo";
 import { type FaqItem } from "@/lib/homepage-faq";
 
+// Single source of truth for the E-E-A-T author/creator identity used across
+// the JSON-LD graph. Modeled as a Person with sameAs links to the real X and
+// GitHub profiles plus the personal site, so search and answer engines can tie
+// the content to a verifiable author.
+const personAuthor = {
+  "@type": "Person",
+  name: "Berke (pzzaworks)",
+  url: "https://pzza.works",
+  sameAs: [
+    "https://x.com/pzzaworks",
+    "https://github.com/pzzaworks",
+    "https://pzza.works",
+  ],
+} as const;
+
+const organizationPublisher = {
+  "@type": "Organization",
+  name: "Buidl Now!",
+  url: "https://buidlnow.com",
+  logo: {
+    "@type": "ImageObject",
+    url: "https://buidlnow.com/buildnow.svg",
+  },
+} as const;
+
 interface ToolStructuredDataProps {
   tool: Tool;
 }
@@ -46,15 +71,9 @@ export function ToolStructuredData({ tool }: ToolStructuredDataProps) {
       price: "0",
       priceCurrency: "USD",
     },
-    publisher: {
-      "@type": "Organization",
-      name: "Buidl Now!",
-      url: "https://buidlnow.com",
-      logo: {
-        "@type": "ImageObject",
-        url: "https://buidlnow.com/buildnow.svg",
-      },
-    },
+    author: personAuthor,
+    creator: personAuthor,
+    publisher: organizationPublisher,
     audience: {
       "@type": "Audience",
       audienceType: "Developers",
@@ -91,15 +110,9 @@ export function WebsiteStructuredData() {
       },
       "query-input": "required name=search_term_string",
     },
-    publisher: {
-      "@type": "Organization",
-      name: "Buidl Now!",
-      url: "https://buidlnow.com",
-      logo: {
-        "@type": "ImageObject",
-        url: "https://buidlnow.com/buildnow.svg",
-      },
-    },
+    author: personAuthor,
+    creator: personAuthor,
+    publisher: organizationPublisher,
   };
 
   return (
@@ -144,7 +157,9 @@ export function OrganizationStructuredData() {
     url: "https://buidlnow.com",
     logo: "https://buidlnow.com/buildnow.svg",
     description: "Free online developer tools for builders who ship fast",
+    founder: personAuthor,
     sameAs: [
+      "https://x.com/pzzaworks",
       "https://github.com/pzzaworks",
       "https://pzza.works",
     ],
