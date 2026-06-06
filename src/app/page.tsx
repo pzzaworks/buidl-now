@@ -1330,7 +1330,7 @@ export function HomePageClient({
         {!isToolRoute ? (
           <section id="faq" className="bg-[#f5f5f5]">
             <RevealSection
-              className="mx-auto w-full max-w-[1920px] px-6 py-24 lg:px-16"
+              className="mx-auto w-full max-w-[1920px] px-6 pb-24 lg:px-16"
               pageReady={isPageReady}
               shouldReduceMotion={Boolean(shouldReduceMotion)}
               variants={shouldReduceMotion ? undefined : staggerParentVariants}
