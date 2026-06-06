@@ -1,6 +1,15 @@
-import type { Tool } from "@/types/tools";
+import { type Tool, toolCategories } from "@/types/tools";
 
 export const externalLinkRel = "nofollow noopener noreferrer";
+
+export function getToolCategoryLabel(category: Tool["category"]): string {
+  const match = toolCategories.find((entry) => entry.id === category);
+  return match?.name ?? category;
+}
+
+export function getToolCategoryKindLabel(category: Tool["category"]): string {
+  return categoryLabels[category];
+}
 
 const minimumMetaDescriptionLength = 120;
 const maximumMetaDescriptionLength = 155;
