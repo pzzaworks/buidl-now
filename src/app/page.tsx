@@ -1351,15 +1351,8 @@ export function HomePageClient({
 
               <div className="grid grid-cols-1 gap-y-10 pt-10 lg:grid-cols-[360px_minmax(0,1fr)] lg:gap-x-8 lg:pt-12">
                 <div>
-                  <div
-                    className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]/72"
-                    style={monoStyle}
-                  >
-                    / Questions
-                  </div>
-
                   <h2
-                    className="mt-5 max-w-[320px] text-[32px] font-medium leading-[36px] tracking-[-2px] text-[#202020]"
+                    className="max-w-[320px] text-[32px] font-medium leading-[36px] tracking-[-2px] text-[#202020]"
                     style={sansStyle}
                   >
                     Frequently asked questions
@@ -1375,7 +1368,6 @@ export function HomePageClient({
                 </div>
 
                 <motion.div
-                  className="border-t border-[#202020]"
                   variants={shouldReduceMotion ? undefined : fadeUpVariants}
                 >
                   <FaqAccordion items={homepageFaq} />
