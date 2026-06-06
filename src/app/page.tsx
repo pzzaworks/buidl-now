@@ -20,7 +20,7 @@ import {
   WebsiteStructuredData,
 } from "@/components/structured-data";
 import { tools } from "@/lib/tools-list";
-import { externalLinkRel } from "@/lib/seo";
+import { externalLinkRel, getToolCategoryKindLabel } from "@/lib/seo";
 import { getToolById } from "@/tools";
 import { type Tool } from "@/types/tools";
 
@@ -480,6 +480,8 @@ export function HomePageClient({
   routeMode = "home",
 }: HomePageClientProps) {
   const shouldReduceMotion = useReducedMotion();
+  const isToolRoute = routeMode === "tool";
+  const HeroHeading = isToolRoute ? motion.p : motion.h1;
   const categoryDropdownRef = useRef<HTMLDivElement>(null);
   const toolsSectionRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
@@ -500,6 +502,13 @@ export function HomePageClient({
   const activeToolName = activeToolMeta?.name ?? activeToolConfig?.name ?? "";
   const activeToolDescription =
     activeToolMeta?.description ?? activeToolConfig?.description ?? "";
+  const activeToolCategoryKind = activeToolMeta
+    ? getToolCategoryKindLabel(activeToolMeta.category)
+    : "";
+  const activeToolHeading =
+    activeToolName && activeToolCategoryKind
+      ? `${activeToolName} - free ${activeToolCategoryKind} tool`
+      : activeToolName;
   const toolSections = activeToolConfig?.sections ?? [];
   const toolExamples = activeToolConfig?.examples ?? [];
   const toolCodeSnippet = activeToolConfig?.codeSnippet ?? "";
@@ -729,7 +738,7 @@ export function HomePageClient({
                 initial={shouldReduceMotion ? false : "hidden"}
                 animate={shouldReduceMotion || isPageReady ? "visible" : "hidden"}
               >
-                <motion.h1
+                <HeroHeading
                   className="text-[40px] font-medium leading-[46px] tracking-[-2.5px] text-[#202020]"
                   style={
                     shouldReduceMotion
@@ -744,7 +753,7 @@ export function HomePageClient({
                 >
                   The developer tools you reach for every day, all in one
                   place.
-                </motion.h1>
+                </HeroHeading>
 
                 <motion.p
                   className="mt-8 max-w-[690px] text-[18px] leading-8 text-[#202020]"
@@ -1040,12 +1049,21 @@ export function HomePageClient({
                     transition={shouldReduceMotion ? undefined : toolSwapTransition}
                   >
                     <div>
-                      <h2
-                        className="text-[32px] font-medium leading-[36px] tracking-[-2px] text-[#202020] lg:text-[40px] lg:leading-[44px]"
-                        style={sansStyle}
-                      >
-                        {activeToolName}
-                      </h2>
+                      {isToolRoute ? (
+                        <h1
+                          className="text-[32px] font-medium leading-[36px] tracking-[-2px] text-[#202020] lg:text-[40px] lg:leading-[44px]"
+                          style={sansStyle}
+                        >
+                          {activeToolHeading}
+                        </h1>
+                      ) : (
+                        <h2
+                          className="text-[32px] font-medium leading-[36px] tracking-[-2px] text-[#202020] lg:text-[40px] lg:leading-[44px]"
+                          style={sansStyle}
+                        >
+                          {activeToolName}
+                        </h2>
+                      )}
 
                       <p
                         className="mt-6 text-[18px] leading-8 text-[#202020]"

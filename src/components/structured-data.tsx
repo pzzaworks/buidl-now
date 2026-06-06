@@ -1,11 +1,37 @@
 import { Tool } from "@/types/tools";
-import { buildToolSeoDescription } from "@/lib/seo";
+import { buildToolSeoDescription, getToolCategoryLabel } from "@/lib/seo";
 
 interface ToolStructuredDataProps {
   tool: Tool;
 }
 
 export function ToolStructuredData({ tool }: ToolStructuredDataProps) {
+  const categoryLabel = getToolCategoryLabel(tool.category);
+  const breadcrumbData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://buidlnow.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: categoryLabel,
+        item: `https://buidlnow.com/?category=${tool.category}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: tool.name,
+        item: `https://buidlnow.com${tool.path}`,
+      },
+    ],
+  };
+
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -36,10 +62,16 @@ export function ToolStructuredData({ tool }: ToolStructuredDataProps) {
   };
 
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
+      />
+    </>
   );
 }
 
