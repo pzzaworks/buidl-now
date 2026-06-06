@@ -1159,7 +1159,7 @@ export function HomePageClient({
                       {toolStoryRows.map((row, index) => (
                         <div
                           key={`${row.title}-${index}`}
-                          className="border-t border-[#202020]/16 py-7 first:pt-0 lg:border-t-0 lg:border-l lg:border-[#202020] lg:py-0 lg:pl-8 lg:first:border-l-0 lg:first:pl-0"
+                          className="border-t border-[#202020] py-7 first:pt-0 lg:border-t-0 lg:border-l lg:py-0 lg:pl-8 lg:first:border-l-0 lg:first:pl-0"
                         >
                           <div
                             className="text-[12px] font-medium uppercase tracking-[0.2em] text-[#202020]"
