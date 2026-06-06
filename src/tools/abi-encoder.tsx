@@ -74,7 +74,7 @@ export function AbiEncoderTool() {
     <div className="space-y-8">
       {/* Encode Section */}
       <div>
-        <h3 className="text-sm font-semibold mb-4">Encode ABI Parameters</h3>
+        <div className="text-sm font-semibold mb-4">Encode ABI Parameters</div>
         <div className="space-y-4">
           <div>
             <Label className="mb-2 block text-sm">Types (comma-separated)</Label>
@@ -127,7 +127,7 @@ export function AbiEncoderTool() {
 
       {/* Decode Section */}
       <div>
-        <h3 className="text-sm font-semibold mb-4">Decode ABI Parameters</h3>
+        <div className="text-sm font-semibold mb-4">Decode ABI Parameters</div>
         <div className="space-y-4">
           <div>
             <Label className="mb-2 block text-sm">Types (comma-separated)</Label>
@@ -212,7 +212,7 @@ export const abiEncoderConfig: ToolConfig = {
             ABI encoding follows strict rules to pack typed data into bytes. Each parameter type has specific encoding rules: fixed-size types like uint256 occupy 32 bytes, dynamic types like strings include length prefixes, and arrays are encoded with their length followed by elements. The encoding ensures deterministic and efficient data representation.
           </p>
 
-          <h4 className="text-base font-semibold mb-2">Common Types</h4>
+          <div className="text-base font-semibold mb-2">Common Types</div>
           <ul className="list-disc list-inside space-y-1 text-sm">
             <li>address: Ethereum address (20 bytes)</li>
             <li>uint256: Unsigned 256-bit integer</li>

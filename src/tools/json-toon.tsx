@@ -335,7 +335,7 @@ export function JsonToonTool() {
 
       {/* Info Box */}
       <div className="p-4 rounded-[12px] border bg-[var(--color-blue-50)] border-[var(--color-blue-500)]/30">
-        <h3 className="font-semibold text-sm mb-2 flex items-center gap-2"><MdInfo className="w-5 h-5" /> About TOON Format</h3>
+        <div className="font-semibold text-sm mb-2 flex items-center gap-2"><MdInfo className="w-5 h-5" /> About TOON Format</div>
         <ul className="text-sm space-y-1 text-muted-foreground">
           <li>30-60% fewer tokens on large uniform arrays vs JSON</li>
           <li>Tabular arrays: Declare keys once, stream data as rows</li>
@@ -381,12 +381,12 @@ export const jsonToonConfig: ToolConfig = {
             TOON optimizes JSON by using a tabular format for uniform arrays. Instead of repeating object keys for each array item, TOON declares the structure once using the format [length]&#123;keys&#125;: followed by comma-separated values. When converting JSON to TOON, uniform arrays are detected and transformed into this compact table format. When converting TOON back to JSON, the table structure is expanded into full JSON objects.
           </p>
 
-          <h4 className="text-base font-semibold mb-2">Use Cases</h4>
+          <div className="text-base font-semibold mb-2">Use Cases</div>
           <p className="text-sm mb-4">
             TOON is most effective for large arrays with uniform structure like API responses, database query results, and data tables. A typical shopping cart with 4 items can save 43% in tokens (~520 tokens in JSON vs ~295 in TOON).
           </p>
 
-          <h4 className="text-base font-semibold mb-2">When NOT to Use</h4>
+          <div className="text-base font-semibold mb-2">When NOT to Use</div>
           <p className="text-sm">
             Avoid TOON for deeply nested structures, non-uniform arrays, or small datasets where savings are minimal. Human readability should take priority over token efficiency in documentation and configuration files.
           </p>

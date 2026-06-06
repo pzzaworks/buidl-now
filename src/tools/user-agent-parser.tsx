@@ -226,7 +226,7 @@ export function UserAgentParserTool() {
         <div className="space-y-4">
           {/* Browser */}
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <h3 className="text-sm font-semibold mb-3">Browser</h3>
+            <div className="text-sm font-semibold mb-3">Browser</div>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
                 <Label className="text-xs text-muted-foreground">Name</Label>
@@ -241,7 +241,7 @@ export function UserAgentParserTool() {
 
           {/* Operating System */}
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <h3 className="text-sm font-semibold mb-3">Operating System</h3>
+            <div className="text-sm font-semibold mb-3">Operating System</div>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
                 <Label className="text-xs text-muted-foreground">Name</Label>
@@ -256,7 +256,7 @@ export function UserAgentParserTool() {
 
           {/* Device */}
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <h3 className="text-sm font-semibold mb-3">Device</h3>
+            <div className="text-sm font-semibold mb-3">Device</div>
             <div className="grid grid-cols-3 gap-3 text-sm">
               <div>
                 <Label className="text-xs text-muted-foreground">Type</Label>
@@ -275,7 +275,7 @@ export function UserAgentParserTool() {
 
           {/* Engine */}
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <h3 className="text-sm font-semibold mb-3">Rendering Engine</h3>
+            <div className="text-sm font-semibold mb-3">Rendering Engine</div>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
                 <Label className="text-xs text-muted-foreground">Name</Label>
@@ -292,7 +292,7 @@ export function UserAgentParserTool() {
 
       {/* Common User-Agent Examples */}
       <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-        <h3 className="text-sm font-semibold mb-3">Example User-Agents</h3>
+        <div className="text-sm font-semibold mb-3">Example User-Agents</div>
         <div className="space-y-2 text-xs">
           <button
             onClick={() => {
@@ -365,7 +365,7 @@ export const userAgentParserConfig: ToolConfig = {
       title: "How does it work?",
       content: (
         <>
-          <h4 className="text-base font-semibold mb-2">User-Agent Components</h4>
+          <div className="text-base font-semibold mb-2">User-Agent Components</div>
           <ul className="list-disc list-inside space-y-1 mb-4">
             <li><strong>Browser:</strong> The web browser name and version (Chrome, Firefox, Safari, etc.)</li>
             <li><strong>Operating System:</strong> The OS name and version (Windows, macOS, Android, iOS)</li>
@@ -373,7 +373,7 @@ export const userAgentParserConfig: ToolConfig = {
             <li><strong>Rendering Engine:</strong> The engine used to render web pages (WebKit, Gecko, Blink)</li>
           </ul>
 
-          <h4 className="text-base font-semibold mb-2">Common Use Cases</h4>
+          <div className="text-base font-semibold mb-2">Common Use Cases</div>
           <ul className="list-disc list-inside space-y-1">
             <li>Responsive design testing</li>
             <li>Browser compatibility analysis</li>
