@@ -45,24 +45,24 @@ export const metadata: Metadata = {
     apple: "/buildnow.svg",
   },
   title: {
-    default: "Buidl Now! - Developer Tools for Builders Who Ship Fast",
+    default: "Free Developer & Web3 Tools Online | Buidl Now!",
     template: "%s | Buidl Now!",
   },
   description:
-    "Free online developer tools to convert, encode, decode, hash, format, validate, and inspect everyday data in a fast browser workspace for builders.",
+    "110+ free online developer and web3 tools to convert, encode, decode, hash, format, and validate data. Everything runs in your browser, no signup or installs.",
   keywords: [
-    "developer tools",
+    "free developer tools",
+    "online developer tools",
+    "web3 tools",
     "online tools",
-    "free tools",
+    "ethereum developer tools",
     "converter tools",
     "encoder decoder",
     "hash generator",
-    "formatter",
-    "validator",
-    "base64 converter",
-    "hex converter",
     "json formatter",
-    "developer utility",
+    "code beautifier",
+    "browser tools no signup",
+    "developer utilities",
   ],
   authors: [{ name: "Berke (pzzaworks)", url: "https://pzza.works" }],
   creator: "Berke (pzzaworks)",
@@ -72,9 +72,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://buidlnow.com",
     siteName: "Buidl Now!",
-    title: "Buidl Now! - Developer Tools for Builders Who Ship Fast",
+    title: "Free Developer & Web3 Tools Online | Buidl Now!",
     description:
-      "Free online developer tools to convert, encode, decode, hash, format, validate, and inspect everyday data in a fast browser workspace for builders.",
+      "110+ free online developer and web3 tools to convert, encode, decode, hash, format, and validate data. Everything runs in your browser, no signup or installs.",
     images: [
       {
         url: "/og-image.png",
@@ -86,9 +86,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Buidl Now! - Developer Tools for Builders Who Ship Fast",
+    title: "Free Developer & Web3 Tools Online | Buidl Now!",
     description:
-      "Free online developer tools to convert, encode, decode, hash, format, validate, and inspect everyday data in a fast browser workspace for builders.",
+      "110+ free online developer and web3 tools to convert, encode, decode, hash, format, and validate data. Everything runs in your browser, no signup or installs.",
     images: ["/og-image.png"],
   },
   robots: {
