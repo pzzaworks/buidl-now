@@ -364,7 +364,7 @@ export function CrontabGuruTool() {
 
           {/* Fields Breakdown */}
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <h3 className="text-sm font-semibold mb-3">Field Breakdown</h3>
+            <div className="text-sm font-semibold mb-3">Field Breakdown</div>
             <div className="grid grid-cols-5 gap-2 text-center text-xs">
               <div>
                 <div className="font-mono text-lg">{parsed.fields.minute}</div>
@@ -391,7 +391,7 @@ export function CrontabGuruTool() {
 
           {/* Next 5 Runs */}
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <h3 className="text-sm font-semibold mb-3">Next 5 Execution Times</h3>
+            <div className="text-sm font-semibold mb-3">Next 5 Execution Times</div>
             <div className="space-y-2">
               {parsed.nextRuns.map((date, index) => (
                 <div key={index} className="flex justify-between text-sm font-mono">
@@ -406,7 +406,7 @@ export function CrontabGuruTool() {
 
       {/* Common Examples */}
       <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-        <h3 className="text-sm font-semibold mb-3">Common Cron Expressions</h3>
+        <div className="text-sm font-semibold mb-3">Common Cron Expressions</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {COMMON_EXAMPLES.map((example, index) => (
             <button
@@ -423,7 +423,7 @@ export function CrontabGuruTool() {
 
       {/* Quick Reference */}
       <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-        <h3 className="text-sm font-semibold mb-3">Quick Reference</h3>
+        <div className="text-sm font-semibold mb-3">Quick Reference</div>
         <div className="text-xs space-y-2">
           <div className="grid grid-cols-2 gap-2">
             <div><code className="font-mono">*</code> any value</div>
@@ -472,12 +472,12 @@ export const crontabGuruConfig: ToolConfig = {
       title: "How does it work?",
       content: (
         <>
-          <h4 className="text-base font-semibold mb-2">Cron Expression Format</h4>
+          <div className="text-base font-semibold mb-2">Cron Expression Format</div>
           <p className="text-sm mb-4">
             A standard cron expression has 5 fields: minute (0-59), hour (0-23), day of month (1-31), month (1-12), and day of week (0-6, where 0 is Sunday).
           </p>
 
-          <h4 className="text-base font-semibold mb-2">Special Characters</h4>
+          <div className="text-base font-semibold mb-2">Special Characters</div>
           <ul className="list-disc list-inside space-y-1 text-sm mb-4">
             <li><code className="font-mono">*</code> - matches any value</li>
             <li><code className="font-mono">,</code> - separates multiple values (1,3,5)</li>
@@ -485,7 +485,7 @@ export const crontabGuruConfig: ToolConfig = {
             <li><code className="font-mono">/</code> - defines step values (*/5 = every 5)</li>
           </ul>
 
-          <h4 className="text-base font-semibold mb-2">Named Values</h4>
+          <div className="text-base font-semibold mb-2">Named Values</div>
           <p className="text-sm">
             Months can use names (JAN-DEC) and days can use names (SUN-SAT) instead of numbers.
           </p>

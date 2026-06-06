@@ -179,9 +179,9 @@ export function HttpStatusTool() {
       <div className="space-y-6">
         {Object.entries(groupedCodes).map(([category, codes]) => (
           <div key={category}>
-            <h3 className={`text-sm font-semibold mb-3 px-3 py-1 rounded-[8px] inline-block ${CATEGORY_COLORS[category] || ""}`}>
+            <div className={`text-sm font-semibold mb-3 px-3 py-1 rounded-[8px] inline-block ${CATEGORY_COLORS[category] || ""}`}>
               {category}
-            </h3>
+            </div>
             <div className="space-y-2">
               {codes.map((status) => (
                 <div

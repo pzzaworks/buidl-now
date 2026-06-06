@@ -179,7 +179,7 @@ export function EpochConverterTool() {
 
       {/* Basic Conversion */}
       <div>
-        <h3 className="text-base font-semibold mb-4">Convert epoch to human-readable date and vice versa</h3>
+        <div className="text-base font-semibold mb-4">Convert epoch to human-readable date and vice versa</div>
         <div className="space-y-4">
           <div>
             <Input
@@ -219,7 +219,7 @@ export function EpochConverterTool() {
 
       {/* Manual Date Input */}
       <div>
-        <h3 className="text-base font-semibold mb-4">Manual Date Input</h3>
+        <div className="text-base font-semibold mb-4">Manual Date Input</div>
         <div className="grid grid-cols-6 gap-2 mb-2">
           <div>
             <Label className="text-xs">Year</Label>
@@ -306,7 +306,7 @@ export function EpochConverterTool() {
 
       {/* Batch Convert */}
       <div>
-        <h3 className="text-base font-semibold mb-4">Batch Convert</h3>
+        <div className="text-base font-semibold mb-4">Batch Convert</div>
         <div className="space-y-4">
           <div>
             <Label className="mb-2 block text-sm">Timestamps (one per line)</Label>
@@ -336,9 +336,9 @@ export function EpochConverterTool() {
 
       {/* Seconds to Days/Hours/Minutes */}
       <div>
-        <h3 className="text-base font-semibold mb-4">
+        <div className="text-base font-semibold mb-4">
           Convert seconds to days, hours and minutes
-        </h3>
+        </div>
         <div className="space-y-4">
           <div>
             <Input
@@ -403,7 +403,7 @@ export const epochConverterConfig: ToolConfig = {
             Timestamp to date converts seconds since epoch (January 1, 1970) to a JavaScript Date object, which is then formatted as ISO 8601 string. Date to timestamp parses the input string, converts to a Date object, and extracts milliseconds since epoch divided by 1000 for seconds. The tool auto-detects format by digit count.
           </p>
 
-          <h4 className="text-base font-semibold mb-2">Seconds vs Milliseconds</h4>
+          <div className="text-base font-semibold mb-2">Seconds vs Milliseconds</div>
           <p className="text-sm">
             Unix timestamps are typically represented in seconds, but some systems use milliseconds. This tool automatically detects the format based on the number of digits (10 digits for seconds, 13 for milliseconds).
           </p>

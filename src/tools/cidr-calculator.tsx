@@ -235,7 +235,7 @@ export function CidrCalculatorTool() {
 
       {/* CIDR to Range */}
       <div>
-        <h3 className="text-base font-semibold mb-4">CIDR to IP Range</h3>
+        <div className="text-base font-semibold mb-4">CIDR to IP Range</div>
         <div className="space-y-4">
           <Input
             label="CIDR Notation"
@@ -277,7 +277,7 @@ export function CidrCalculatorTool() {
 
       {/* Range to CIDR */}
       <div>
-        <h3 className="text-base font-semibold mb-4">IP Range to CIDR</h3>
+        <div className="text-base font-semibold mb-4">IP Range to CIDR</div>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-2">
             <Input
@@ -320,7 +320,7 @@ export function CidrCalculatorTool() {
 
       {/* Split CIDR */}
       <div>
-        <h3 className="text-base font-semibold mb-4">Split CIDR into Smaller Subnets</h3>
+        <div className="text-base font-semibold mb-4">Split CIDR into Smaller Subnets</div>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-2">
             <Input
@@ -372,7 +372,7 @@ export function CidrCalculatorTool() {
 
       {/* Quick Reference */}
       <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-        <h3 className="text-sm font-semibold mb-3">Quick Reference</h3>
+        <div className="text-sm font-semibold mb-3">Quick Reference</div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
           <div>/8 = 16.7M hosts</div>
           <div>/16 = 65,534 hosts</div>
@@ -423,17 +423,17 @@ export const cidrCalculatorConfig: ToolConfig = {
       title: "How does it work?",
       content: (
         <>
-          <h4 className="text-base font-semibold mb-2">CIDR to Range</h4>
+          <div className="text-base font-semibold mb-2">CIDR to Range</div>
           <p className="text-sm mb-4">
             Converts CIDR notation to the actual IP range. The prefix length determines how many addresses are in the block. A /24 has 256 addresses (2^8), while a /16 has 65,536 addresses (2^16).
           </p>
 
-          <h4 className="text-base font-semibold mb-2">Range to CIDR</h4>
+          <div className="text-base font-semibold mb-2">Range to CIDR</div>
           <p className="text-sm mb-4">
             Converts an arbitrary IP range into the minimum number of CIDR blocks needed to cover it. Some ranges may require multiple CIDR blocks if they don&apos;t align to power-of-2 boundaries.
           </p>
 
-          <h4 className="text-base font-semibold mb-2">Subnet Splitting</h4>
+          <div className="text-base font-semibold mb-2">Subnet Splitting</div>
           <p className="text-sm">
             Divides a larger CIDR block into smaller subnets. For example, splitting a /16 into /24s creates 256 smaller networks. This is useful for network planning and organization.
           </p>
