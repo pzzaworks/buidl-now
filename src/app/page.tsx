@@ -21,6 +21,7 @@ import {
   WebsiteStructuredData,
 } from "@/components/structured-data";
 import { homepageFaq } from "@/lib/homepage-faq";
+import { FaqAccordion } from "@/components/faq-accordion";
 import { tools } from "@/lib/tools-list";
 import {
   externalLinkRel,
@@ -1377,34 +1378,7 @@ export function HomePageClient({
                   className="border-t border-[#202020]"
                   variants={shouldReduceMotion ? undefined : fadeUpVariants}
                 >
-                  {homepageFaq.map((item) => (
-                    <details
-                      key={item.question}
-                      className="group border-b border-[#202020]/16"
-                    >
-                      <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-6">
-                        <span
-                          className="text-[20px] font-medium leading-[1.2] tracking-[-0.02em] text-[#202020] lg:text-[24px]"
-                          style={sansStyle}
-                        >
-                          {item.question}
-                        </span>
-                        <span
-                          aria-hidden="true"
-                          className="mt-1 shrink-0 text-[18px] font-medium text-[#202020] transition-transform duration-200 group-open:rotate-45"
-                          style={monoStyle}
-                        >
-                          +
-                        </span>
-                      </summary>
-                      <p
-                        className="max-w-[760px] pb-6 text-[17px] leading-7 text-[#202020]"
-                        style={sansStyle}
-                      >
-                        {item.answer}
-                      </p>
-                    </details>
-                  ))}
+                  <FaqAccordion items={homepageFaq} />
                 </motion.div>
               </div>
             </RevealSection>
