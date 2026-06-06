@@ -1,5 +1,6 @@
 import { Tool } from "@/types/tools";
 import { buildToolSeoDescription, getToolCategoryLabel } from "@/lib/seo";
+import { type FaqItem } from "@/lib/homepage-faq";
 
 interface ToolStructuredDataProps {
   tool: Tool;
@@ -99,6 +100,32 @@ export function WebsiteStructuredData() {
         url: "https://buidlnow.com/buildnow.svg",
       },
     },
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+    />
+  );
+}
+
+interface FaqStructuredDataProps {
+  items: FaqItem[];
+}
+
+export function FaqStructuredData({ items }: FaqStructuredDataProps) {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
   };
 
   return (

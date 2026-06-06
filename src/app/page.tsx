@@ -16,9 +16,11 @@ import { usePathname, useRouter } from "next/navigation";
 import { BuidlWordmark } from "@/components/buidl-wordmark";
 import { Code } from "@/components/ui/code";
 import {
+  FaqStructuredData,
   OrganizationStructuredData,
   WebsiteStructuredData,
 } from "@/components/structured-data";
+import { homepageFaq } from "@/lib/homepage-faq";
 import { tools } from "@/lib/tools-list";
 import { externalLinkRel, getToolCategoryKindLabel } from "@/lib/seo";
 import { getToolById } from "@/tools";
@@ -595,6 +597,22 @@ export function HomePageClient({
     }
 
     const searchParams = new URLSearchParams(window.location.search);
+
+    // Honour the WebSite SearchAction target (/?search=<query>) by pre-filling
+    // the Tool Finder and scrolling to it, so the structured-data search box
+    // maps to a real on-site search.
+    const searchQuery = searchParams.get("search");
+    if (searchQuery && searchQuery.trim()) {
+      setToolSearchQuery(searchQuery);
+      requestAnimationFrame(() => {
+        toolsSectionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      });
+      return;
+    }
+
     const toolId = searchParams.get("tool");
     if (!toolId || !getToolMetaById(toolId)) {
       return;
@@ -661,6 +679,9 @@ export function HomePageClient({
     <>
       {includeSiteStructuredData ? <WebsiteStructuredData /> : null}
       {includeSiteStructuredData ? <OrganizationStructuredData /> : null}
+      {includeSiteStructuredData ? (
+        <FaqStructuredData items={homepageFaq} />
+      ) : null}
 
       <div className="min-h-screen w-full bg-[#f5f5f5] text-[#202020]">
         <header className="sticky top-0 z-50 bg-[#f0fb29]">
@@ -1207,6 +1228,79 @@ export function HomePageClient({
             </motion.div>
           </RevealSection>
         </section>
+
+        {!isToolRoute ? (
+          <section id="faq" className="border-t border-[#202020] bg-[#f5f5f5]">
+            <RevealSection
+              className="mx-auto w-full max-w-[1920px] px-6 py-24 lg:px-16"
+              pageReady={isPageReady}
+              shouldReduceMotion={Boolean(shouldReduceMotion)}
+              variants={shouldReduceMotion ? undefined : staggerParentVariants}
+            >
+              <SectionLabel title="/ FAQ" />
+
+              <div className="grid grid-cols-1 gap-y-10 pt-10 lg:grid-cols-[360px_minmax(0,1fr)] lg:gap-x-8 lg:pt-12">
+                <div>
+                  <div
+                    className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]/72"
+                    style={monoStyle}
+                  >
+                    / Questions
+                  </div>
+
+                  <h2
+                    className="mt-5 max-w-[320px] text-[32px] font-medium leading-[36px] tracking-[-2px] text-[#202020]"
+                    style={sansStyle}
+                  >
+                    Frequently asked questions
+                  </h2>
+
+                  <p
+                    className="mt-6 max-w-[320px] text-[18px] leading-8 text-[#202020]"
+                    style={sansStyle}
+                  >
+                    What Buidl Now is, how the tools run, and where your data
+                    goes.
+                  </p>
+                </div>
+
+                <motion.div
+                  className="border-t border-[#202020]"
+                  variants={shouldReduceMotion ? undefined : fadeUpVariants}
+                >
+                  {homepageFaq.map((item) => (
+                    <details
+                      key={item.question}
+                      className="group border-b border-[#202020]/16"
+                    >
+                      <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-6">
+                        <span
+                          className="text-[20px] font-medium leading-[1.2] tracking-[-0.02em] text-[#202020] lg:text-[24px]"
+                          style={sansStyle}
+                        >
+                          {item.question}
+                        </span>
+                        <span
+                          aria-hidden="true"
+                          className="mt-1 shrink-0 text-[18px] font-medium text-[#202020] transition-transform duration-200 group-open:rotate-45"
+                          style={monoStyle}
+                        >
+                          +
+                        </span>
+                      </summary>
+                      <p
+                        className="max-w-[760px] pb-6 text-[17px] leading-7 text-[#202020]"
+                        style={sansStyle}
+                      >
+                        {item.answer}
+                      </p>
+                    </details>
+                  ))}
+                </motion.div>
+              </div>
+            </RevealSection>
+          </section>
+        ) : null}
 
         <footer id="footer" className="border-t border-[#202020] bg-[#f5f5f5]">
           <RevealSection
