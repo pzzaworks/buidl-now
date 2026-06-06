@@ -1092,14 +1092,9 @@ export function HomePageClient({
               className="pt-16 lg:pt-20"
               variants={shouldReduceMotion ? undefined : fadeUpVariants}
             >
-              <div
-                className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]/72"
-                style={monoStyle}
-              >
-                / Selected Tool
-              </div>
+              <SectionLabel title="/ Selected Tool" />
 
-              <div className="mt-5 border-t border-[#202020]/16 pt-8">
+              <div className="pt-8">
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.div
                     key={`details-${selectedToolId}`}
@@ -1164,7 +1159,7 @@ export function HomePageClient({
                       {toolStoryRows.map((row, index) => (
                         <div
                           key={`${row.title}-${index}`}
-                          className="border-t border-[#202020]/16 py-7 first:pt-0 lg:border-t-0 lg:border-l lg:py-0 lg:pl-8 lg:first:border-l-0 lg:first:pl-0"
+                          className="border-t border-[#202020]/16 py-7 first:pt-0 lg:border-t-0 lg:border-l lg:border-[#202020] lg:py-0 lg:pl-8 lg:first:border-l-0 lg:first:pl-0"
                         >
                           <div
                             className="text-[12px] font-medium uppercase tracking-[0.2em] text-[#202020]"
@@ -1245,15 +1240,8 @@ export function HomePageClient({
 
               <div className="grid grid-cols-1 gap-y-10 pt-10 lg:grid-cols-[360px_minmax(0,1fr)] lg:gap-x-8 lg:pt-12">
                 <div>
-                  <div
-                    className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]/72"
-                    style={monoStyle}
-                  >
-                    / Integration
-                  </div>
-
                   <p
-                    className="mt-5 max-w-[320px] text-[18px] leading-8 text-[#202020]"
+                    className="max-w-[320px] text-[18px] leading-8 text-[#202020]"
                     style={sansStyle}
                   >
                     Source code from the selected tool, shown here alongside the
@@ -1340,7 +1328,7 @@ export function HomePageClient({
         </section>
 
         {!isToolRoute ? (
-          <section id="faq" className="border-t border-[#202020] bg-[#f5f5f5]">
+          <section id="faq" className="bg-[#f5f5f5]">
             <RevealSection
               className="mx-auto w-full max-w-[1920px] px-6 py-24 lg:px-16"
               pageReady={isPageReady}
@@ -1439,18 +1427,18 @@ export function HomePageClient({
             </motion.div>
 
             <motion.div
-              className="mt-16 flex flex-col gap-4 border-t border-[#202020]/16 pt-6 sm:flex-row sm:items-center sm:justify-between"
+              className="mt-16 flex flex-col gap-4 border-t border-[#202020] pt-6 sm:flex-row sm:items-center sm:justify-between"
               variants={shouldReduceMotion ? undefined : fadeUpVariants}
             >
               <span
-                className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]/72"
+                className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]"
                 style={monoStyle}
               >
                 Developer tools for builders who ship fast.
               </span>
 
               <span
-                className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]/72"
+                className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]"
                 style={monoStyle}
               >
                 © 2026 Buidl Now. All rights reserved.

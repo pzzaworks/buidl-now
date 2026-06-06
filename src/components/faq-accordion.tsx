@@ -42,7 +42,10 @@ export function FaqAccordion({ items }: { items: readonly FaqItem[] }) {
         const panelId = `faq-panel-${index}`;
 
         return (
-          <div key={item.question} className="border-b border-[#202020]/16">
+          <div
+            key={item.question}
+            className="border-b border-[#202020]/16 last:border-b-0"
+          >
             <button
               type="button"
               aria-expanded={isOpen}
