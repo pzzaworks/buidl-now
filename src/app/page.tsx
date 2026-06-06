@@ -351,12 +351,12 @@ function buildToolStoryRows({
 function SectionLabel({ title }: { title: string }) {
   return (
     <div className="flex items-center justify-between border-t border-[#202020] pt-4">
-      <h2
+      <div
         className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]"
         style={monoStyle}
       >
         {title}
-      </h2>
+      </div>
       <span
         className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]"
         style={monoStyle}
@@ -1086,12 +1086,12 @@ export function HomePageClient({
                             ■ {String(index + 1).padStart(2, "0")}
                           </div>
 
-                          <h3
+                          <h2
                             className="mt-5 text-[24px] font-medium leading-[1.05] tracking-[-0.04em] text-[#202020]"
                             style={sansStyle}
                           >
                             {row.title}
-                          </h3>
+                          </h2>
                           <p
                             className="mt-4 text-[17px] leading-7 text-[#202020]"
                             style={sansStyle}
