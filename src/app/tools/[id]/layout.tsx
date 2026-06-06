@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { tools } from "@/lib/tools-list";
-import { buildToolSeoDescription } from "@/lib/seo";
+import {
+  buildToolSeoDescription,
+  buildToolSeoKeywords,
+  buildToolSeoTitle,
+} from "@/lib/seo";
 import { getToolById } from "@/tools";
 
 type Props = {
@@ -19,28 +23,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  // Use SEO overrides from toolConfig if available
-  const title = toolConfig?.seo?.title || tool.name;
+  // Intent-optimized title: honor an explicit per-tool override, otherwise
+  // derive "{name} - {search-intent qualifier}" so every tool benefits.
+  // The brand suffix is appended by the root title template.
+  const title = toolConfig?.seo?.title || buildToolSeoTitle(tool);
+
+  // Compelling, unique, ~140-160 char description with the action and the
+  // "free online / in-browser / no signup" angle for click-through.
   const description = buildToolSeoDescription(
     tool,
-    toolConfig?.seo?.description || tool.description,
+    toolConfig?.seo?.description,
   );
   const url = `https://buidlnow.com${tool.path}`;
 
-  // Build keywords array
-  const baseKeywords: string[] = [
-    tool.name,
-    tool.category,
-    tool.subcategory,
-    "developer tools",
-    "online tools",
-    "free tools",
-    "developer utility",
-    "browser tool",
-  ].filter((k): k is string => Boolean(k));
-
-  const customKeywords = toolConfig?.seo?.keywords || [];
-  const keywords = [...customKeywords, ...baseKeywords];
+  // Page-specific keywords: author-tuned keywords first, then derived
+  // name/category variants. De-duplicated and capped inside the helper.
+  const keywords = buildToolSeoKeywords(tool, toolConfig?.seo?.keywords ?? []);
 
   return {
     title,
