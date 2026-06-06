@@ -22,7 +22,11 @@ import {
 } from "@/components/structured-data";
 import { homepageFaq } from "@/lib/homepage-faq";
 import { tools } from "@/lib/tools-list";
-import { externalLinkRel, getToolCategoryKindLabel } from "@/lib/seo";
+import {
+  externalLinkRel,
+  getToolCategoryKindLabel,
+  getToolCategoryLabel,
+} from "@/lib/seo";
 import { getToolById } from "@/tools";
 import { type Tool } from "@/types/tools";
 
@@ -526,6 +530,22 @@ export function HomePageClient({
     toolCategoryOptions.find((option) => option.value === selectedToolCategory) ??
     toolCategoryOptions[0];
 
+  // Breadcrumb + related linking metadata for the dedicated tool route. These
+  // mirror the BreadcrumbList JSON-LD emitted by ToolStructuredData and surface
+  // an in-category "Related Tools" set for internal linking and AI context.
+  const activeToolCategoryLabel = activeToolMeta
+    ? getToolCategoryLabel(activeToolMeta.category)
+    : "";
+  const relatedTools = activeToolMeta
+    ? tools
+        .filter(
+          (tool) =>
+            tool.category === activeToolMeta.category &&
+            tool.id !== activeToolMeta.id,
+        )
+        .slice(0, 4)
+    : [];
+
   const normalizedToolSearch = toolSearchQuery.trim().toLowerCase();
   const filteredTools = tools.filter((tool) => {
     const matchesCategory =
@@ -604,6 +624,24 @@ export function HomePageClient({
     const searchQuery = searchParams.get("search");
     if (searchQuery && searchQuery.trim()) {
       setToolSearchQuery(searchQuery);
+      requestAnimationFrame(() => {
+        toolsSectionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      });
+      return;
+    }
+
+    // Honour the BreadcrumbList category item (/?category=<id>) by pre-selecting
+    // that category filter in the Tool Finder and scrolling to it, so the
+    // visible breadcrumb on tool pages links to a real filtered view.
+    const categoryParam = searchParams.get("category");
+    if (
+      categoryParam &&
+      toolCategoryOptions.some((option) => option.value === categoryParam)
+    ) {
+      setSelectedToolCategory(categoryParam);
       requestAnimationFrame(() => {
         toolsSectionRef.current?.scrollIntoView({
           behavior: "smooth",
@@ -702,6 +740,7 @@ export function HomePageClient({
                 width={27}
                 height={48}
                 className="h-12 w-auto"
+                priority
               />
             </Link>
 
@@ -1071,6 +1110,32 @@ export function HomePageClient({
                   >
                     <div>
                       {isToolRoute ? (
+                        <nav
+                          aria-label="Breadcrumb"
+                          className="mb-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]/72"
+                          style={monoStyle}
+                        >
+                          <Link
+                            href="/"
+                            className="text-[#202020]/72 transition-colors hover:text-[#202020]"
+                          >
+                            Home
+                          </Link>
+                          <span aria-hidden="true">/</span>
+                          <Link
+                            href={`/?category=${activeToolMeta?.category ?? "all"}`}
+                            className="text-[#202020]/72 transition-colors hover:text-[#202020]"
+                          >
+                            {activeToolCategoryLabel}
+                          </Link>
+                          <span aria-hidden="true">/</span>
+                          <span aria-current="page" className="text-[#202020]">
+                            {activeToolName}
+                          </span>
+                        </nav>
+                      ) : null}
+
+                      {isToolRoute ? (
                         <h1
                           className="text-[32px] font-medium leading-[36px] tracking-[-2px] text-[#202020] lg:text-[40px] lg:leading-[44px]"
                           style={sansStyle}
@@ -1126,6 +1191,50 @@ export function HomePageClient({
                 </AnimatePresence>
               </div>
             </motion.div>
+
+            {isToolRoute && relatedTools.length > 0 ? (
+              <motion.div
+                className="pt-16 lg:pt-20"
+                variants={shouldReduceMotion ? undefined : fadeUpVariants}
+              >
+                <div
+                  className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]/72"
+                  style={monoStyle}
+                >
+                  / Related Tools
+                </div>
+
+                <div className="mt-5 grid grid-cols-1 border border-[#202020] bg-white sm:grid-cols-2">
+                  {relatedTools.map((tool, index) => (
+                    <button
+                      key={tool.id}
+                      type="button"
+                      className={clsx(
+                        "flex w-full items-start border-[#202020]/10 px-4 py-4 text-left transition-colors hover:bg-[#f5f5f5]",
+                        "border-b last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0",
+                        index % 2 === 0 ? "sm:border-r" : "",
+                      )}
+                      onClick={() => activateTool(tool.id)}
+                    >
+                      <div className="min-w-0">
+                        <div
+                          className="text-[18px] leading-6 text-[#202020]"
+                          style={sansStyle}
+                        >
+                          {tool.name}
+                        </div>
+                        <div
+                          className="mt-1 text-[13px] leading-5 text-[#202020]/68"
+                          style={sansStyle}
+                        >
+                          {tool.description}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            ) : null}
 
             <motion.div
               className="pt-24"
