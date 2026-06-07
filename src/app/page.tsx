@@ -1098,7 +1098,7 @@ export function HomePageClient({
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.div
                     key={`details-${selectedToolId}`}
-                    className="grid grid-cols-1 gap-y-8 lg:grid-cols-[minmax(0,520px)_minmax(0,1fr)] lg:gap-x-10"
+                    className="grid grid-cols-1 gap-y-8 lg:grid-cols-[minmax(0,460px)_minmax(0,1fr)] lg:gap-x-8"
                     initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
                     animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
                     exit={shouldReduceMotion ? undefined : { opacity: 0, y: -10 }}
