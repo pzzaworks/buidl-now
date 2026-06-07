@@ -103,13 +103,27 @@ async function proxy(req: NextRequest, path: string[]): Promise<Response> {
       (res) => {
         const chunks: Buffer[] = [];
         res.on("data", (chunk: Buffer) => chunks.push(chunk));
+        res.on("error", reject);
         res.on("end", () => {
-          resolve(
-            new Response(Buffer.concat(chunks), {
-              status: res.statusCode ?? 502,
-              headers: buildResponseHeaders(res.headers),
-            })
-          );
+          const status = res.statusCode ?? 502;
+          // 101/204/205/304 are null-body statuses. The Response constructor
+          // throws a TypeError if handed a body (even an empty Buffer) for
+          // these, so we must pass null. A conditional request from the browser
+          // (If-None-Match) makes the upstream answer 304; without this guard
+          // the throw happens inside this callback, the promise never resolves,
+          // and the request hangs forever (browser stuck loading).
+          const isNullBody =
+            status === 101 || status === 204 || status === 205 || status === 304;
+          try {
+            resolve(
+              new Response(isNullBody ? null : Buffer.concat(chunks), {
+                status,
+                headers: buildResponseHeaders(res.headers),
+              })
+            );
+          } catch (error) {
+            reject(error);
+          }
         });
       }
     );
