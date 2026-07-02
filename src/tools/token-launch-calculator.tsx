@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ToolConfig } from "@/types/tool";
 
 export function TokenLaunchCalculatorTool() {
+  const t = useTranslations("toolUI.token-launch-calculator");
   const [totalSupply, setTotalSupply] = useState("");
   const [liquidityPercent, setLiquidityPercent] = useState("");
   const [ethAmount, setEthAmount] = useState("");
@@ -80,7 +82,7 @@ export function TokenLaunchCalculatorTool() {
 
     return (
       <div className="bg-[var(--color-gray-0)] rounded-[12px] border border-border p-4 space-y-3">
-        <div className="text-xs font-semibold text-blue-400 mb-2">Token Distribution</div>
+        <div className="text-xs font-semibold text-blue-400 mb-2">{t("tokenDistributionTitle")}</div>
         <div className="flex h-8 rounded-[12px] overflow-hidden">
           <div
             className="bg-blue-500 flex items-center justify-center text-xs font-semibold"
@@ -98,11 +100,11 @@ export function TokenLaunchCalculatorTool() {
         <div className="flex justify-between text-xs">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-blue-500 rounded-[12px]"></div>
-            <span className="text-muted-foreground">Liquidity Pool: {liqPercent}%</span>
+            <span className="text-muted-foreground">{t("liquidityPoolLegend", { percent: liqPercent })}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-[var(--color-gray-0)] border border-border rounded-[12px]"></div>
-            <span className="text-muted-foreground">Remaining: {remaining.toFixed(1)}%</span>
+            <span className="text-muted-foreground">{t("remainingLegend", { percent: remaining.toFixed(1) })}</span>
           </div>
         </div>
       </div>
@@ -115,7 +117,7 @@ export function TokenLaunchCalculatorTool() {
       <div className="space-y-4">
         <div>
           <Input
-            label="Total Token Supply"
+            label={t("totalSupplyLabel")}
             value={totalSupply}
             onChange={(e) => setTotalSupply(e.target.value)}
             placeholder="1000000000"
@@ -123,13 +125,13 @@ export function TokenLaunchCalculatorTool() {
             className="font-mono text-sm"
           />
           <div className="text-xs text-muted-foreground mt-1">
-            Total supply of your token (e.g., 1 billion)
+            {t("totalSupplyHelp")}
           </div>
         </div>
 
         <div>
           <Input
-            label="Liquidity Pool Allocation (%)"
+            label={t("liquidityAllocationLabel")}
             value={liquidityPercent}
             onChange={(e) => setLiquidityPercent(e.target.value)}
             placeholder="30"
@@ -137,13 +139,13 @@ export function TokenLaunchCalculatorTool() {
             className="font-mono text-sm"
           />
           <div className="text-xs text-muted-foreground mt-1">
-            Percentage of supply for initial liquidity (typically 20-50%)
+            {t("liquidityAllocationHelp")}
           </div>
         </div>
 
         <div>
           <Input
-            label="ETH Amount for Liquidity"
+            label={t("ethAmountLabel")}
             value={ethAmount}
             onChange={(e) => setEthAmount(e.target.value)}
             placeholder="10"
@@ -151,13 +153,13 @@ export function TokenLaunchCalculatorTool() {
             className="font-mono text-sm"
           />
           <div className="text-xs text-muted-foreground mt-1">
-            Amount of ETH to pair with tokens
+            {t("ethAmountHelp")}
           </div>
         </div>
 
         <div>
           <Input
-            label="Desired Initial Price (ETH per Token)"
+            label={t("desiredPriceLabel")}
             value={desiredPrice}
             onChange={(e) => setDesiredPrice(e.target.value)}
             placeholder="0.00001"
@@ -165,7 +167,7 @@ export function TokenLaunchCalculatorTool() {
             className="font-mono text-sm"
           />
           <div className="text-xs text-muted-foreground mt-1">
-            Target price per token at launch (optional reference)
+            {t("desiredPriceHelp")}
           </div>
         </div>
       </div>
@@ -175,7 +177,7 @@ export function TokenLaunchCalculatorTool() {
 
       {/* Calculate Button */}
       <Button onClick={calculateLaunch} variant="primary" className="w-full">
-        Calculate Launch Metrics
+        {t("calculateButton")}
       </Button>
 
       {/* Results Section */}
@@ -183,73 +185,73 @@ export function TokenLaunchCalculatorTool() {
         <div className="space-y-4 pt-4 border-t border-border">
           <div>
             <Input
-              label="Tokens for Liquidity Pool"
+              label={t("tokensForPoolLabel")}
               value={tokenForPool}
               readOnly
               showCopy
               className="font-mono text-sm bg-[var(--color-gray-0)]"
             />
             <div className="text-xs text-muted-foreground mt-1">
-              Amount of tokens to add to the pool
+              {t("tokensForPoolHelp")}
             </div>
           </div>
 
           <div>
             <Input
-              label="Actual Price per Token (ETH)"
+              label={t("pricePerTokenLabel")}
               value={pricePerToken}
               readOnly
               showCopy
               className="font-mono text-sm bg-[var(--color-gray-0)]"
             />
             <div className="text-xs text-muted-foreground mt-1">
-              Calculated price based on ETH amount and token allocation
+              {t("pricePerTokenHelp")}
             </div>
           </div>
 
           <div>
             <Input
-              label="Initial Market Cap (ETH)"
+              label={t("marketCapLabel")}
               value={initialMarketCap}
               readOnly
               showCopy
               className="font-mono text-sm bg-[var(--color-gray-0)]"
             />
             <div className="text-xs text-muted-foreground mt-1">
-              Market cap of circulating supply
+              {t("marketCapHelp")}
             </div>
           </div>
 
           <div>
             <Input
-              label="Fully Diluted Value (ETH)"
+              label={t("fdvLabel")}
               value={fullyDilutedValue}
               readOnly
               showCopy
               className="font-mono text-sm bg-[var(--color-gray-0)]"
             />
             <div className="text-xs text-muted-foreground mt-1">
-              Total value if all tokens were in circulation
+              {t("fdvHelp")}
             </div>
           </div>
 
           <div>
             <Input
-              label="LP Token Value (ETH)"
+              label={t("lpValueLabel")}
               value={lpTokenValue}
               readOnly
               showCopy
               className="font-mono text-sm bg-[var(--color-gray-0)]"
             />
             <div className="text-xs text-muted-foreground mt-1">
-              Total value of LP position (ETH + Token value)
+              {t("lpValueHelp")}
             </div>
           </div>
 
           {/* Formula Display */}
           <div className="bg-[var(--color-gray-0)] rounded-[12px] border border-border p-4 space-y-3">
             <div>
-              <div className="text-xs font-semibold text-blue-400 mb-1">Calculations</div>
+              <div className="text-xs font-semibold text-blue-400 mb-1">{t("calculationsTitle")}</div>
               <div className="text-xs font-mono text-muted-foreground space-y-1">
                 <div>tokensForPool = totalSupply × (liquidityPercent / 100)</div>
                 <div>pricePerToken = ethAmount / tokensForPool</div>
@@ -262,18 +264,18 @@ export function TokenLaunchCalculatorTool() {
 
           {/* Launch Checklist */}
           <div className="bg-blue-500/10 border border-blue-500/20 rounded-[12px] p-4">
-            <div className="text-xs font-semibold text-blue-400 mb-2">Launch Checklist</div>
+            <div className="text-xs font-semibold text-blue-400 mb-2">{t("checklistTitle")}</div>
             <ul className="text-xs text-muted-foreground space-y-1 list-disc list-inside">
-              <li>Verify token contract is audited and tested</li>
-              <li>Ensure sufficient ETH for gas fees</li>
-              <li>Consider locking liquidity for trust</li>
-              <li>Prepare marketing and community announcement</li>
-              <li>Double-check all calculations and token allocations</li>
+              <li>{t("checklistAudit")}</li>
+              <li>{t("checklistGas")}</li>
+              <li>{t("checklistLock")}</li>
+              <li>{t("checklistMarketing")}</li>
+              <li>{t("checklistDoubleCheck")}</li>
             </ul>
           </div>
 
           <Button onClick={handleReset} className="w-full">
-            Reset Calculator
+            {t("resetButton")}
           </Button>
         </div>
       )}

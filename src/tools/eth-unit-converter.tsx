@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { formatEther, formatGwei, parseEther, parseGwei } from "viem";
 import { ToolConfig } from "@/types/tool";
 
 export function EthUnitConverterTool() {
+  const t = useTranslations("toolUI.eth-unit-converter");
   const [wei, setWei] = useState("");
   const [gwei, setGwei] = useState("");
   const [eth, setEth] = useState("");
@@ -117,7 +119,7 @@ export function EthUnitConverterTool() {
           1 ETH = 10⁹ Gwei = 10¹⁸ Wei
         </div>
         <Button onClick={handleReset} className="w-full">
-          Reset
+          {t("reset")}
         </Button>
       </div>
     </div>

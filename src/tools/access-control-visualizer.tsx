@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -29,6 +30,7 @@ interface RoleHierarchy {
 }
 
 export function AccessControlVisualizerTool() {
+  const t = useTranslations("toolUI.access-control-visualizer");
   const [mode, setMode] = useState<"abi" | "address">("abi");
   const [abiInput, setAbiInput] = useState("");
   const [contractAddress, setContractAddress] = useState("");
@@ -227,7 +229,7 @@ export function AccessControlVisualizerTool() {
     );
 
     if (privilegedFunctions.length > 0 && roles.length === 0) {
-      warnings.push("Privileged functions detected but no access control found");
+      warnings.push(t("warningNoAccessControl"));
     }
 
     // Check for public admin functions
@@ -240,7 +242,7 @@ export function AccessControlVisualizerTool() {
     );
 
     if (adminFunctions.length > 5) {
-      warnings.push(`${adminFunctions.length} state-changing functions found - verify all have proper access control`);
+      warnings.push(t("warningStateChanging", { count: adminFunctions.length }));
     }
 
     // Check for ownership transfer
@@ -252,7 +254,7 @@ export function AccessControlVisualizerTool() {
     );
 
     if (hasOwnershipTransfer && !hasTwoStep) {
-      warnings.push("Single-step ownership transfer detected - consider using two-step transfer");
+      warnings.push(t("warningSingleStep"));
     }
 
     // Check for renounceOwnership
@@ -261,7 +263,7 @@ export function AccessControlVisualizerTool() {
     );
 
     if (hasRenounce) {
-      warnings.push("renounceOwnership() present - ensure it's intentional to allow abandoning the contract");
+      warnings.push(t("warningRenounce"));
     }
 
     return warnings;
@@ -305,9 +307,7 @@ export function AccessControlVisualizerTool() {
   const fetchABI = async (address: string, rpc: string): Promise<string> => {
     // Note: This would typically require an API key from Etherscan or similar
     // For now, we'll show an error message
-    throw new Error(
-      "Fetching ABI from address requires an Etherscan API key. Please use direct ABI input mode."
-    );
+    throw new Error(t("errorAbiApiKey"));
   };
 
   const handleAnalyze = async () => {
@@ -320,19 +320,19 @@ export function AccessControlVisualizerTool() {
 
       if (mode === "address") {
         if (!contractAddress || !rpcUrl) {
-          throw new Error("Please provide contract address and RPC URL");
+          throw new Error(t("errorAddressRpc"));
         }
         abi = await fetchABI(contractAddress, rpcUrl);
       }
 
       if (!abi) {
-        throw new Error("Please provide contract ABI");
+        throw new Error(t("errorProvideAbi"));
       }
 
       const analysisResult = analyzeAccessControl(abi);
       setResult(analysisResult);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "An error occurred");
+      setError(e instanceof Error ? e.message : t("errorGeneric"));
     } finally {
       setLoading(false);
     }
@@ -350,28 +350,28 @@ export function AccessControlVisualizerTool() {
     <div className="space-y-6">
       {/* Mode Selection */}
       <div>
-        <Label className="mb-2 block text-sm">Input Mode</Label>
+        <Label className="mb-2 block text-sm">{t("inputMode")}</Label>
         <div className="flex gap-2">
           <Button
             onClick={() => setMode("abi")}
             variant={mode === "abi" ? "primary" : "secondary"}
             className="flex-1"
           >
-            Direct ABI
+            {t("directAbi")}
           </Button>
           <Button
             onClick={() => setMode("address")}
             variant={mode === "address" ? "primary" : "secondary"}
             className="flex-1"
           >
-            Contract Address
+            {t("contractAddress")}
           </Button>
         </div>
       </div>
 
       {mode === "abi" ? (
         <div>
-          <Label className="mb-2 block text-sm">Contract ABI (JSON)</Label>
+          <Label className="mb-2 block text-sm">{t("contractAbiJson")}</Label>
           <Textarea
             value={abiInput}
             onChange={(e) => setAbiInput(e.target.value)}
@@ -382,7 +382,7 @@ export function AccessControlVisualizerTool() {
       ) : (
         <>
           <div>
-            <Label className="mb-2 block text-sm">Contract Address</Label>
+            <Label className="mb-2 block text-sm">{t("contractAddress")}</Label>
             <Input
               value={contractAddress}
               onChange={(e) => setContractAddress(e.target.value)}
@@ -391,7 +391,7 @@ export function AccessControlVisualizerTool() {
             />
           </div>
           <div>
-            <Label className="mb-2 block text-sm">RPC URL (with Etherscan API)</Label>
+            <Label className="mb-2 block text-sm">{t("rpcUrlEtherscan")}</Label>
             <Input
               value={rpcUrl}
               onChange={(e) => setRpcUrl(e.target.value)}
@@ -405,10 +405,10 @@ export function AccessControlVisualizerTool() {
       {/* Actions */}
       <div className="flex gap-2">
         <Button onClick={handleAnalyze} variant="primary" className="flex-1" disabled={loading}>
-          {loading ? "Analyzing..." : "Analyze Access Control"}
+          {loading ? t("analyzing") : t("analyzeAccessControl")}
         </Button>
         <Button onClick={handleReset}>
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
@@ -424,7 +424,7 @@ export function AccessControlVisualizerTool() {
         <div className="space-y-4">
           {/* Access Control Type */}
           <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[var(--color-gray-200)]">
-            <Label className="text-sm mb-2 block">Access Control Type</Label>
+            <Label className="text-sm mb-2 block">{t("accessControlType")}</Label>
             <div className="text-base font-bold text-blue-400">{result.type}</div>
           </div>
 
@@ -432,7 +432,7 @@ export function AccessControlVisualizerTool() {
           {result.securityWarnings.length > 0 && (
             <div className="p-4 rounded-[12px] border bg-yellow-500/10 border-yellow-500/30">
               <Label className="text-sm mb-3 block text-yellow-400 font-semibold">
-                Security Warnings
+                {t("securityWarnings")}
               </Label>
               <ul className="space-y-2">
                 {result.securityWarnings.map((warning, idx) => (
@@ -448,7 +448,7 @@ export function AccessControlVisualizerTool() {
           {/* Role Hierarchy */}
           {result.hierarchy.length > 0 && (
             <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[var(--color-gray-200)]">
-              <Label className="text-sm mb-3 block">Role Hierarchy</Label>
+              <Label className="text-sm mb-3 block">{t("roleHierarchy")}</Label>
               <div className="space-y-2">
                 {result.hierarchy.map((item, idx) => (
                   <div
@@ -462,11 +462,11 @@ export function AccessControlVisualizerTool() {
                       </div>
                       {item.admin !== "None" && (
                         <div className="text-xs text-gray-400 mt-1">
-                          Admin: {item.admin}
+                          {t("adminPrefix")} {item.admin}
                         </div>
                       )}
                     </div>
-                    <div className="text-xs text-gray-500">Level {item.level}</div>
+                    <div className="text-xs text-gray-500">{t("level", { level: item.level })}</div>
                   </div>
                 ))}
               </div>
@@ -476,7 +476,7 @@ export function AccessControlVisualizerTool() {
           {/* Roles and Functions */}
           {result.roles.length > 0 && (
             <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[var(--color-gray-200)]">
-              <Label className="text-sm mb-3 block">Roles and Functions</Label>
+              <Label className="text-sm mb-3 block">{t("rolesAndFunctions")}</Label>
               <div className="space-y-4">
                 {result.roles.map((role, idx) => (
                   <div
@@ -494,13 +494,13 @@ export function AccessControlVisualizerTool() {
                       </div>
                       {role.adminRole && (
                         <div className="text-xs text-gray-400 bg-[var(--color-gray-0)] px-2 py-1 rounded-[12px]">
-                          Admin: {role.adminRole}
+                          {t("adminPrefix")} {role.adminRole}
                         </div>
                       )}
                     </div>
                     {role.functions.length > 0 && (
                       <div className="mt-3">
-                        <div className="text-xs text-gray-400 mb-2">Protected Functions:</div>
+                        <div className="text-xs text-gray-400 mb-2">{t("protectedFunctions")}</div>
                         <div className="flex flex-wrap gap-2">
                           {role.functions.map((func, funcIdx) => (
                             <span
@@ -522,9 +522,9 @@ export function AccessControlVisualizerTool() {
           {/* Public Admin Functions */}
           {result.publicAdminFunctions.length > 0 && (
             <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[var(--color-gray-200)]">
-              <Label className="text-sm mb-3 block">State-Changing Functions</Label>
+              <Label className="text-sm mb-3 block">{t("stateChangingFunctions")}</Label>
               <div className="text-xs text-gray-400 mb-3">
-                Verify these functions have proper access control modifiers
+                {t("verifyAccessControl")}
               </div>
               <div className="flex flex-wrap gap-2">
                 {result.publicAdminFunctions.map((func, idx) => (

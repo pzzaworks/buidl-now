@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -8,6 +9,7 @@ import { ToolConfig } from "@/types/tool";
 import { MdContentCopy, MdCheck, MdClose } from "react-icons/md";
 
 export function RegexTesterTool() {
+  const t = useTranslations("toolUI.regex-tester");
   const [pattern, setPattern] = useState("");
   const [flags, setFlags] = useState("g");
   const [testString, setTestString] = useState("");
@@ -37,7 +39,7 @@ export function RegexTesterTool() {
       setMatches(allMatches);
       setError("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Invalid regular expression");
+      setError(e instanceof Error ? e.message : t("invalidRegex"));
       setMatches([]);
     }
   };
@@ -85,7 +87,7 @@ export function RegexTesterTool() {
     <div className="space-y-6">
       {/* Pattern */}
       <div>
-        <Label className="mb-2 block text-sm">Regular Expression Pattern</Label>
+        <Label className="mb-2 block text-sm">{t("patternLabel")}</Label>
         <Input
           value={pattern}
           onChange={handlePatternChange}
@@ -97,7 +99,7 @@ export function RegexTesterTool() {
 
       {/* Flags */}
       <div>
-        <Label className="mb-2 block text-sm">Flags</Label>
+        <Label className="mb-2 block text-sm">{t("flagsLabel")}</Label>
         <Input
           value={flags}
           onChange={handleFlagsChange}
@@ -106,18 +108,18 @@ export function RegexTesterTool() {
           className="font-mono text-sm"
         />
         <div className="text-xs text-muted-foreground mt-1">
-          g: global, i: case insensitive, m: multiline, s: dotAll, u: unicode
+          {t("flagsHelp")}
         </div>
       </div>
 
       {/* Test String */}
       <div>
-        <Label className="mb-2 block text-sm">Test String</Label>
+        <Label className="mb-2 block text-sm">{t("testStringLabel")}</Label>
         <Textarea
           value={testString}
           onChange={handleTestStringChange}
           onKeyUp={handleTest}
-          placeholder="Enter text to test against the regex..."
+          placeholder={t("testStringPlaceholder")}
           className="min-h-[150px]"
         />
       </div>
@@ -134,14 +136,14 @@ export function RegexTesterTool() {
         <div>
           <div className="mb-2 flex items-center justify-between">
             <Label className="text-sm">
-              Matches ({matches.length})
+              {t("matches")} ({matches.length})
             </Label>
             {matches.length > 0 && (
               <button
                 type="button"
                 onClick={handleCopy}
                 className="w-8 h-8 rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] flex items-center justify-center transition-colors cursor-pointer"
-                title={copied ? "Copied!" : "Copy to clipboard"}
+                title={copied ? t("copied") : t("copyToClipboard")}
               >
                 {copied ? (
                   <MdCheck style={{ width: 16, height: 16, color: 'var(--color-green-500)' }} />
@@ -155,16 +157,16 @@ export function RegexTesterTool() {
             {matches.map((match, index) => (
               <div key={index} className="pb-2 border-b border-border last:border-0">
                 <div className="text-sm font-mono text-[var(--color-green-500)]">
-                  Match {index + 1}: "{match[0]}"
+                  {t("match")} {index + 1}: "{match[0]}"
                 </div>
                 {match.index !== undefined && (
                   <div className="text-xs text-muted-foreground mt-1">
-                    Position: {match.index}
+                    {t("position")} {match.index}
                   </div>
                 )}
                 {match.length > 1 && (
                   <div className="text-xs text-muted-foreground mt-1">
-                    Groups: {match.slice(1).map((g, i) => `$${i + 1}="${g}"`).join(", ")}
+                    {t("groups")} {match.slice(1).map((g, i) => `$${i + 1}="${g}"`).join(", ")}
                   </div>
                 )}
               </div>
@@ -176,7 +178,7 @@ export function RegexTesterTool() {
       {/* No Matches */}
       {pattern && testString && matches.length === 0 && !error && (
         <div className="p-3 rounded-[12px] border bg-yellow-500/10 border-yellow-500/30 text-yellow-400">
-          <div className="text-sm font-medium">No matches found</div>
+          <div className="text-sm font-medium">{t("noMatches")}</div>
         </div>
       )}
     </div>

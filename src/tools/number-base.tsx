@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ToolConfig } from "@/types/tool";
 
 export function NumberBaseTool() {
+  const t = useTranslations("toolUI.number-base");
   const [decimal, setDecimal] = useState("");
   const [binary, setBinary] = useState("");
   const [octal, setOctal] = useState("");
@@ -111,7 +113,7 @@ export function NumberBaseTool() {
       {/* Decimal */}
       <div>
         <Input
-          label="Decimal (Base 10)"
+          label={t("decimalLabel")}
           value={decimal}
           onChange={(e) => updateAllFromDecimal(e.target.value)}
           placeholder="42"
@@ -119,14 +121,14 @@ export function NumberBaseTool() {
           className="font-mono text-sm"
         />
         <div className="text-xs text-muted-foreground mt-1">
-          Digits: 0-9
+          {t("decimalDigits")}
         </div>
       </div>
 
       {/* Binary */}
       <div>
         <Input
-          label="Binary (Base 2)"
+          label={t("binaryLabel")}
           value={binary}
           onChange={(e) => updateAllFromBinary(e.target.value)}
           placeholder="101010"
@@ -134,14 +136,14 @@ export function NumberBaseTool() {
           className="font-mono text-sm"
         />
         <div className="text-xs text-muted-foreground mt-1">
-          Digits: 0-1
+          {t("binaryDigits")}
         </div>
       </div>
 
       {/* Octal */}
       <div>
         <Input
-          label="Octal (Base 8)"
+          label={t("octalLabel")}
           value={octal}
           onChange={(e) => updateAllFromOctal(e.target.value)}
           placeholder="52"
@@ -149,14 +151,14 @@ export function NumberBaseTool() {
           className="font-mono text-sm"
         />
         <div className="text-xs text-muted-foreground mt-1">
-          Digits: 0-7
+          {t("octalDigits")}
         </div>
       </div>
 
       {/* Hexadecimal */}
       <div>
         <Input
-          label="Hexadecimal (Base 16)"
+          label={t("hexLabel")}
           value={hexadecimal}
           onChange={(e) => updateAllFromHex(e.target.value)}
           placeholder="2A"
@@ -164,10 +166,10 @@ export function NumberBaseTool() {
           className="font-mono text-sm mb-2"
         />
         <div className="text-xs text-muted-foreground mb-2">
-          Digits: 0-9, A-F
+          {t("hexDigits")}
         </div>
         <Button onClick={handleReset} className="w-full">
-          Reset
+          {t("reset")}
         </Button>
       </div>
     </div>

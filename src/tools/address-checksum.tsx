@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { MdCheck, MdClose } from "react-icons/md";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { getAddress, isAddress } from "viem";
 import { ToolConfig } from "@/types/tool";
 
 export function AddressChecksumTool() {
+  const t = useTranslations("toolUI.address-checksum");
   const [inputAddress, setInputAddress] = useState("");
   const [checksumAddress, setChecksumAddress] = useState("");
   const [isValid, setIsValid] = useState<boolean | null>(null);
@@ -58,7 +60,7 @@ export function AddressChecksumTool() {
     <div className="space-y-6">
       {/* Input Address */}
       <div>
-        <Label className="mb-2 block text-sm">Ethereum Address</Label>
+        <Label className="mb-2 block text-sm">{t("addressLabel")}</Label>
         <Input
           value={inputAddress}
           onChange={handleInputChange}
@@ -67,10 +69,10 @@ export function AddressChecksumTool() {
         />
         <div className="flex gap-2">
           <Button onClick={handleConvert} variant="primary" className="flex-1">
-            Convert to Checksum
+            {t("convert")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -89,12 +91,12 @@ export function AddressChecksumTool() {
           <div className="text-sm font-medium flex items-center gap-1">
             {isValid ? (
               hasCorrectChecksum ? (
-                <><MdCheck className="inline" /> Already in correct checksum format (EIP-55)</>
+                <><MdCheck className="inline" /> {t("alreadyChecksum")}</>
               ) : (
-                <><MdCheck className="inline" /> Converted to checksum format (EIP-55)</>
+                <><MdCheck className="inline" /> {t("converted")}</>
               )
             ) : (
-              <><MdClose className="inline" /> Invalid Ethereum Address</>
+              <><MdClose className="inline" /> {t("invalidAddress")}</>
             )}
           </div>
         </div>
@@ -103,7 +105,7 @@ export function AddressChecksumTool() {
       {/* Checksum Address */}
       {checksumAddress && (
         <Input
-          label="Checksum Address (EIP-55)"
+          label={t("resultLabel")}
           value={checksumAddress}
           readOnly
           showCopy

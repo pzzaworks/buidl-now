@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -115,6 +116,7 @@ function calculateSubnet(ipAddress: string, cidr: number): SubnetInfo | null {
 }
 
 export function IpCalculatorTool() {
+  const t = useTranslations("toolUI.ip-calculator");
   const [ipInput, setIpInput] = useState("");
   const [cidrInput, setCidrInput] = useState("");
   const [result, setResult] = useState<SubnetInfo | null>(null);
@@ -125,7 +127,7 @@ export function IpCalculatorTool() {
     setResult(null);
 
     if (!ipInput) {
-      setError("Please enter an IP address");
+      setError(t("errEnterIp"));
       return;
     }
 
@@ -141,13 +143,13 @@ export function IpCalculatorTool() {
     }
 
     if (isNaN(cidr) || cidr < 0 || cidr > 32) {
-      setError("CIDR must be between 0 and 32");
+      setError(t("errCidrRange"));
       return;
     }
 
     const calculated = calculateSubnet(ip, cidr);
     if (!calculated) {
-      setError("Invalid IP address format. Use format: x.x.x.x");
+      setError(t("errInvalidIp"));
       return;
     }
 
@@ -167,20 +169,20 @@ export function IpCalculatorTool() {
       <div className="space-y-4">
         <div>
           <Input
-            label="IP Address"
+            label={t("ipLabel")}
             value={ipInput}
             onChange={(e) => setIpInput(e.target.value)}
             placeholder="192.168.1.100 or 192.168.1.100/24"
             className="font-mono text-sm"
           />
           <div className="text-xs text-muted-foreground mt-1">
-            Enter IP address with optional CIDR notation
+            {t("ipHelp")}
           </div>
         </div>
 
         <div>
           <Input
-            label="CIDR Prefix (optional)"
+            label={t("cidrLabel")}
             type="number"
             min="0"
             max="32"
@@ -190,7 +192,7 @@ export function IpCalculatorTool() {
             className="font-mono text-sm"
           />
           <div className="text-xs text-muted-foreground mt-1">
-            Default: 24 (if not specified in IP address)
+            {t("cidrHelp")}
           </div>
         </div>
       </div>
@@ -198,9 +200,9 @@ export function IpCalculatorTool() {
       {/* Buttons */}
       <div className="flex gap-2">
         <Button onClick={handleCalculate} variant="primary" className="flex-1">
-          Calculate
+          {t("calculate")}
         </Button>
-        <Button onClick={handleReset}>Reset</Button>
+        <Button onClick={handleReset}>{t("reset")}</Button>
       </div>
 
       {/* Error */}
@@ -215,53 +217,53 @@ export function IpCalculatorTool() {
         <div className="space-y-4">
           {/* Main Info */}
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <h3 className="text-sm font-semibold mb-3">Network Information</h3>
+            <h3 className="text-sm font-semibold mb-3">{t("networkInfo")}</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
               <div>
-                <Label className="text-xs text-muted-foreground">IP Address</Label>
+                <Label className="text-xs text-muted-foreground">{t("ipLabel")}</Label>
                 <div className="font-mono">{result.ipAddress}/{result.cidr}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Subnet Mask</Label>
+                <Label className="text-xs text-muted-foreground">{t("subnetMask")}</Label>
                 <div className="font-mono">{result.subnetMask}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Wildcard Mask</Label>
+                <Label className="text-xs text-muted-foreground">{t("wildcardMask")}</Label>
                 <div className="font-mono">{result.wildcardMask}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Network Address</Label>
+                <Label className="text-xs text-muted-foreground">{t("networkAddress")}</Label>
                 <div className="font-mono">{result.networkAddress}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Broadcast Address</Label>
+                <Label className="text-xs text-muted-foreground">{t("broadcastAddress")}</Label>
                 <div className="font-mono">{result.broadcastAddress}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">IP Class</Label>
-                <div className="font-mono">Class {result.ipClass}</div>
+                <Label className="text-xs text-muted-foreground">{t("ipClass")}</Label>
+                <div className="font-mono">{t("class")} {result.ipClass}</div>
               </div>
             </div>
           </div>
 
           {/* Host Range */}
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <h3 className="text-sm font-semibold mb-3">Host Range</h3>
+            <h3 className="text-sm font-semibold mb-3">{t("hostRange")}</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
               <div>
-                <Label className="text-xs text-muted-foreground">First Host</Label>
+                <Label className="text-xs text-muted-foreground">{t("firstHost")}</Label>
                 <div className="font-mono">{result.firstHost}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Last Host</Label>
+                <Label className="text-xs text-muted-foreground">{t("lastHost")}</Label>
                 <div className="font-mono">{result.lastHost}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Total Addresses</Label>
+                <Label className="text-xs text-muted-foreground">{t("totalAddresses")}</Label>
                 <div className="font-mono">{result.totalHosts.toLocaleString()}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Usable Hosts</Label>
+                <Label className="text-xs text-muted-foreground">{t("usableHosts")}</Label>
                 <div className="font-mono">{result.usableHosts.toLocaleString()}</div>
               </div>
             </div>
@@ -269,7 +271,7 @@ export function IpCalculatorTool() {
 
           {/* IP Type */}
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <h3 className="text-sm font-semibold mb-3">Address Type</h3>
+            <h3 className="text-sm font-semibold mb-3">{t("addressType")}</h3>
             <div className="text-sm">
               <span className="px-2 py-1 rounded bg-[var(--color-gray-100)] font-mono">
                 {result.ipType}
@@ -279,14 +281,14 @@ export function IpCalculatorTool() {
 
           {/* Binary Representation */}
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <h3 className="text-sm font-semibold mb-3">Binary Representation</h3>
+            <h3 className="text-sm font-semibold mb-3">{t("binaryRep")}</h3>
             <div className="space-y-2 text-sm">
               <div>
-                <Label className="text-xs text-muted-foreground">IP Address</Label>
+                <Label className="text-xs text-muted-foreground">{t("ipLabel")}</Label>
                 <div className="font-mono text-xs break-all">{result.binaryIpAddress}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Subnet Mask</Label>
+                <Label className="text-xs text-muted-foreground">{t("subnetMask")}</Label>
                 <div className="font-mono text-xs break-all">{result.binarySubnetMask}</div>
               </div>
             </div>

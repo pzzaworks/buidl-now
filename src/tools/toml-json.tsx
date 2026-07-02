@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { ToolConfig } from "@/types/tool";
 import { MdSwapVert } from "react-icons/md";
 import TOML from "@iarna/toml";
 
 export function TomlJsonTool() {
+  const t = useTranslations("toolUI.toml-json");
   const [tomlInput, setTomlInput] = useState("");
   const [jsonInput, setJsonInput] = useState("");
   const [error, setError] = useState("");
@@ -20,7 +22,7 @@ export function TomlJsonTool() {
         setJsonInput(JSON.stringify(parsed, null, 2));
         setError("");
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Invalid TOML");
+        setError(e instanceof Error ? e.message : t("invalidToml"));
       }
     }
   }, [tomlInput, lastEdited]);
@@ -34,7 +36,7 @@ export function TomlJsonTool() {
         setTomlInput(toml);
         setError("");
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Invalid JSON");
+        setError(e instanceof Error ? e.message : t("invalidJson"));
       }
     }
   }, [jsonInput, lastEdited]);
@@ -67,7 +69,7 @@ export function TomlJsonTool() {
         <button
           onClick={handleSwap}
           className="w-10 h-10 rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] flex items-center justify-center transition-colors cursor-pointer"
-          title="Swap"
+          title={t("swap")}
         >
           <MdSwapVert className="w-5 h-5" />
         </button>

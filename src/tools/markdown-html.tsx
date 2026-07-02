@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { ToolConfig } from "@/types/tool";
 import { MdSwapVert } from "react-icons/md";
@@ -15,6 +16,7 @@ const turndownService = new TurndownService({
 });
 
 export function MarkdownHtmlTool() {
+  const t = useTranslations("toolUI.markdown-html");
   const [markdownInput, setMarkdownInput] = useState("");
   const [htmlInput, setHtmlInput] = useState("");
   const [error, setError] = useState("");
@@ -28,7 +30,7 @@ export function MarkdownHtmlTool() {
         setHtmlInput(html);
         setError("");
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Invalid Markdown");
+        setError(e instanceof Error ? e.message : t("invalidMarkdown"));
       }
     }
   }, [markdownInput, lastEdited]);
@@ -41,7 +43,7 @@ export function MarkdownHtmlTool() {
         setMarkdownInput(markdown);
         setError("");
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Invalid HTML");
+        setError(e instanceof Error ? e.message : t("invalidHtml"));
       }
     }
   }, [htmlInput, lastEdited]);
@@ -74,7 +76,7 @@ export function MarkdownHtmlTool() {
         <button
           onClick={handleSwap}
           className="w-10 h-10 rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] flex items-center justify-center transition-colors cursor-pointer"
-          title="Swap"
+          title={t("swap")}
         >
           <MdSwapVert className="w-5 h-5" />
         </button>

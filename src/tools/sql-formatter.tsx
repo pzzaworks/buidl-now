@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ToolConfig } from "@/types/tool";
 
 export function SqlFormatterTool() {
+  const t = useTranslations("toolUI.sql-formatter");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
 
@@ -137,20 +139,20 @@ export function SqlFormatterTool() {
     <div className="space-y-6">
       {/* Input Section */}
       <div>
-        <Label className="mb-2 block text-sm">SQL Input</Label>
+        <Label className="mb-2 block text-sm">{t("sqlInputLabel")}</Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Enter SQL query to format..."
+          placeholder={t("placeholder")}
           rows={10}
           className="font-mono text-sm mb-2"
         />
         <div className="flex gap-2">
           <Button onClick={handleFormat} variant="primary" className="flex-1">
-            Format SQL
+            {t("formatSql")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -158,7 +160,7 @@ export function SqlFormatterTool() {
       {/* Output Section */}
       {output && (
         <Textarea
-          label="Formatted SQL"
+          label={t("formattedLabel")}
           value={output}
           readOnly
           showCopy

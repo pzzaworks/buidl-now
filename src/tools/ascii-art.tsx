@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -55,6 +56,7 @@ const loadFonts = () => {
 };
 
 export function AsciiArtTool() {
+  const t = useTranslations("toolUI.ascii-art");
   const [input, setInput] = useState("");
   const [selectedFont, setSelectedFont] = useState<FontName>("Standard");
   const [output, setOutput] = useState("");
@@ -80,7 +82,7 @@ export function AsciiArtTool() {
       setOutput(result);
       setError("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to generate ASCII art");
+      setError(e instanceof Error ? e.message : t("generateError"));
       setOutput("");
     }
   }, [input, selectedFont]);
@@ -96,15 +98,15 @@ export function AsciiArtTool() {
     <div className="space-y-6">
       {/* Input */}
       <Input
-        label="Text Input"
+        label={t("textInputLabel")}
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Enter text to convert to ASCII art..."
+        placeholder={t("textInputPlaceholder")}
       />
 
       {/* Font Selection */}
       <div>
-        <Label className="mb-2 block text-sm">Font Style</Label>
+        <Label className="mb-2 block text-sm">{t("fontStyleLabel")}</Label>
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
           {FONTS.map(({ name, value }) => (
             <Button
@@ -121,7 +123,7 @@ export function AsciiArtTool() {
 
       {/* Reset Button */}
       <Button onClick={handleReset} className="w-full sm:w-auto">
-        Reset
+        {t("reset")}
       </Button>
 
       {/* Error */}
@@ -134,7 +136,7 @@ export function AsciiArtTool() {
       {/* Output */}
       {output && (
         <Textarea
-          label="ASCII Art Output"
+          label={t("outputLabel")}
           value={output}
           readOnly
           showCopy
@@ -145,7 +147,7 @@ export function AsciiArtTool() {
       {/* Preview with background */}
       {output && (
         <div>
-          <Label className="mb-2 block text-sm">Preview</Label>
+          <Label className="mb-2 block text-sm">{t("preview")}</Label>
           <div className="p-4 bg-[#1a1a2e] text-green-400 rounded-[12px] overflow-x-auto">
             <pre className="font-mono text-xs whitespace-pre">{output}</pre>
           </div>

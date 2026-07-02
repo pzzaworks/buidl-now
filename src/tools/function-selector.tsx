@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -9,6 +10,7 @@ import { keccak256, toBytes } from "viem";
 import { ToolConfig } from "@/types/tool";
 
 export function FunctionSelectorTool() {
+  const t = useTranslations("toolUI.function-selector");
   const [functionSig, setFunctionSig] = useState("");
   const [selector, setSelector] = useState("");
 
@@ -48,7 +50,7 @@ export function FunctionSelectorTool() {
     <div className="space-y-6">
       {/* Input Section */}
       <div>
-        <Label className="mb-2 block text-sm">Function</Label>
+        <Label className="mb-2 block text-sm">{t("functionLabel")}</Label>
         <Input
           value={functionSig}
           onChange={handleInputChange}
@@ -57,17 +59,17 @@ export function FunctionSelectorTool() {
         />
         <div className="flex gap-2">
           <Button onClick={() => calculateSelector(functionSig)} className="flex-1" variant="primary">
-            Convert
+            {t("convert")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
 
       {/* Output Section */}
       <Input
-        label="Function selector (4 byte encoding)"
+        label={t("outputLabel")}
         value={selector}
         readOnly
         showCopy

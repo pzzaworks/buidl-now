@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { privateKeyToAddress } from "viem/accounts";
@@ -8,13 +9,14 @@ import { ToolConfig } from "@/types/tool";
 import { MdWarning } from "react-icons/md";
 
 export function PrivateKeyToAddressTool() {
+  const t = useTranslations("toolUI.private-key-to-address");
   const [privateKey, setPrivateKey] = useState("");
   const [address, setAddress] = useState("");
   const [error, setError] = useState("");
 
   const handleConvert = () => {
     if (!privateKey) {
-      setError("Please enter a private key");
+      setError(t("errorEmpty"));
       setAddress("");
       return;
     }
@@ -25,14 +27,14 @@ export function PrivateKeyToAddressTool() {
 
       // Validate hex format and length (64 characters + 0x prefix)
       if (!/^0x[0-9a-fA-F]{64}$/.test(key)) {
-        throw new Error("Invalid private key format. Must be 64 hex characters (with or without 0x prefix)");
+        throw new Error(t("errorFormat"));
       }
 
       const addr = privateKeyToAddress(key as `0x${string}`);
       setAddress(addr);
       setError("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to convert private key");
+      setError(e instanceof Error ? e.message : t("convertFailed"));
       setAddress("");
     }
   };
@@ -63,12 +65,12 @@ export function PrivateKeyToAddressTool() {
         <div className="flex items-start gap-3">
           <MdWarning className="w-5 h-5 text-[var(--color-red-500)] flex-shrink-0 mt-0.5" />
           <div className="text-sm text-[var(--color-red-500)]">
-            <strong className="block mb-1">Security Warning</strong>
+            <strong className="block mb-1">{t("securityWarning")}</strong>
             <ul className="list-disc list-inside space-y-1">
-              <li>Never share your private key with anyone</li>
-              <li>Never enter your real private key on websites</li>
-              <li>This tool runs locally in your browser</li>
-              <li>Use only for testing and development purposes</li>
+              <li>{t("warnNeverShare")}</li>
+              <li>{t("warnNeverEnter")}</li>
+              <li>{t("warnRunsLocally")}</li>
+              <li>{t("warnTestingOnly")}</li>
             </ul>
           </div>
         </div>
@@ -77,7 +79,7 @@ export function PrivateKeyToAddressTool() {
       {/* Private Key Input */}
       <div>
         <Input
-          label="Private Key (hex)"
+          label={t("privateKeyLabel")}
           value={privateKey}
           onChange={(e) => {
             setPrivateKey(e.target.value);
@@ -90,13 +92,13 @@ export function PrivateKeyToAddressTool() {
         />
         <div className="flex flex-col sm:flex-row gap-2">
           <Button onClick={handleConvert} variant="primary" className="flex-1">
-            Convert to Address
+            {t("convertToAddress")}
           </Button>
           <Button onClick={handleGenerateRandom} className="sm:flex-none whitespace-nowrap">
-            Generate Random
+            {t("generateRandom")}
           </Button>
           <Button onClick={handleReset} className="sm:flex-none">
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -104,7 +106,7 @@ export function PrivateKeyToAddressTool() {
       {/* Error Message */}
       {error && (
         <div className="p-3 rounded-[12px] border bg-[var(--color-red-50)] border-red-500/30 text-[var(--color-red-500)]">
-          <div className="text-sm font-medium">Error: {error}</div>
+          <div className="text-sm font-medium">{t("errorLabel")}: {error}</div>
         </div>
       )}
 
@@ -112,7 +114,7 @@ export function PrivateKeyToAddressTool() {
       {address && (
         <div className="space-y-4">
           <Input
-            label="Public Address"
+            label={t("publicAddress")}
             value={address}
             readOnly
             showCopy
@@ -121,7 +123,7 @@ export function PrivateKeyToAddressTool() {
 
           <div className="p-3 rounded-[12px] border border-green-500/30 bg-green-500/5">
             <div className="text-sm text-[var(--color-green-500)]">
-              <strong>Success!</strong> Address derived from private key.
+              <strong>{t("successTitle")}</strong> {t("successBody")}
             </div>
           </div>
         </div>
@@ -130,9 +132,7 @@ export function PrivateKeyToAddressTool() {
       {/* Info Box */}
       <div className="p-4 rounded-[12px] border border-blue-500/30 bg-blue-500/5">
         <div className="text-sm text-blue-400">
-          <strong>How it works:</strong> The Ethereum address is derived from the private key
-          using elliptic curve cryptography (secp256k1). The public key is computed from the
-          private key, then hashed with Keccak-256, and the last 20 bytes form the address.
+          <strong>{t("howItWorksTitle")}</strong> {t("howItWorksBody")}
         </div>
       </div>
     </div>

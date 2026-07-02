@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { ToolConfig } from "@/types/tool";
 
 export function CaseConverterTool() {
+  const t = useTranslations("toolUI.case-converter");
   const [text, setText] = useState("");
   const [conversions, setConversions] = useState({
     uppercase: "",
@@ -90,17 +92,17 @@ export function CaseConverterTool() {
       {/* Input */}
       <div>
         <Textarea
-          label="Input Text"
+          label={t("inputLabel")}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Enter text to convert..."
+          placeholder={t("inputPlaceholder")}
           className="min-h-[100px]"
         />
       </div>
 
       {/* Conversions */}
       <div className="space-y-3">
-        <div className="text-sm font-medium">Conversions</div>
+        <div className="text-sm font-medium">{t("conversions")}</div>
 
         <Input
           label="UPPERCASE"

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -9,6 +10,7 @@ import { ToolConfig } from "@/types/tool";
 import { MdCheck, MdClose } from "react-icons/md";
 
 export function JsonPathTool() {
+  const t = useTranslations("toolUI.json-path");
   const [jsonInput, setJsonInput] = useState("");
   const [pathExpression, setPathExpression] = useState("");
   const [result, setResult] = useState("");
@@ -133,14 +135,14 @@ export function JsonPathTool() {
 
   const handleExtract = () => {
     if (!jsonInput) {
-      setError("Please enter JSON data");
+      setError(t("errEnterJson"));
       setResult("");
       setMatchCount(null);
       return;
     }
 
     if (!pathExpression) {
-      setError("Please enter a path expression");
+      setError(t("errEnterPath"));
       setResult("");
       setMatchCount(null);
       return;
@@ -153,7 +155,7 @@ export function JsonPathTool() {
       setMatchCount(matches.length);
 
       if (matches.length === 0) {
-        setResult("No matches found");
+        setResult(t("noMatches"));
         setError("");
       } else if (matches.length === 1) {
         setResult(JSON.stringify(matches[0], null, 2));
@@ -163,7 +165,7 @@ export function JsonPathTool() {
         setError("");
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Invalid JSON");
+      setError(e instanceof Error ? e.message : t("invalidJson"));
       setResult("");
       setMatchCount(null);
     }
@@ -181,7 +183,7 @@ export function JsonPathTool() {
     <div className="space-y-6">
       {/* JSON Input */}
       <div>
-        <Label className="mb-2 block text-sm">JSON Data</Label>
+        <Label className="mb-2 block text-sm">{t("jsonDataLabel")}</Label>
         <Textarea
           value={jsonInput}
           onChange={(e) => setJsonInput(e.target.value)}
@@ -192,7 +194,7 @@ export function JsonPathTool() {
 
       {/* Path Expression */}
       <div>
-        <Label className="mb-2 block text-sm">Path Expression</Label>
+        <Label className="mb-2 block text-sm">{t("pathLabel")}</Label>
         <Input
           value={pathExpression}
           onChange={(e) => setPathExpression(e.target.value)}
@@ -200,17 +202,17 @@ export function JsonPathTool() {
           className="font-mono"
         />
         <p className="text-xs text-muted-foreground mt-1">
-          Examples: $.property, $[0], $.array[*], $..recursive, $[0:2]
+          {t("examplesLabel")} $.property, $[0], $.array[*], $..recursive, $[0:2]
         </p>
       </div>
 
       {/* Buttons */}
       <div className="flex flex-col sm:flex-row gap-2">
         <Button onClick={handleExtract} variant="primary" className="flex-1">
-          Extract Values
+          {t("extract")}
         </Button>
         <Button onClick={handleReset} className="sm:flex-none">
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
@@ -227,7 +229,7 @@ export function JsonPathTool() {
       {matchCount !== null && !error && (
         <div className="p-3 rounded-[12px] border bg-[var(--color-green-50)] border-green-500/30 text-[var(--color-green-500)]">
           <div className="text-sm font-medium flex items-center gap-1">
-            <MdCheck className="w-4 h-4" /> Found {matchCount} match{matchCount !== 1 ? "es" : ""}
+            <MdCheck className="w-4 h-4" /> {t("matchesFound", { count: matchCount })}
           </div>
         </div>
       )}
@@ -235,7 +237,7 @@ export function JsonPathTool() {
       {/* Result */}
       {result && !error && (
         <Textarea
-          label="Extracted Values"
+          label={t("extractedValues")}
           value={result}
           readOnly
           showCopy

@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ToolConfig } from "@/types/tool";
 
 export function WhitespaceRemoverTool() {
+  const t = useTranslations("toolUI.whitespace-remover");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
 
@@ -61,11 +63,11 @@ export function WhitespaceRemoverTool() {
     <div className="space-y-6">
       {/* Input */}
       <div>
-        <Label className="mb-2 block text-sm">Input Text</Label>
+        <Label className="mb-2 block text-sm">{t("inputLabel")}</Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Enter text with whitespace..."
+          placeholder={t("inputPlaceholder")}
           className="min-h-[200px]"
         />
       </div>
@@ -74,18 +76,18 @@ export function WhitespaceRemoverTool() {
       <div className="space-y-2">
         <div className="flex gap-2">
           <Button onClick={handleTrim} variant="primary" className="flex-1">
-            Trim Lines
+            {t("trimLines")}
           </Button>
           <Button onClick={handleRemoveAll} variant="primary" className="flex-1">
-            Remove All
+            {t("removeAll")}
           </Button>
         </div>
         <div className="flex gap-2">
           <Button onClick={handleNormalize} variant="primary" className="flex-1">
-            Normalize
+            {t("normalize")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -93,20 +95,20 @@ export function WhitespaceRemoverTool() {
       {/* Description of actions */}
       <div className="text-sm text-muted-foreground space-y-2 p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
         <div>
-          <strong>Trim Lines:</strong> Removes leading and trailing whitespace from each line
+          <strong>{t("trimLinesTermLabel")}</strong> {t("trimLinesTermDesc")}
         </div>
         <div>
-          <strong>Remove All:</strong> Removes all whitespace characters (spaces, tabs, newlines)
+          <strong>{t("removeAllTermLabel")}</strong> {t("removeAllTermDesc")}
         </div>
         <div>
-          <strong>Normalize:</strong> Replaces multiple spaces with single space, trims lines, and removes empty lines
+          <strong>{t("normalizeTermLabel")}</strong> {t("normalizeTermDesc")}
         </div>
       </div>
 
       {/* Output */}
       {output && (
         <Textarea
-          label="Output"
+          label={t("outputLabel")}
           value={output}
           readOnly
           showCopy

@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ToolConfig } from "@/types/tool";
 
 export function UniswapPriceCalculatorTool() {
+  const t = useTranslations("toolUI.uniswap-price-calculator");
   const [reserve0, setReserve0] = useState("");
   const [reserve1, setReserve1] = useState("");
   const [amountIn, setAmountIn] = useState("");
@@ -77,7 +79,7 @@ export function UniswapPriceCalculatorTool() {
       <div className="space-y-4">
         <div>
           <Input
-            label="Reserve Token0"
+            label={t("reserve0Label")}
             value={reserve0}
             onChange={(e) => setReserve0(e.target.value)}
             placeholder="10000"
@@ -85,13 +87,13 @@ export function UniswapPriceCalculatorTool() {
             className="font-mono text-sm"
           />
           <div className="text-xs text-muted-foreground mt-1">
-            Amount of Token0 in the pool
+            {t("reserve0Help")}
           </div>
         </div>
 
         <div>
           <Input
-            label="Reserve Token1"
+            label={t("reserve1Label")}
             value={reserve1}
             onChange={(e) => setReserve1(e.target.value)}
             placeholder="20000"
@@ -99,13 +101,13 @@ export function UniswapPriceCalculatorTool() {
             className="font-mono text-sm"
           />
           <div className="text-xs text-muted-foreground mt-1">
-            Amount of Token1 in the pool
+            {t("reserve1Help")}
           </div>
         </div>
 
         <div>
           <Input
-            label="Amount In (Token0)"
+            label={t("amountInLabel")}
             value={amountIn}
             onChange={(e) => setAmountIn(e.target.value)}
             placeholder="100"
@@ -113,12 +115,12 @@ export function UniswapPriceCalculatorTool() {
             className="font-mono text-sm"
           />
           <div className="text-xs text-muted-foreground mt-1">
-            Amount of Token0 to swap
+            {t("amountInHelp")}
           </div>
         </div>
 
         <div>
-          <label className="text-sm mb-2 block">Pool Fee</label>
+          <label className="text-sm mb-2 block">{t("poolFeeLabel")}</label>
           <div className="flex gap-2">
             {["0.05", "0.3", "1.0"].map((fee) => (
               <Button
@@ -133,14 +135,14 @@ export function UniswapPriceCalculatorTool() {
             ))}
           </div>
           <div className="text-xs text-muted-foreground mt-1">
-            V3: 0.05% (stable), 0.3% (standard), 1% (volatile)
+            {t("poolFeeHelp")}
           </div>
         </div>
       </div>
 
       {/* Calculate Button */}
       <Button onClick={calculateUniswapV2} variant="primary" className="w-full">
-        Calculate Price & Output
+        {t("calculateButton")}
       </Button>
 
       {/* Results Section */}
@@ -148,53 +150,53 @@ export function UniswapPriceCalculatorTool() {
         <div className="space-y-4 pt-4 border-t border-border">
           <div>
             <Input
-              label="Price (Token1 per Token0)"
+              label={t("priceLabel")}
               value={price}
               readOnly
               showCopy
               className="font-mono text-sm bg-[var(--color-gray-0)]"
             />
             <div className="text-xs text-muted-foreground mt-1">
-              Current exchange rate
+              {t("priceHelp")}
             </div>
           </div>
 
           <div>
             <Input
-              label="Amount Out (Token1)"
+              label={t("amountOutLabel")}
               value={amountOut}
               readOnly
               showCopy
               className="font-mono text-sm bg-[var(--color-gray-0)]"
             />
             <div className="text-xs text-muted-foreground mt-1">
-              Expected output after swap
+              {t("amountOutHelp")}
             </div>
           </div>
 
           <div>
             <Input
-              label="Price Impact (%)"
+              label={t("priceImpactLabel")}
               value={priceImpact}
               readOnly
               showCopy
               className="font-mono text-sm bg-[var(--color-gray-0)]"
             />
             <div className="text-xs text-muted-foreground mt-1">
-              How much the price moves due to your trade
+              {t("priceImpactHelp")}
             </div>
           </div>
 
           <div>
             <Input
-              label="Impermanent Loss (%)"
+              label={t("impermanentLossLabel")}
               value={impermanentLoss}
               readOnly
               showCopy
               className="font-mono text-sm bg-[var(--color-gray-0)]"
             />
             <div className="text-xs text-muted-foreground mt-1">
-              Estimated IL from price change
+              {t("impermanentLossHelp")}
             </div>
           </div>
 
@@ -207,13 +209,13 @@ export function UniswapPriceCalculatorTool() {
               </div>
             </div>
             <div>
-              <div className="text-xs font-semibold text-blue-400 mb-1">Price Impact</div>
+              <div className="text-xs font-semibold text-blue-400 mb-1">{t("priceImpactFormulaTitle")}</div>
               <div className="text-xs font-mono text-muted-foreground">
                 priceImpact = |((initialPrice - executionPrice) / initialPrice)| × 100
               </div>
             </div>
             <div>
-              <div className="text-xs font-semibold text-blue-400 mb-1">Impermanent Loss</div>
+              <div className="text-xs font-semibold text-blue-400 mb-1">{t("impermanentLossFormulaTitle")}</div>
               <div className="text-xs font-mono text-muted-foreground">
                 IL = 2 × √(priceRatio) / (1 + priceRatio) - 1
               </div>
@@ -221,7 +223,7 @@ export function UniswapPriceCalculatorTool() {
           </div>
 
           <Button onClick={handleReset} className="w-full">
-            Reset Calculator
+            {t("resetButton")}
           </Button>
         </div>
       )}

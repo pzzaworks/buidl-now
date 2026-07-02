@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -98,6 +99,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 export function HttpStatusTool() {
+  const t = useTranslations("toolUI.http-status");
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [expandedCode, setExpandedCode] = useState<number | null>(null);
@@ -138,18 +140,18 @@ export function HttpStatusTool() {
     <div className="space-y-6">
       {/* Search */}
       <div>
-        <Label className="mb-2 block text-sm">Search Status Codes</Label>
+        <Label className="mb-2 block text-sm">{t("searchLabel")}</Label>
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by code, name, or description..."
+          placeholder={t("searchPlaceholder")}
           className="text-sm"
         />
       </div>
 
       {/* Category Filter */}
       <div>
-        <Label className="mb-2 block text-sm">Filter by Category</Label>
+        <Label className="mb-2 block text-sm">{t("filterLabel")}</Label>
         <div className="flex flex-wrap gap-2">
           {CATEGORIES.map((category) => (
             <Button
@@ -167,12 +169,12 @@ export function HttpStatusTool() {
 
       {/* Reset Button */}
       <Button onClick={handleReset} className="w-full">
-        Reset Filters
+        {t("resetFilters")}
       </Button>
 
       {/* Results Count */}
       <div className="text-sm text-muted-foreground">
-        Showing {filteredCodes.length} of {HTTP_STATUS_CODES.length} status codes
+        {t("showing", { count: filteredCodes.length, total: HTTP_STATUS_CODES.length })}
       </div>
 
       {/* Status Code List */}
@@ -203,7 +205,7 @@ export function HttpStatusTool() {
                     </span>
                     <span className="font-medium flex-1">{status.name}</span>
                     <span className="text-muted-foreground text-sm">
-                      {expandedCode === status.code ? "Click to collapse" : "Click to expand"}
+                      {expandedCode === status.code ? t("collapse") : t("expand")}
                     </span>
                   </div>
                   {expandedCode === status.code && (
@@ -223,7 +225,7 @@ export function HttpStatusTool() {
       {/* No Results */}
       {filteredCodes.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
-          No status codes found matching your search.
+          {t("noResults")}
         </div>
       )}
     </div>

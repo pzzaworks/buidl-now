@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -27,13 +28,14 @@ interface DecodedTransaction {
 }
 
 export function TransactionDecoderTool() {
+  const t = useTranslations("toolUI.transaction-decoder");
   const [rawTx, setRawTx] = useState("");
   const [decoded, setDecoded] = useState<DecodedTransaction | null>(null);
   const [error, setError] = useState("");
 
   const handleDecode = () => {
     if (!rawTx) {
-      setError("Please enter a transaction hex");
+      setError(t("errorEmpty"));
       setDecoded(null);
       return;
     }
@@ -69,7 +71,7 @@ export function TransactionDecoderTool() {
       setDecoded(decodedTx);
       setError("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to decode transaction");
+      setError(e instanceof Error ? e.message : t("decodeFailed"));
       setDecoded(null);
     }
   };
@@ -85,7 +87,7 @@ export function TransactionDecoderTool() {
       {/* Raw Transaction Input */}
       <div>
         <Textarea
-          label="Raw Transaction (Hex)"
+          label={t("rawTxLabel")}
           value={rawTx}
           onChange={(e) => {
             setRawTx(e.target.value);
@@ -97,10 +99,10 @@ export function TransactionDecoderTool() {
         />
         <div className="flex gap-2 mt-2">
           <Button onClick={handleDecode} variant="primary" className="flex-1">
-            Decode Transaction
+            {t("decode")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -108,7 +110,7 @@ export function TransactionDecoderTool() {
       {/* Error Message */}
       {error && (
         <div className="p-3 rounded-[12px] border bg-[var(--color-red-50)] border-red-500/30 text-[var(--color-red-500)]">
-          <div className="text-sm font-medium">Error: {error}</div>
+          <div className="text-sm font-medium">{t("errorLabel")}: {error}</div>
         </div>
       )}
 
@@ -116,12 +118,12 @@ export function TransactionDecoderTool() {
       {decoded && (
         <div className="space-y-4">
           <div className="text-sm font-medium text-[var(--color-green-500)] border-b border-green-500/30 pb-2">
-            Decoded Transaction Fields
+            {t("decodedFields")}
           </div>
 
           {decoded.hash && (
             <Input
-              label="Transaction Hash"
+              label={t("txHash")}
               value={decoded.hash}
               readOnly
               showCopy
@@ -131,14 +133,14 @@ export function TransactionDecoderTool() {
 
           <div className="grid grid-cols-2 gap-4">
             <Input
-              label="Type"
+              label={t("type")}
               value={decoded.type}
               readOnly
               className="text-sm bg-[var(--color-gray-0)]"
             />
 
             <Input
-              label="Chain ID"
+              label={t("chainId")}
               value={decoded.chainId}
               readOnly
               className="font-mono text-sm bg-[var(--color-gray-0)]"
@@ -146,7 +148,7 @@ export function TransactionDecoderTool() {
           </div>
 
           <Input
-            label="From Address"
+            label={t("fromAddress")}
             value={decoded.from}
             readOnly
             showCopy
@@ -154,7 +156,7 @@ export function TransactionDecoderTool() {
           />
 
           <Input
-            label="To Address"
+            label={t("toAddress")}
             value={decoded.to}
             readOnly
             showCopy
@@ -163,7 +165,7 @@ export function TransactionDecoderTool() {
 
           <div className="grid grid-cols-2 gap-4">
             <Input
-              label="Value (Wei)"
+              label={t("valueWei")}
               value={decoded.value}
               readOnly
               showCopy
@@ -171,7 +173,7 @@ export function TransactionDecoderTool() {
             />
 
             <Input
-              label="Value (ETH)"
+              label={t("valueEth")}
               value={decoded.valueInEth}
               readOnly
               showCopy
@@ -180,7 +182,7 @@ export function TransactionDecoderTool() {
           </div>
 
           <Textarea
-            label="Data"
+            label={t("data")}
             value={decoded.data}
             readOnly
             showCopy
@@ -189,14 +191,14 @@ export function TransactionDecoderTool() {
 
           <div className="grid grid-cols-2 gap-4">
             <Input
-              label="Nonce"
+              label={t("nonce")}
               value={decoded.nonce}
               readOnly
               className="font-mono text-sm bg-[var(--color-gray-0)]"
             />
 
             <Input
-              label="Gas Limit"
+              label={t("gasLimit")}
               value={decoded.gasLimit}
               readOnly
               className="font-mono text-sm bg-[var(--color-gray-0)]"
@@ -206,14 +208,14 @@ export function TransactionDecoderTool() {
           {decoded.gasPrice && (
             <div className="grid grid-cols-2 gap-4">
               <Input
-                label="Gas Price (Wei)"
+                label={t("gasPriceWei")}
                 value={decoded.gasPrice}
                 readOnly
                 className="font-mono text-sm bg-[var(--color-gray-0)]"
               />
 
               <Input
-                label="Gas Price (Gwei)"
+                label={t("gasPriceGwei")}
                 value={decoded.gasPriceInGwei}
                 readOnly
                 className="font-mono text-sm bg-[var(--color-gray-0)]"
@@ -224,7 +226,7 @@ export function TransactionDecoderTool() {
           {decoded.maxFeePerGas && (
             <div className="grid grid-cols-2 gap-4">
               <Input
-                label="Max Fee Per Gas"
+                label={t("maxFeePerGas")}
                 value={decoded.maxFeePerGas}
                 readOnly
                 className="font-mono text-sm bg-[var(--color-gray-0)]"
@@ -232,7 +234,7 @@ export function TransactionDecoderTool() {
 
               {decoded.maxPriorityFeePerGas && (
                 <Input
-                  label="Max Priority Fee"
+                  label={t("maxPriorityFee")}
                   value={decoded.maxPriorityFeePerGas}
                   readOnly
                   className="font-mono text-sm bg-[var(--color-gray-0)]"
@@ -246,9 +248,7 @@ export function TransactionDecoderTool() {
       {/* Info Box */}
       <div className="p-4 rounded-[12px] border border-green-500/30 bg-green-500/5">
         <div className="text-sm text-[var(--color-green-500)]">
-          <strong className="flex items-center gap-1"><MdCheck className="w-4 h-4" /> Real RLP Decoding:</strong> This tool uses viem's parseTransaction
-          to properly decode signed transactions. It supports all transaction types
-          (legacy, EIP-2930, EIP-1559) and extracts all transaction fields.
+          <strong className="flex items-center gap-1"><MdCheck className="w-4 h-4" /> {t("infoTitle")}</strong> {t("infoBody")}
         </div>
       </div>
     </div>

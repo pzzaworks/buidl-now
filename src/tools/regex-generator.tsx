@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -8,76 +9,81 @@ import { Input } from "@/components/ui/input";
 import { ToolConfig } from "@/types/tool";
 
 interface CommonPattern {
-  name: string;
+  nameKey: string;
   pattern: string;
-  description: string;
+  descKey: string;
 }
 
 const commonPatterns: CommonPattern[] = [
-  { name: "Email", pattern: "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}", description: "Matches standard email addresses" },
-  { name: "Phone (US)", pattern: "\\(?\\d{3}\\)?[-\\s]?\\d{3}[-\\s]?\\d{4}", description: "Matches US phone numbers like (123) 456-7890" },
-  { name: "URL", pattern: "https?:\\/\\/[\\w\\-\\.]+\\.[a-zA-Z]{2,}(\\/[\\w\\-\\.\\/\\?\\=\\&\\%]*)?", description: "Matches HTTP/HTTPS URLs" },
-  { name: "IPv4 Address", pattern: "\\b(?:(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\b", description: "Matches valid IPv4 addresses" },
-  { name: "IPv6 Address", pattern: "([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}", description: "Matches IPv6 addresses (full format)" },
-  { name: "Date (YYYY-MM-DD)", pattern: "\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])", description: "Matches ISO date format" },
-  { name: "Date (MM/DD/YYYY)", pattern: "(?:0[1-9]|1[0-2])\\/(?:0[1-9]|[12]\\d|3[01])\\/\\d{4}", description: "Matches US date format" },
-  { name: "Time (24h)", pattern: "(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d)?", description: "Matches 24-hour time format" },
-  { name: "Credit Card", pattern: "\\b(?:\\d{4}[- ]?){3}\\d{4}\\b", description: "Matches credit card numbers" },
-  { name: "Hex Color", pattern: "#(?:[0-9a-fA-F]{3}){1,2}\\b", description: "Matches hex color codes" },
-  { name: "Username", pattern: "[a-zA-Z][a-zA-Z0-9_]{2,15}", description: "Matches usernames (3-16 chars, alphanumeric)" },
-  { name: "Password (Strong)", pattern: "(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}", description: "At least 8 chars with upper, lower, number, special" },
-  { name: "Slug", pattern: "[a-z0-9]+(?:-[a-z0-9]+)*", description: "Matches URL slugs" },
-  { name: "HTML Tag", pattern: "<([a-z]+)([^<]+)*(?:>(.*)<\\/\\1>|\\s+\\/>)", description: "Matches HTML tags" },
-  { name: "ZIP Code (US)", pattern: "\\b\\d{5}(?:-\\d{4})?\\b", description: "Matches US ZIP codes" },
+  { nameKey: "patternEmailName", pattern: "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}", descKey: "patternEmailDesc" },
+  { nameKey: "patternPhoneName", pattern: "\\(?\\d{3}\\)?[-\\s]?\\d{3}[-\\s]?\\d{4}", descKey: "patternPhoneDesc" },
+  { nameKey: "patternUrlName", pattern: "https?:\\/\\/[\\w\\-\\.]+\\.[a-zA-Z]{2,}(\\/[\\w\\-\\.\\/\\?\\=\\&\\%]*)?", descKey: "patternUrlDesc" },
+  { nameKey: "patternIpv4Name", pattern: "\\b(?:(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\b", descKey: "patternIpv4Desc" },
+  { nameKey: "patternIpv6Name", pattern: "([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}", descKey: "patternIpv6Desc" },
+  { nameKey: "patternDateIsoName", pattern: "\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])", descKey: "patternDateIsoDesc" },
+  { nameKey: "patternDateUsName", pattern: "(?:0[1-9]|1[0-2])\\/(?:0[1-9]|[12]\\d|3[01])\\/\\d{4}", descKey: "patternDateUsDesc" },
+  { nameKey: "patternTimeName", pattern: "(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d)?", descKey: "patternTimeDesc" },
+  { nameKey: "patternCreditCardName", pattern: "\\b(?:\\d{4}[- ]?){3}\\d{4}\\b", descKey: "patternCreditCardDesc" },
+  { nameKey: "patternHexColorName", pattern: "#(?:[0-9a-fA-F]{3}){1,2}\\b", descKey: "patternHexColorDesc" },
+  { nameKey: "patternUsernameName", pattern: "[a-zA-Z][a-zA-Z0-9_]{2,15}", descKey: "patternUsernameDesc" },
+  { nameKey: "patternPasswordName", pattern: "(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}", descKey: "patternPasswordDesc" },
+  { nameKey: "patternSlugName", pattern: "[a-z0-9]+(?:-[a-z0-9]+)*", descKey: "patternSlugDesc" },
+  { nameKey: "patternHtmlTagName", pattern: "<([a-z]+)([^<]+)*(?:>(.*)<\\/\\1>|\\s+\\/>)", descKey: "patternHtmlTagDesc" },
+  { nameKey: "patternZipName", pattern: "\\b\\d{5}(?:-\\d{4})?\\b", descKey: "patternZipDesc" },
 ];
 
-function explainRegex(pattern: string): string[] {
-  const explanations: string[] = [];
+export function RegexGeneratorTool() {
+  const t = useTranslations("toolUI.regex-generator");
 
-  const tokens: { pattern: RegExp; explain: (match: string) => string }[] = [
-    { pattern: /^\^/, explain: () => "^ - Start of string/line" },
-    { pattern: /\$$/, explain: () => "$ - End of string/line" },
-    { pattern: /\\d/, explain: () => "\\d - Any digit (0-9)" },
-    { pattern: /\\D/, explain: () => "\\D - Any non-digit" },
-    { pattern: /\\w/, explain: () => "\\w - Any word character (a-z, A-Z, 0-9, _)" },
-    { pattern: /\\W/, explain: () => "\\W - Any non-word character" },
-    { pattern: /\\s/, explain: () => "\\s - Any whitespace character" },
-    { pattern: /\\S/, explain: () => "\\S - Any non-whitespace character" },
-    { pattern: /\\b/, explain: () => "\\b - Word boundary" },
-    { pattern: /\\B/, explain: () => "\\B - Non-word boundary" },
-    { pattern: /\./, explain: () => ". - Any character except newline" },
-    { pattern: /\+/, explain: () => "+ - One or more of the preceding" },
-    { pattern: /\*/, explain: () => "* - Zero or more of the preceding" },
-    { pattern: /\?/, explain: () => "? - Zero or one of the preceding (optional)" },
-    { pattern: /\{(\d+)\}/, explain: (m) => `{n} - Exactly ${m.match(/\d+/)?.[0]} occurrences` },
-    { pattern: /\{(\d+),\}/, explain: (m) => `{n,} - ${m.match(/\d+/)?.[0]} or more occurrences` },
-    { pattern: /\{(\d+),(\d+)\}/, explain: (m) => { const nums = m.match(/\d+/g); return `{n,m} - Between ${nums?.[0]} and ${nums?.[1]} occurrences`; } },
-    { pattern: /\[([^\]]+)\]/, explain: (m) => `[...] - Character class: matches any of ${m.slice(1, -1)}` },
-    { pattern: /\[^([^\]]+)\]/, explain: (m) => `[^...] - Negated character class: matches any except ${m.slice(2, -1)}` },
-    { pattern: /\(([^)]+)\)/, explain: () => "(...) - Capturing group" },
-    { pattern: /\(\?:([^)]+)\)/, explain: () => "(?:...) - Non-capturing group" },
-    { pattern: /\(\?=([^)]+)\)/, explain: () => "(?=...) - Positive lookahead" },
-    { pattern: /\(\?!([^)]+)\)/, explain: () => "(?!...) - Negative lookahead" },
-    { pattern: /\|/, explain: () => "| - Alternation (OR)" },
-  ];
+  // Builds a localized, human-readable explanation of a regex pattern. Kept as
+  // an inner function so it can compose the explanation from translated t()
+  // fragments while the regex tokens and matched literals stay untouched.
+  const explainRegex = (pattern: string): string[] => {
+    const explanations: string[] = [];
 
-  for (const token of tokens) {
-    if (token.pattern.test(pattern)) {
-      const match = pattern.match(token.pattern);
-      if (match) {
-        explanations.push(token.explain(match[0]));
+    const tokens: { pattern: RegExp; explain: (match: string) => string }[] = [
+      { pattern: /^\^/, explain: () => t("explainStart") },
+      { pattern: /\$$/, explain: () => t("explainEnd") },
+      { pattern: /\\d/, explain: () => t("explainDigit") },
+      { pattern: /\\D/, explain: () => t("explainNonDigit") },
+      { pattern: /\\w/, explain: () => t("explainWord") },
+      { pattern: /\\W/, explain: () => t("explainNonWord") },
+      { pattern: /\\s/, explain: () => t("explainWhitespace") },
+      { pattern: /\\S/, explain: () => t("explainNonWhitespace") },
+      { pattern: /\\b/, explain: () => t("explainWordBoundary") },
+      { pattern: /\\B/, explain: () => t("explainNonWordBoundary") },
+      { pattern: /\./, explain: () => t("explainAnyChar") },
+      { pattern: /\+/, explain: () => t("explainOneOrMore") },
+      { pattern: /\*/, explain: () => t("explainZeroOrMore") },
+      { pattern: /\?/, explain: () => t("explainOptional") },
+      { pattern: /\{(\d+)\}/, explain: (m) => t("explainExactly", { count: Number(m.match(/\d+/)?.[0] ?? 0) }) },
+      { pattern: /\{(\d+),\}/, explain: (m) => t("explainNOrMore", { count: Number(m.match(/\d+/)?.[0] ?? 0) }) },
+      { pattern: /\{(\d+),(\d+)\}/, explain: (m) => { const nums = m.match(/\d+/g); return t("explainBetween", { min: Number(nums?.[0] ?? 0), max: Number(nums?.[1] ?? 0) }); } },
+      { pattern: /\[([^\]]+)\]/, explain: (m) => t("explainCharClass", { chars: m.slice(1, -1) }) },
+      { pattern: /\[^([^\]]+)\]/, explain: (m) => t("explainNegatedCharClass", { chars: m.slice(2, -1) }) },
+      { pattern: /\(([^)]+)\)/, explain: () => t("explainCapturingGroup") },
+      { pattern: /\(\?:([^)]+)\)/, explain: () => t("explainNonCapturingGroup") },
+      { pattern: /\(\?=([^)]+)\)/, explain: () => t("explainPositiveLookahead") },
+      { pattern: /\(\?!([^)]+)\)/, explain: () => t("explainNegativeLookahead") },
+      { pattern: /\|/, explain: () => t("explainAlternation") },
+    ];
+
+    for (const token of tokens) {
+      if (token.pattern.test(pattern)) {
+        const match = pattern.match(token.pattern);
+        if (match) {
+          explanations.push(token.explain(match[0]));
+        }
       }
     }
-  }
 
-  if (explanations.length === 0) {
-    explanations.push("This pattern matches literal characters");
-  }
+    if (explanations.length === 0) {
+      explanations.push(t("explainLiteral"));
+    }
 
-  return explanations;
-}
+    return explanations;
+  };
 
-export function RegexGeneratorTool() {
   const [description, setDescription] = useState("");
   const [generatedPattern, setGeneratedPattern] = useState("");
   const [explanation, setExplanation] = useState<string[]>([]);
@@ -93,7 +99,7 @@ export function RegexGeneratorTool() {
 
   const handleGenerateFromDescription = () => {
     if (!description.trim()) {
-      setError("Please enter a description");
+      setError(t("errorEmptyDescription"));
       return;
     }
 
@@ -135,7 +141,7 @@ export function RegexGeneratorTool() {
     } else if (desc.includes("html") || desc.includes("tag")) {
       pattern = "<([a-z]+)([^<]+)*(?:>(.*)<\\/\\1>|\\s+\\/>)";
     } else {
-      setError("Could not generate pattern from description. Try selecting a common pattern below.");
+      setError(t("errorNoPattern"));
       return;
     }
 
@@ -156,7 +162,7 @@ export function RegexGeneratorTool() {
       setMatches(found);
       setError("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Invalid regex pattern");
+      setError(e instanceof Error ? e.message : t("errorInvalidPattern"));
       setMatches([]);
     }
   };
@@ -174,11 +180,11 @@ export function RegexGeneratorTool() {
     <div className="space-y-6">
       {/* Description Input */}
       <div>
-        <Label className="mb-2 block text-sm">Describe what you want to match</Label>
+        <Label className="mb-2 block text-sm">{t("describeLabel")}</Label>
         <Input
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="e.g., email address, phone number, URL, date..."
+          placeholder={t("describePlaceholder")}
           className="text-sm"
         />
       </div>
@@ -186,10 +192,10 @@ export function RegexGeneratorTool() {
       {/* Buttons */}
       <div className="flex flex-col sm:flex-row gap-2">
         <Button onClick={handleGenerateFromDescription} variant="primary" className="flex-1">
-          Generate Regex
+          {t("generate")}
         </Button>
         <Button onClick={handleReset} className="sm:flex-none">
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
@@ -202,16 +208,16 @@ export function RegexGeneratorTool() {
 
       {/* Common Patterns */}
       <div>
-        <Label className="mb-2 block text-sm">Or select a common pattern</Label>
+        <Label className="mb-2 block text-sm">{t("commonPatternsLabel")}</Label>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[200px] overflow-y-auto p-1">
           {commonPatterns.map((p) => (
             <button
-              key={p.name}
+              key={p.nameKey}
               onClick={() => handleSelectPattern(p)}
               className="text-left p-2 text-xs rounded-[8px] border border-[var(--color-gray-200)] hover:border-[var(--color-blue-500)] hover:bg-[var(--color-blue-50)] transition-colors cursor-pointer"
-              title={p.description}
+              title={t(p.descKey)}
             >
-              {p.name}
+              {t(p.nameKey)}
             </button>
           ))}
         </div>
@@ -221,7 +227,7 @@ export function RegexGeneratorTool() {
       {generatedPattern && (
         <>
           <Input
-            label="Generated Regex Pattern"
+            label={t("generatedLabel")}
             value={generatedPattern}
             readOnly
             showCopy
@@ -231,7 +237,7 @@ export function RegexGeneratorTool() {
           {/* Explanation */}
           {explanation.length > 0 && (
             <div>
-              <Label className="mb-2 block text-sm">Pattern Explanation</Label>
+              <Label className="mb-2 block text-sm">{t("explanationLabel")}</Label>
               <div className="p-3 bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] rounded-[12px] space-y-1">
                 {explanation.map((exp, i) => (
                   <div key={i} className="text-sm font-mono text-[var(--color-gray-600)]">
@@ -244,23 +250,23 @@ export function RegexGeneratorTool() {
 
           {/* Test Section */}
           <div>
-            <Label className="mb-2 block text-sm">Test String</Label>
+            <Label className="mb-2 block text-sm">{t("testStringLabel")}</Label>
             <Textarea
               value={testString}
               onChange={(e) => setTestString(e.target.value)}
-              placeholder="Enter text to test the pattern..."
+              placeholder={t("testPlaceholder")}
               className="min-h-[100px]"
             />
           </div>
 
           <Button onClick={handleTestPattern} variant="primary" className="w-full">
-            Test Pattern
+            {t("test")}
           </Button>
 
           {/* Test Results */}
           {matches.length > 0 && (
             <div>
-              <Label className="mb-2 block text-sm">Matches ({matches.length})</Label>
+              <Label className="mb-2 block text-sm">{t("matches", { count: matches.length })}</Label>
               <div className="p-3 bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] rounded-[12px] space-y-1 max-h-[200px] overflow-y-auto">
                 {matches.map((match, i) => (
                   <div key={i} className="text-sm font-mono text-[var(--color-green-500)]">
@@ -273,7 +279,7 @@ export function RegexGeneratorTool() {
 
           {testString && matches.length === 0 && !error && (
             <div className="p-3 rounded-[12px] border bg-yellow-500/10 border-yellow-500/30 text-yellow-600">
-              <div className="text-sm font-medium">No matches found</div>
+              <div className="text-sm font-medium">{t("noMatches")}</div>
             </div>
           )}
         </>

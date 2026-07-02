@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -12,6 +13,7 @@ import { ToolConfig } from "@/types/tool";
 import { MdClose } from "react-icons/md";
 
 export function Create2AddressPredictorTool() {
+  const t = useTranslations("toolUI.create2-address-predictor");
   const [deployerAddress, setDeployerAddress] = useState("");
   const [salt, setSalt] = useState("");
   const [initCode, setInitCode] = useState("");
@@ -41,7 +43,7 @@ export function Create2AddressPredictorTool() {
       if (salt.startsWith("0x")) {
         saltBytes = salt as `0x${string}`;
         if (saltBytes.length !== 66) {
-          throw new Error("Salt must be 32 bytes (66 characters including 0x)");
+          throw new Error(t("errorSaltBytes"));
         }
       } else {
         // Convert number to bytes32
@@ -55,16 +57,16 @@ export function Create2AddressPredictorTool() {
 
       if (useInitCodeHash) {
         if (!initCodeHash.startsWith("0x")) {
-          throw new Error("Init code hash must start with 0x");
+          throw new Error(t("errorInitCodeHashPrefix"));
         }
         codeHash = initCodeHash as `0x${string}`;
         steps.push(`Init Code Hash: ${codeHash}`);
       } else {
         if (!initCode) {
-          throw new Error("Init code is required");
+          throw new Error(t("errorInitCodeRequired"));
         }
         if (!initCode.startsWith("0x")) {
-          throw new Error("Init code must start with 0x");
+          throw new Error(t("errorInitCodePrefix"));
         }
         codeHash = keccak256(initCode as `0x${string}`);
         steps.push(`Init Code: ${initCode.slice(0, 66)}...`);
@@ -96,7 +98,7 @@ export function Create2AddressPredictorTool() {
       setPredictedAddress(checksumAddress);
       setCalculationSteps(steps);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Calculation failed");
+      setError(e instanceof Error ? e.message : t("errorCalculationFailed"));
       setPredictedAddress("");
       setCalculationSteps([]);
     }
@@ -104,12 +106,12 @@ export function Create2AddressPredictorTool() {
 
   const searchVanityAddress = async () => {
     if (!deployerAddress || !vanityPrefix) {
-      setError("Please provide deployer address and desired prefix");
+      setError(t("errorMissingVanityInput"));
       return;
     }
 
     if (!/^[0-9a-fA-F]+$/.test(vanityPrefix)) {
-      setError("Prefix must be hexadecimal characters only");
+      setError(t("errorPrefixHex"));
       return;
     }
 
@@ -125,12 +127,12 @@ export function Create2AddressPredictorTool() {
       let codeHash: `0x${string}`;
       if (useInitCodeHash) {
         if (!initCodeHash.startsWith("0x")) {
-          throw new Error("Init code hash must start with 0x");
+          throw new Error(t("errorInitCodeHashPrefix"));
         }
         codeHash = initCodeHash as `0x${string}`;
       } else {
         if (!initCode) {
-          throw new Error("Init code is required");
+          throw new Error(t("errorInitCodeRequired"));
         }
         codeHash = keccak256(initCode as `0x${string}`);
       }
@@ -171,10 +173,10 @@ export function Create2AddressPredictorTool() {
         setSalt(foundSalt);
         setError("");
       } else {
-        setError(`No match found in ${maxAttempts.toLocaleString()} attempts. Try a shorter prefix.`);
+        setError(t("errorNoVanityMatch", { attempts: maxAttempts.toLocaleString() }));
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Vanity search failed");
+      setError(e instanceof Error ? e.message : t("errorVanityFailed"));
     } finally {
       setVanitySearching(false);
     }
@@ -202,20 +204,20 @@ export function Create2AddressPredictorTool() {
           variant={!vanityMode ? "primary" : "secondary"}
           className="flex-1"
         >
-          Calculate Address
+          {t("calculateAddress")}
         </Button>
         <Button
           onClick={() => setVanityMode(true)}
           variant={vanityMode ? "primary" : "secondary"}
           className="flex-1"
         >
-          Vanity Mode
+          {t("vanityMode")}
         </Button>
       </div>
 
       {/* Input Section */}
       <div>
-        <Label className="mb-2 block text-sm">Deployer Address (Factory Contract)</Label>
+        <Label className="mb-2 block text-sm">{t("deployerAddressLabel")}</Label>
         <Input
           value={deployerAddress}
           onChange={(e) => setDeployerAddress(e.target.value)}
@@ -223,12 +225,12 @@ export function Create2AddressPredictorTool() {
           className="font-mono text-sm mb-2"
         />
         <div className="text-xs text-muted-foreground mb-4">
-          The address that will call CREATE2 to deploy the contract
+          {t("deployerHelp")}
         </div>
 
         {!vanityMode && (
           <>
-            <Label className="mb-2 block text-sm">Salt (32 bytes or number)</Label>
+            <Label className="mb-2 block text-sm">{t("saltLabel")}</Label>
             <Input
               value={salt}
               onChange={(e) => setSalt(e.target.value)}
@@ -236,14 +238,14 @@ export function Create2AddressPredictorTool() {
               className="font-mono text-sm mb-2"
             />
             <div className="text-xs text-muted-foreground mb-4">
-              Enter a number (e.g., 0, 1, 123) or full 32-byte hex value
+              {t("saltHelp")}
             </div>
           </>
         )}
 
         {vanityMode && (
           <>
-            <Label className="mb-2 block text-sm">Desired Address Prefix (after 0x)</Label>
+            <Label className="mb-2 block text-sm">{t("vanityPrefixLabel")}</Label>
             <Input
               value={vanityPrefix}
               onChange={(e) => setVanityPrefix(e.target.value)}
@@ -251,7 +253,7 @@ export function Create2AddressPredictorTool() {
               className="font-mono text-sm mb-2"
             />
             <div className="text-xs text-muted-foreground mb-4">
-              Hexadecimal characters only (0-9, a-f). Short prefixes recommended (3-4 chars)
+              {t("vanityPrefixHelp")}
             </div>
           </>
         )}
@@ -261,13 +263,13 @@ export function Create2AddressPredictorTool() {
             id="useHash"
             checked={useInitCodeHash}
             onChange={(e) => setUseInitCodeHash(e.target.checked)}
-            label="I have the init code hash (faster)"
+            label={t("useInitCodeHashLabel")}
           />
         </div>
 
         {useInitCodeHash ? (
           <>
-            <Label className="mb-2 block text-sm">Init Code Hash (keccak256 of bytecode)</Label>
+            <Label className="mb-2 block text-sm">{t("initCodeHashLabel")}</Label>
             <Input
               value={initCodeHash}
               onChange={(e) => setInitCodeHash(e.target.value)}
@@ -275,12 +277,12 @@ export function Create2AddressPredictorTool() {
               className="font-mono text-sm mb-2"
             />
             <div className="text-xs text-muted-foreground mb-2">
-              32-byte hash (66 characters including 0x)
+              {t("initCodeHashHelp")}
             </div>
           </>
         ) : (
           <>
-            <Label className="mb-2 block text-sm">Init Code (Contract Bytecode)</Label>
+            <Label className="mb-2 block text-sm">{t("initCodeLabel")}</Label>
             <Textarea
               value={initCode}
               onChange={(e) => setInitCode(e.target.value)}
@@ -288,7 +290,7 @@ export function Create2AddressPredictorTool() {
               className="font-mono text-sm min-h-[100px] mb-2"
             />
             <div className="text-xs text-muted-foreground mb-2">
-              Full contract creation bytecode (constructor code + runtime code)
+              {t("initCodeHelp")}
             </div>
           </>
         )}
@@ -296,15 +298,15 @@ export function Create2AddressPredictorTool() {
         <div className="flex gap-2">
           {!vanityMode ? (
             <Button onClick={calculateAddress} variant="primary" className="flex-1">
-              Calculate Address
+              {t("calculateAddress")}
             </Button>
           ) : (
             <Button onClick={searchVanityAddress} variant="primary" className="flex-1" disabled={vanitySearching}>
-              {vanitySearching ? "Searching..." : "Find Vanity Salt"}
+              {vanitySearching ? t("searching") : t("findVanitySalt")}
             </Button>
           )}
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -319,18 +321,18 @@ export function Create2AddressPredictorTool() {
       {vanityResult && (
         <div className="p-4 rounded-[12px] border border-green-500/30 bg-[var(--color-green-50)]">
           <Label className="mb-2 block text-sm font-semibold text-[var(--color-green-500)]">
-            Vanity Address Found!
+            {t("vanityFound")}
           </Label>
           <div className="space-y-2">
             <Input
-              label="Salt"
+              label={t("saltResultLabel")}
               value={vanityResult.salt}
               readOnly
               showCopy
               className="font-mono text-sm"
             />
             <Input
-              label="Address"
+              label={t("addressResultLabel")}
               value={vanityResult.address}
               readOnly
               showCopy
@@ -344,7 +346,7 @@ export function Create2AddressPredictorTool() {
       {predictedAddress && (
         <>
           <Input
-            label="Predicted Address"
+            label={t("predictedAddressLabel")}
             value={predictedAddress}
             readOnly
             showCopy
@@ -352,7 +354,7 @@ export function Create2AddressPredictorTool() {
           />
 
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <Label className="mb-3 block text-sm">Calculation Steps</Label>
+            <Label className="mb-3 block text-sm">{t("calculationStepsLabel")}</Label>
             <div className="space-y-2">
               {calculationSteps.map((step, index) => (
                 <div key={index} className="text-xs font-mono text-muted-foreground break-all">
@@ -363,7 +365,7 @@ export function Create2AddressPredictorTool() {
           </div>
 
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <Label className="mb-2 block text-sm">CREATE2 Formula</Label>
+            <Label className="mb-2 block text-sm">{t("formulaLabel")}</Label>
             <Code language="javascript">
 {`// The CREATE2 address is calculated as:
 address = keccak256(0xff ++ deployer ++ salt ++ keccak256(initCode))[12:]
@@ -378,7 +380,7 @@ address = keccak256(0xff ++ deployer ++ salt ++ keccak256(initCode))[12:]
           </div>
 
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <Label className="mb-2 block text-sm">Deploy with CREATE2 (Solidity)</Label>
+            <Label className="mb-2 block text-sm">{t("deploySolidityLabel")}</Label>
             <Code language="solidity">
 {`contract Factory {
     event Deployed(address addr, bytes32 salt);

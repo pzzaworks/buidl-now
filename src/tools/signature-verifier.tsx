@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -10,6 +11,7 @@ import { ToolConfig } from "@/types/tool";
 import { MdCheck, MdClose } from "react-icons/md";
 
 export function SignatureVerifierTool() {
+  const t = useTranslations("toolUI.signature-verifier");
   const [message, setMessage] = useState("");
   const [signature, setSignature] = useState("");
   const [expectedAddress, setExpectedAddress] = useState("");
@@ -54,7 +56,7 @@ export function SignatureVerifierTool() {
     <div className="space-y-6">
       {/* Message */}
       <div>
-        <Label className="mb-2 block text-sm">Original Message</Label>
+        <Label className="mb-2 block text-sm">{t("messageLabel")}</Label>
         <Textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
@@ -65,7 +67,7 @@ export function SignatureVerifierTool() {
 
       {/* Signature */}
       <div>
-        <Label className="mb-2 block text-sm">Signature (65 bytes hex)</Label>
+        <Label className="mb-2 block text-sm">{t("signatureLabel")}</Label>
         <Textarea
           value={signature}
           onChange={(e) => setSignature(e.target.value)}
@@ -77,7 +79,7 @@ export function SignatureVerifierTool() {
       {/* Expected Address (Optional) */}
       <div>
         <Label className="mb-2 block text-sm">
-          Expected Signer Address (Optional)
+          {t("expectedAddressLabel")}
         </Label>
         <Input
           value={expectedAddress}
@@ -87,10 +89,10 @@ export function SignatureVerifierTool() {
         />
         <div className="flex gap-2">
           <Button onClick={handleVerify} variant="primary" className="flex-1">
-            Verify Signature
+            {t("verify")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -98,7 +100,7 @@ export function SignatureVerifierTool() {
       {/* Recovered Address */}
       {recoveredAddress && (
         <Input
-          label="Recovered Signer Address"
+          label={t("recoveredLabel")}
           value={recoveredAddress}
           readOnly
           showCopy
@@ -117,8 +119,8 @@ export function SignatureVerifierTool() {
         >
           <div className="text-sm font-medium flex items-center gap-1">
             {isMatch
-              ? <><MdCheck className="w-4 h-4" /> Signature matches expected address</>
-              : <><MdClose className="w-4 h-4" /> Signature does not match expected address</>}
+              ? <><MdCheck className="w-4 h-4" /> {t("matchSuccess")}</>
+              : <><MdClose className="w-4 h-4" /> {t("matchFail")}</>}
           </div>
         </div>
       )}

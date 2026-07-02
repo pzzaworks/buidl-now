@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -423,6 +424,7 @@ file, You can obtain one at https://mozilla.org/MPL/2.0/.`,
 };
 
 export function LicenseGeneratorTool() {
+  const t = useTranslations("toolUI.license-generator");
   const currentYear = new Date().getFullYear().toString();
   const [licenseType, setLicenseType] = useState<LicenseType>("mit");
   const [year, setYear] = useState(currentYear);
@@ -449,7 +451,7 @@ export function LicenseGeneratorTool() {
     <div className="space-y-6">
       {/* License Selection */}
       <div>
-        <Label className="mb-2 block text-sm">Select License</Label>
+        <Label className="mb-2 block text-sm">{t("selectLicense")}</Label>
         <select
           value={licenseType}
           onChange={(e) => setLicenseType(e.target.value as LicenseType)}
@@ -468,7 +470,7 @@ export function LicenseGeneratorTool() {
         <p className="text-sm text-[var(--color-gray-700)] mb-3">{selectedLicense.description}</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
           <div>
-            <Label className="text-[var(--color-green-600)] mb-1 block">Permissions</Label>
+            <Label className="text-[var(--color-green-600)] mb-1 block">{t("permissions")}</Label>
             <ul className="space-y-0.5">
               {selectedLicense.permissions.map((p) => (
                 <li key={p} className="text-[var(--color-gray-600)]">+ {p}</li>
@@ -476,19 +478,19 @@ export function LicenseGeneratorTool() {
             </ul>
           </div>
           <div>
-            <Label className="text-[var(--color-blue-600)] mb-1 block">Conditions</Label>
+            <Label className="text-[var(--color-blue-600)] mb-1 block">{t("conditions")}</Label>
             <ul className="space-y-0.5">
               {selectedLicense.conditions.length > 0 ? (
                 selectedLicense.conditions.map((c) => (
                   <li key={c} className="text-[var(--color-gray-600)]">= {c}</li>
                 ))
               ) : (
-                <li className="text-[var(--color-gray-400)]">None</li>
+                <li className="text-[var(--color-gray-400)]">{t("none")}</li>
               )}
             </ul>
           </div>
           <div>
-            <Label className="text-[var(--color-red-600)] mb-1 block">Limitations</Label>
+            <Label className="text-[var(--color-red-600)] mb-1 block">{t("limitations")}</Label>
             <ul className="space-y-0.5">
               {selectedLicense.limitations.map((l) => (
                 <li key={l} className="text-[var(--color-gray-600)]">- {l}</li>
@@ -501,33 +503,33 @@ export function LicenseGeneratorTool() {
       {/* Year and Author */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input
-          label="Year"
+          label={t("yearLabel")}
           value={year}
           onChange={(e) => setYear(e.target.value)}
           placeholder={currentYear}
         />
         <Input
-          label="Author / Copyright Holder"
+          label={t("authorLabel")}
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
-          placeholder="John Doe"
+          placeholder={t("authorPlaceholder")}
         />
       </div>
 
       {/* Buttons */}
       <div className="flex gap-2">
         <Button onClick={handleGenerate} variant="primary" className="flex-1">
-          Generate License
+          {t("generate")}
         </Button>
         <Button onClick={handleReset} variant="secondary">
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
       {/* Output */}
       {output && (
         <Textarea
-          label="Generated LICENSE"
+          label={t("outputLabel")}
           value={output}
           readOnly
           showCopy

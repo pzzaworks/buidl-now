@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -17,6 +18,7 @@ const HEX_CHARS = "0123456789abcdef";
 type CharacterType = "alphanumeric" | "hex" | "numeric" | "custom";
 
 export function RandomStringGeneratorTool() {
+  const t = useTranslations("toolUI.random-string-generator");
   const [randomString, setRandomString] = useState("");
   const [length, setLength] = useState("32");
   const [count, setCount] = useState("1");
@@ -84,35 +86,35 @@ export function RandomStringGeneratorTool() {
     <div className="space-y-6">
       {/* Character Type Selection */}
       <div>
-        <Label className="mb-2 block text-sm">Character Type</Label>
+        <Label className="mb-2 block text-sm">{t("characterType")}</Label>
         <div className="grid grid-cols-2 gap-2">
           <Button
             variant={characterType === "alphanumeric" ? "primary" : "secondary"}
             onClick={() => setCharacterType("alphanumeric")}
             className="w-full"
           >
-            Alphanumeric
+            {t("alphanumeric")}
           </Button>
           <Button
             variant={characterType === "hex" ? "primary" : "secondary"}
             onClick={() => setCharacterType("hex")}
             className="w-full"
           >
-            Hex
+            {t("hex")}
           </Button>
           <Button
             variant={characterType === "numeric" ? "primary" : "secondary"}
             onClick={() => setCharacterType("numeric")}
             className="w-full"
           >
-            Numeric
+            {t("numeric")}
           </Button>
           <Button
             variant={characterType === "custom" ? "primary" : "secondary"}
             onClick={() => setCharacterType("custom")}
             className="w-full"
           >
-            Custom
+            {t("custom")}
           </Button>
         </div>
       </div>
@@ -120,33 +122,33 @@ export function RandomStringGeneratorTool() {
       {/* Custom Character Options */}
       {characterType === "custom" && (
         <div className="space-y-2">
-          <Label className="block text-sm">Include Characters</Label>
+          <Label className="block text-sm">{t("includeCharacters")}</Label>
           <Checkbox
             checked={includeLowercase}
             onChange={(e) => setIncludeLowercase(e.target.checked)}
-            label="Lowercase (a-z)"
+            label={t("lowercase")}
           />
           <Checkbox
             checked={includeUppercase}
             onChange={(e) => setIncludeUppercase(e.target.checked)}
-            label="Uppercase (A-Z)"
+            label={t("uppercase")}
           />
           <Checkbox
             checked={includeNumbers}
             onChange={(e) => setIncludeNumbers(e.target.checked)}
-            label="Numbers (0-9)"
+            label={t("numbers")}
           />
           <Checkbox
             checked={includeSymbols}
             onChange={(e) => setIncludeSymbols(e.target.checked)}
-            label="Symbols (!@#$%...)"
+            label={t("symbols")}
           />
         </div>
       )}
 
       {/* Length Input */}
       <div>
-        <Label className="mb-2 block text-sm">Length (1-512)</Label>
+        <Label className="mb-2 block text-sm">{t("length")}</Label>
         <Input
           type="number"
           min="1"
@@ -159,7 +161,7 @@ export function RandomStringGeneratorTool() {
 
       {/* Count Input */}
       <div>
-        <Label className="mb-2 block text-sm">Number of Strings (1-100)</Label>
+        <Label className="mb-2 block text-sm">{t("numberOfStrings")}</Label>
         <Input
           type="number"
           min="1"
@@ -172,13 +174,13 @@ export function RandomStringGeneratorTool() {
 
       {/* Generate Button */}
       <Button onClick={handleGenerate} variant="primary" className="w-full">
-        Generate String{parseInt(count) > 1 ? "s" : ""}
+        {parseInt(count) > 1 ? t("generateStrings") : t("generateString")}
       </Button>
 
       {/* Single String Output */}
       {randomString && (
         <Input
-          label="Generated String"
+          label={t("generatedString")}
           value={randomString}
           readOnly
           showCopy
@@ -189,7 +191,7 @@ export function RandomStringGeneratorTool() {
       {/* Multiple Strings Output */}
       {randomStrings.length > 0 && (
         <Textarea
-          label={`Generated Strings (${randomStrings.length})`}
+          label={t("generatedStrings", { count: randomStrings.length })}
           value={randomStrings.join("\n")}
           readOnly
           showCopy

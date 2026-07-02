@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -29,6 +30,7 @@ function hexToRgba(hex: string, opacity: number): string {
 }
 
 export function BoxShadowGeneratorTool() {
+  const t = useTranslations("toolUI.box-shadow-generator");
   const [shadows, setShadows] = useState<Shadow[]>([
     {
       id: "1",
@@ -137,7 +139,7 @@ export function BoxShadowGeneratorTool() {
     <div className="space-y-6">
       {/* Presets */}
       <div>
-        <Label className="mb-2 block text-sm">Presets</Label>
+        <Label className="mb-2 block text-sm">{t("presets")}</Label>
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
           {["subtle", "medium", "large", "xl", "inset", "outline"].map((preset) => (
             <Button
@@ -146,7 +148,7 @@ export function BoxShadowGeneratorTool() {
               size="sm"
               className="capitalize"
             >
-              {preset}
+              {t(`preset_${preset}`)}
             </Button>
           ))}
         </div>
@@ -155,10 +157,10 @@ export function BoxShadowGeneratorTool() {
       {/* Shadow Controls */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <Label className="text-sm">Shadows ({shadows.length}/5)</Label>
+          <Label className="text-sm">{t("shadowsCount", { count: shadows.length })}</Label>
           {shadows.length < 5 && (
             <Button onClick={addShadow} size="sm">
-              Add Shadow
+              {t("addShadow")}
             </Button>
           )}
         </div>
@@ -170,7 +172,7 @@ export function BoxShadowGeneratorTool() {
               className="p-4 bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] rounded-[12px] space-y-4"
             >
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Shadow {index + 1}</span>
+                <span className="text-sm font-medium">{t("shadowN", { number: index + 1 })}</span>
                 <div className="flex items-center gap-2">
                   <label className="flex items-center gap-2 text-sm cursor-pointer">
                     <input
@@ -179,11 +181,11 @@ export function BoxShadowGeneratorTool() {
                       onChange={(e) => updateShadow(shadow.id, "inset", e.target.checked)}
                       className="w-4 h-4 accent-[var(--color-blue-500)]"
                     />
-                    Inset
+                    {t("inset")}
                   </label>
                   {shadows.length > 1 && (
                     <Button onClick={() => removeShadow(shadow.id)} size="sm">
-                      Remove
+                      {t("remove")}
                     </Button>
                   )}
                 </div>
@@ -191,7 +193,7 @@ export function BoxShadowGeneratorTool() {
 
               {/* Horizontal Offset */}
               <div>
-                <Label className="mb-1 block text-xs">Horizontal: {shadow.horizontal}px</Label>
+                <Label className="mb-1 block text-xs">{t("horizontal", { value: shadow.horizontal })}</Label>
                 <input
                   type="range"
                   min="-50"
@@ -204,7 +206,7 @@ export function BoxShadowGeneratorTool() {
 
               {/* Vertical Offset */}
               <div>
-                <Label className="mb-1 block text-xs">Vertical: {shadow.vertical}px</Label>
+                <Label className="mb-1 block text-xs">{t("vertical", { value: shadow.vertical })}</Label>
                 <input
                   type="range"
                   min="-50"
@@ -217,7 +219,7 @@ export function BoxShadowGeneratorTool() {
 
               {/* Blur */}
               <div>
-                <Label className="mb-1 block text-xs">Blur: {shadow.blur}px</Label>
+                <Label className="mb-1 block text-xs">{t("blur", { value: shadow.blur })}</Label>
                 <input
                   type="range"
                   min="0"
@@ -230,7 +232,7 @@ export function BoxShadowGeneratorTool() {
 
               {/* Spread */}
               <div>
-                <Label className="mb-1 block text-xs">Spread: {shadow.spread}px</Label>
+                <Label className="mb-1 block text-xs">{t("spread", { value: shadow.spread })}</Label>
                 <input
                   type="range"
                   min="-50"
@@ -244,7 +246,7 @@ export function BoxShadowGeneratorTool() {
               {/* Color and Opacity */}
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <Label className="mb-1 block text-xs">Color</Label>
+                  <Label className="mb-1 block text-xs">{t("color")}</Label>
                   <div className="flex items-center gap-2">
                     <input
                       type="color"
@@ -260,7 +262,7 @@ export function BoxShadowGeneratorTool() {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <Label className="mb-1 block text-xs">Opacity: {Math.round(shadow.opacity * 100)}%</Label>
+                  <Label className="mb-1 block text-xs">{t("opacity", { value: Math.round(shadow.opacity * 100) })}</Label>
                   <input
                     type="range"
                     min="0"
@@ -278,7 +280,7 @@ export function BoxShadowGeneratorTool() {
 
       {/* Preview Background */}
       <div>
-        <Label className="mb-2 block text-sm">Preview Background</Label>
+        <Label className="mb-2 block text-sm">{t("previewBackground")}</Label>
         <div className="flex items-center gap-2">
           <input
             type="color"
@@ -296,7 +298,7 @@ export function BoxShadowGeneratorTool() {
 
       {/* Preview */}
       <div>
-        <Label className="mb-2 block text-sm">Preview</Label>
+        <Label className="mb-2 block text-sm">{t("preview")}</Label>
         <div
           className="h-48 w-full rounded-[12px] border border-[var(--color-gray-200)] flex items-center justify-center"
           style={{ backgroundColor: previewBg }}
@@ -310,7 +312,7 @@ export function BoxShadowGeneratorTool() {
 
       {/* CSS Output */}
       <Input
-        label="CSS Code"
+        label={t("cssCode")}
         value={`box-shadow: ${cssCode};`}
         readOnly
         showCopy
@@ -319,7 +321,7 @@ export function BoxShadowGeneratorTool() {
 
       {/* Tailwind Output */}
       <Input
-        label="Tailwind Arbitrary Value"
+        label={t("tailwindArbitraryValue")}
         value={`shadow-[${cssCode.replace(/\s+/g, "_")}]`}
         readOnly
         showCopy

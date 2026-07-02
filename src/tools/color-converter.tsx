@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -204,13 +205,14 @@ function parseColor(input: string): ColorFormats | null {
 }
 
 export function ColorConverterTool() {
+  const t = useTranslations("toolUI.color-converter");
   const [input, setInput] = useState("");
   const [colors, setColors] = useState<ColorFormats | null>(null);
   const [error, setError] = useState("");
 
   const handleConvert = () => {
     if (!input.trim()) {
-      setError("Please enter a color value");
+      setError(t("errorEmpty"));
       setColors(null);
       return;
     }
@@ -221,7 +223,7 @@ export function ColorConverterTool() {
       setError("");
     } else {
       setColors(null);
-      setError("Invalid color format. Please use HEX, RGB, or HSL format.");
+      setError(t("errorInvalid"));
     }
   };
 
@@ -235,7 +237,7 @@ export function ColorConverterTool() {
     <div className="space-y-6">
       {/* Input Section */}
       <div>
-        <Label className="mb-2 block text-sm">Color Input</Label>
+        <Label className="mb-2 block text-sm">{t("inputLabel")}</Label>
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -244,10 +246,10 @@ export function ColorConverterTool() {
         />
         <div className="flex gap-2">
           <Button onClick={handleConvert} variant="primary" className="flex-1">
-            Convert
+            {t("convert")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -264,7 +266,7 @@ export function ColorConverterTool() {
         <div className="space-y-4">
           {/* Color Preview */}
           <div>
-            <Label className="mb-2 block text-sm">Color Preview</Label>
+            <Label className="mb-2 block text-sm">{t("previewLabel")}</Label>
             <div
               className="h-32 w-full rounded-[12px] border border-[var(--color-gray-200)]"
               style={{ backgroundColor: colors.hex }}

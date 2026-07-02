@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -10,6 +11,7 @@ import { ToolConfig } from "@/types/tool";
 import { MdClose } from "react-icons/md";
 
 export function ContractStorageSlotTool() {
+  const t = useTranslations("toolUI.contract-storage-slot");
   const [mappingKey, setMappingKey] = useState("");
   const [slotNumber, setSlotNumber] = useState("");
   const [storageSlot, setStorageSlot] = useState("");
@@ -51,7 +53,7 @@ export function ContractStorageSlotTool() {
       setStorageSlot(calculatedSlot);
       setError("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Calculation failed");
+      setError(e instanceof Error ? e.message : t("calcFailed"));
       setStorageSlot("");
     }
   };
@@ -67,7 +69,7 @@ export function ContractStorageSlotTool() {
     <div className="space-y-6">
       {/* Input Section */}
       <div>
-        <Label className="mb-2 block text-sm">Mapping Key (address or uint256)</Label>
+        <Label className="mb-2 block text-sm">{t("mappingKeyLabel")}</Label>
         <Input
           value={mappingKey}
           onChange={(e) => setMappingKey(e.target.value)}
@@ -75,7 +77,7 @@ export function ContractStorageSlotTool() {
           className="font-mono text-sm mb-4"
         />
 
-        <Label className="mb-2 block text-sm">Storage Slot Number</Label>
+        <Label className="mb-2 block text-sm">{t("slotNumberLabel")}</Label>
         <Input
           value={slotNumber}
           onChange={(e) => setSlotNumber(e.target.value)}
@@ -85,10 +87,10 @@ export function ContractStorageSlotTool() {
 
         <div className="flex gap-2">
           <Button onClick={calculateSlot} variant="primary" className="flex-1">
-            Calculate
+            {t("calculate")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -103,7 +105,7 @@ export function ContractStorageSlotTool() {
       {storageSlot && (
         <>
           <Input
-            label="Storage Slot"
+            label={t("storageSlotLabel")}
             value={storageSlot}
             readOnly
             showCopy
@@ -111,7 +113,7 @@ export function ContractStorageSlotTool() {
           />
 
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <Label className="mb-2 block text-sm">How to use with eth_getStorageAt</Label>
+            <Label className="mb-2 block text-sm">{t("howToUseLabel")}</Label>
             <Code language="javascript">
 {`// Using viem
 import { createPublicClient, http } from 'viem';

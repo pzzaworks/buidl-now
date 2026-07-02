@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +16,7 @@ interface DecodedJWT {
 }
 
 export function JwtDecoderTool() {
+  const t = useTranslations("toolUI.jwt-decoder");
   const [input, setInput] = useState("");
   const [decoded, setDecoded] = useState<DecodedJWT | null>(null);
   const [error, setError] = useState("");
@@ -32,7 +34,7 @@ export function JwtDecoderTool() {
     try {
       return atob(base64);
     } catch (e) {
-      throw new Error("Invalid base64 encoding");
+      throw new Error(t("invalidBase64"));
     }
   };
 
@@ -50,7 +52,7 @@ export function JwtDecoderTool() {
       const parts = token.split(".");
 
       if (parts.length !== 3) {
-        setError("Invalid JWT format. A JWT must have exactly 3 parts separated by dots.");
+        setError(t("invalidFormat"));
         return;
       }
 
@@ -66,13 +68,13 @@ export function JwtDecoderTool() {
       try {
         headerDecoded = JSON.parse(headerJson);
       } catch (e) {
-        throw new Error("Invalid JSON in header");
+        throw new Error(t("invalidHeaderJson"));
       }
 
       try {
         payloadDecoded = JSON.parse(payloadJson);
       } catch (e) {
-        throw new Error("Invalid JSON in payload");
+        throw new Error(t("invalidPayloadJson"));
       }
 
       setDecoded({
@@ -83,7 +85,7 @@ export function JwtDecoderTool() {
         payloadDecoded,
       });
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to decode JWT");
+      setError(e instanceof Error ? e.message : t("decodeError"));
     }
   };
 
@@ -95,7 +97,7 @@ export function JwtDecoderTool() {
     try {
       return new Date(timestamp * 1000).toLocaleString();
     } catch (e) {
-      return "Invalid date";
+      return t("invalidDate");
     }
   };
 
@@ -103,11 +105,11 @@ export function JwtDecoderTool() {
     <div className="space-y-6">
       {/* Input */}
       <div>
-        <Label className="mb-2 block text-sm">JWT Token</Label>
+        <Label className="mb-2 block text-sm">{t("tokenLabel")}</Label>
         <Textarea
           value={input}
           onChange={(e) => handleDecode(e.target.value)}
-          placeholder="Paste your JWT token here (e.g., eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)"
+          placeholder={t("tokenPlaceholder")}
           className="min-h-[120px] text-sm"
         />
       </div>
@@ -125,11 +127,11 @@ export function JwtDecoderTool() {
           {/* Header */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <Label className="text-sm font-semibold text-blue-400">Header</Label>
+              <Label className="text-sm font-semibold text-blue-400">{t("header")}</Label>
             </div>
             <div className="p-3 bg-[var(--color-gray-0)] border border-border rounded-[12px] space-y-2">
               <div>
-                <div className="text-xs text-muted-foreground mb-1">Encoded:</div>
+                <div className="text-xs text-muted-foreground mb-1">{t("encoded")}</div>
                 <Input
                   value={decoded.header}
                   readOnly
@@ -137,7 +139,7 @@ export function JwtDecoderTool() {
                 />
               </div>
               <div>
-                <div className="text-xs text-muted-foreground mb-1">Decoded:</div>
+                <div className="text-xs text-muted-foreground mb-1">{t("decoded")}</div>
                 <Textarea
                   value={formatJSON(decoded.headerDecoded)}
                   readOnly
@@ -151,11 +153,11 @@ export function JwtDecoderTool() {
           {/* Payload */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <Label className="text-sm font-semibold text-blue-400">Payload</Label>
+              <Label className="text-sm font-semibold text-blue-400">{t("payload")}</Label>
             </div>
             <div className="p-3 bg-[var(--color-gray-0)] border border-border rounded-[12px] space-y-2">
               <div>
-                <div className="text-xs text-muted-foreground mb-1">Encoded:</div>
+                <div className="text-xs text-muted-foreground mb-1">{t("encoded")}</div>
                 <Input
                   value={decoded.payload}
                   readOnly
@@ -163,7 +165,7 @@ export function JwtDecoderTool() {
                 />
               </div>
               <div>
-                <div className="text-xs text-muted-foreground mb-1">Decoded:</div>
+                <div className="text-xs text-muted-foreground mb-1">{t("decoded")}</div>
                 <Textarea
                   value={formatJSON(decoded.payloadDecoded)}
                   readOnly
@@ -178,24 +180,24 @@ export function JwtDecoderTool() {
                 decoded.payloadDecoded.nbf) && (
                 <div className="pt-2 border-t border-border">
                   <div className="text-xs text-muted-foreground mb-2">
-                    Timestamp Claims:
+                    {t("timestampClaims")}
                   </div>
                   <div className="space-y-1 text-xs">
                     {decoded.payloadDecoded.iat && (
                       <div>
-                        <span className="text-muted-foreground">Issued At (iat):</span>{" "}
+                        <span className="text-muted-foreground">{t("issuedAt")}</span>{" "}
                         {formatTimestamp(decoded.payloadDecoded.iat)}
                       </div>
                     )}
                     {decoded.payloadDecoded.exp && (
                       <div>
-                        <span className="text-muted-foreground">Expires At (exp):</span>{" "}
+                        <span className="text-muted-foreground">{t("expiresAt")}</span>{" "}
                         {formatTimestamp(decoded.payloadDecoded.exp)}
                       </div>
                     )}
                     {decoded.payloadDecoded.nbf && (
                       <div>
-                        <span className="text-muted-foreground">Not Before (nbf):</span>{" "}
+                        <span className="text-muted-foreground">{t("notBefore")}</span>{" "}
                         {formatTimestamp(decoded.payloadDecoded.nbf)}
                       </div>
                     )}
@@ -208,7 +210,7 @@ export function JwtDecoderTool() {
           {/* Signature */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <Label className="text-sm font-semibold text-blue-400">Signature</Label>
+              <Label className="text-sm font-semibold text-blue-400">{t("signature")}</Label>
             </div>
             <div className="p-3 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
               <Input
@@ -217,8 +219,7 @@ export function JwtDecoderTool() {
                 className="font-mono text-xs bg-[var(--color-gray-0)]"
               />
               <div className="mt-2 text-xs text-muted-foreground">
-                The signature is used to verify that the sender of the JWT is who it says
-                it is and to ensure that the message wasn&apos;t changed along the way.
+                {t("signatureHelp")}
               </div>
             </div>
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { MdClose } from "react-icons/md";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { keccak256, encodeAbiParameters, parseAbiParameters } from "viem";
 import { ToolConfig } from "@/types/tool";
 
 export function Eip712HasherTool() {
+  const t = useTranslations("toolUI.eip712-hasher");
   const [domainJson, setDomainJson] = useState("");
   const [typesJson, setTypesJson] = useState("");
   const [messageJson, setMessageJson] = useState("");
@@ -23,7 +25,7 @@ export function Eip712HasherTool() {
 
   const handleCalculate = () => {
     if (!domainJson || !typesJson || !messageJson || !primaryType) {
-      setError("All fields are required");
+      setError(t("allFieldsRequired"));
       return;
     }
 
@@ -53,7 +55,7 @@ export function Eip712HasherTool() {
       // Calculate message hash
       const primaryTypeFields = types[primaryType];
       if (!primaryTypeFields) {
-        throw new Error(`Primary type "${primaryType}" not found in types`);
+        throw new Error(t("primaryTypeNotFound", { type: primaryType }));
       }
 
       // Build type string
@@ -90,7 +92,7 @@ export function Eip712HasherTool() {
       setFinalHash(calculatedFinalHash);
       setError("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Calculation failed");
+      setError(e instanceof Error ? e.message : t("calcFailed"));
       setDomainSeparator("");
       setMessageHash("");
       setFinalHash("");
@@ -114,7 +116,7 @@ export function Eip712HasherTool() {
       {/* Input Section */}
       <div className="space-y-4">
         <div>
-          <Label className="text-sm mb-2 block">Domain (JSON)</Label>
+          <Label className="text-sm mb-2 block">{t("domainLabel")}</Label>
           <Textarea
             value={domainJson}
             onChange={(e) => setDomainJson(e.target.value)}
@@ -124,7 +126,7 @@ export function Eip712HasherTool() {
         </div>
 
         <div>
-          <Label className="mb-2 block text-sm">Types (JSON)</Label>
+          <Label className="mb-2 block text-sm">{t("typesLabel")}</Label>
           <Textarea
             value={typesJson}
             onChange={(e) => setTypesJson(e.target.value)}
@@ -134,7 +136,7 @@ export function Eip712HasherTool() {
         </div>
 
         <div>
-          <Label className="mb-2 block text-sm">Message (JSON)</Label>
+          <Label className="mb-2 block text-sm">{t("messageLabel")}</Label>
           <Textarea
             value={messageJson}
             onChange={(e) => setMessageJson(e.target.value)}
@@ -144,7 +146,7 @@ export function Eip712HasherTool() {
         </div>
 
         <div>
-          <Label className="mb-2 block text-sm">Primary Type</Label>
+          <Label className="mb-2 block text-sm">{t("primaryTypeLabel")}</Label>
           <Input
             value={primaryType}
             onChange={(e) => setPrimaryType(e.target.value)}
@@ -155,10 +157,10 @@ export function Eip712HasherTool() {
 
         <div className="flex gap-2">
           <Button onClick={handleCalculate} className="flex-1" variant="primary">
-            Calculate Hash
+            {t("calculateHash")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -173,7 +175,7 @@ export function Eip712HasherTool() {
       {finalHash && (
         <div className="space-y-4">
           <div className="p-4 rounded-[12px] border border-green-500/30 bg-[var(--color-green-50)]">
-            <Label className="mb-2 block text-sm text-[var(--color-green-500)]">Step 1: Domain Separator</Label>
+            <Label className="mb-2 block text-sm text-[var(--color-green-500)]">{t("step1")}</Label>
             <Input
               value={domainSeparator}
               readOnly
@@ -183,7 +185,7 @@ export function Eip712HasherTool() {
           </div>
 
           <div className="p-4 rounded-[12px] border border-blue-500/30 bg-blue-500/10">
-            <Label className="mb-2 block text-sm text-blue-400">Step 2: Message Hash</Label>
+            <Label className="mb-2 block text-sm text-blue-400">{t("step2")}</Label>
             <Input
               value={messageHash}
               readOnly
@@ -193,7 +195,7 @@ export function Eip712HasherTool() {
           </div>
 
           <div className="p-4 rounded-[12px] border border-purple-500/30 bg-purple-500/10">
-            <Label className="mb-2 block text-sm text-purple-400">Step 3: Final EIP-712 Hash</Label>
+            <Label className="mb-2 block text-sm text-purple-400">{t("step3")}</Label>
             <Input
               value={finalHash}
               readOnly
@@ -201,7 +203,7 @@ export function Eip712HasherTool() {
               className="font-mono text-sm bg-[var(--color-gray-0)]"
             />
             <p className="mt-2 text-xs text-muted-foreground">
-              This is the hash that should be signed by the user's wallet
+              {t("signHint")}
             </p>
           </div>
         </div>
@@ -210,7 +212,7 @@ export function Eip712HasherTool() {
       {/* Usage Example */}
       {finalHash && (
         <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-          <Label className="mb-2 block text-sm">Usage Example (viem)</Label>
+          <Label className="mb-2 block text-sm">{t("usageExample")}</Label>
           <Code language="javascript">
 {`import { signTypedData } from 'viem/accounts';
 

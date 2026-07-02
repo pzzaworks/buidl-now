@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -141,6 +142,7 @@ function hslToColor(h: number, s: number, l: number): Color {
 type PaletteType = "random" | "complementary" | "analogous" | "monochromatic";
 
 export function ColorPaletteGeneratorTool() {
+  const t = useTranslations("toolUI.color-palette-generator");
   const [colors, setColors] = useState<Color[]>([]);
   const [paletteType, setPaletteType] = useState<PaletteType>("random");
   const [colorCount, setColorCount] = useState("5");
@@ -189,35 +191,35 @@ export function ColorPaletteGeneratorTool() {
     <div className="space-y-6">
       {/* Palette Type Selection */}
       <div>
-        <Label className="mb-2 block text-sm">Palette Type</Label>
+        <Label className="mb-2 block text-sm">{t("paletteType")}</Label>
         <div className="grid grid-cols-2 gap-2">
           <Button
             variant={paletteType === "random" ? "primary" : "secondary"}
             onClick={() => setPaletteType("random")}
             className="w-full"
           >
-            Random
+            {t("random")}
           </Button>
           <Button
             variant={paletteType === "complementary" ? "primary" : "secondary"}
             onClick={() => setPaletteType("complementary")}
             className="w-full"
           >
-            Complementary
+            {t("complementary")}
           </Button>
           <Button
             variant={paletteType === "analogous" ? "primary" : "secondary"}
             onClick={() => setPaletteType("analogous")}
             className="w-full"
           >
-            Analogous
+            {t("analogous")}
           </Button>
           <Button
             variant={paletteType === "monochromatic" ? "primary" : "secondary"}
             onClick={() => setPaletteType("monochromatic")}
             className="w-full"
           >
-            Monochromatic
+            {t("monochromatic")}
           </Button>
         </div>
       </div>
@@ -225,7 +227,7 @@ export function ColorPaletteGeneratorTool() {
       {/* Color Count (only for random) */}
       {paletteType === "random" && (
         <div>
-          <Label className="mb-2 block text-sm">Number of Colors (2-10)</Label>
+          <Label className="mb-2 block text-sm">{t("numberOfColors")}</Label>
           <Input
             type="number"
             min="2"
@@ -239,16 +241,16 @@ export function ColorPaletteGeneratorTool() {
 
       {/* Generate Button */}
       <Button onClick={handleGenerate} variant="primary" className="w-full">
-        Generate Palette
+        {t("generatePalette")}
       </Button>
 
       {/* Color Palette Display */}
       {colors.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <Label className="text-sm">Generated Palette</Label>
+            <Label className="text-sm">{t("generatedPalette")}</Label>
             <Button onClick={copyAllColors} size="sm">
-              Copy All Hex Codes
+              {t("copyAllHexCodes")}
             </Button>
           </div>
 
@@ -269,7 +271,7 @@ export function ColorPaletteGeneratorTool() {
                       type="button"
                       onClick={() => copyColor(color.hex, index)}
                       className="w-8 h-8 rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] flex items-center justify-center transition-colors cursor-pointer"
-                      title={copiedIndex === index ? "Copied!" : "Copy to clipboard"}
+                      title={copiedIndex === index ? t("copied") : t("copyToClipboard")}
                     >
                       {copiedIndex === index ? (
                         <MdCheck style={{ width: 16, height: 16, color: 'var(--color-green-500)' }} />

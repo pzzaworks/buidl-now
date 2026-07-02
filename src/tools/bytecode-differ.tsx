@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -25,6 +26,7 @@ interface DiffSegment {
 }
 
 export function BytecodeDifferTool() {
+  const t = useTranslations("toolUI.bytecode-differ");
   const [mode, setMode] = useState<"direct" | "fetch">("direct");
   const [bytecode1, setBytecode1] = useState("");
   const [bytecode2, setBytecode2] = useState("");
@@ -156,7 +158,7 @@ export function BytecodeDifferTool() {
 
       if (mode === "fetch") {
         if (!address1 || !address2 || !rpcUrl) {
-          throw new Error("Please provide both addresses and RPC URL");
+          throw new Error(t("errorAddressesRpc"));
         }
         bc1 = await fetchBytecode(address1, rpcUrl);
         bc2 = await fetchBytecode(address2, rpcUrl);
@@ -165,13 +167,13 @@ export function BytecodeDifferTool() {
       }
 
       if (!bc1 || !bc2) {
-        throw new Error("Please provide both bytecodes");
+        throw new Error(t("errorBothBytecodes"));
       }
 
       const diffResult = calculateDiff(bc1, bc2);
       setResult(diffResult);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "An error occurred");
+      setError(e instanceof Error ? e.message : t("errorGeneric"));
     } finally {
       setLoading(false);
     }
@@ -195,21 +197,21 @@ export function BytecodeDifferTool() {
     <div className="space-y-6">
       {/* Mode Selection */}
       <div>
-        <Label className="mb-2 block text-sm">Input Mode</Label>
+        <Label className="mb-2 block text-sm">{t("inputMode")}</Label>
         <div className="flex gap-2">
           <Button
             onClick={() => setMode("direct")}
             variant={mode === "direct" ? "primary" : "secondary"}
             className="flex-1"
           >
-            Direct Bytecode
+            {t("directBytecode")}
           </Button>
           <Button
             onClick={() => setMode("fetch")}
             variant={mode === "fetch" ? "primary" : "secondary"}
             className="flex-1"
           >
-            Fetch from RPC
+            {t("fetchFromRpc")}
           </Button>
         </div>
       </div>
@@ -218,7 +220,7 @@ export function BytecodeDifferTool() {
         <>
           {/* Bytecode 1 */}
           <div>
-            <Label className="mb-2 block text-sm">Bytecode 1 (hex)</Label>
+            <Label className="mb-2 block text-sm">{t("bytecode1Label")}</Label>
             <Textarea
               value={bytecode1}
               onChange={(e) => setBytecode1(e.target.value)}
@@ -229,7 +231,7 @@ export function BytecodeDifferTool() {
 
           {/* Bytecode 2 */}
           <div>
-            <Label className="mb-2 block text-sm">Bytecode 2 (hex)</Label>
+            <Label className="mb-2 block text-sm">{t("bytecode2Label")}</Label>
             <Textarea
               value={bytecode2}
               onChange={(e) => setBytecode2(e.target.value)}
@@ -242,7 +244,7 @@ export function BytecodeDifferTool() {
         <>
           {/* RPC URL */}
           <div>
-            <Label className="mb-2 block text-sm">RPC URL</Label>
+            <Label className="mb-2 block text-sm">{t("rpcUrl")}</Label>
             <Input
               value={rpcUrl}
               onChange={(e) => setRpcUrl(e.target.value)}
@@ -253,7 +255,7 @@ export function BytecodeDifferTool() {
 
           {/* Address 1 */}
           <div>
-            <Label className="mb-2 block text-sm">Contract Address 1</Label>
+            <Label className="mb-2 block text-sm">{t("contractAddress1")}</Label>
             <Input
               value={address1}
               onChange={(e) => setAddress1(e.target.value)}
@@ -264,7 +266,7 @@ export function BytecodeDifferTool() {
 
           {/* Address 2 */}
           <div>
-            <Label className="mb-2 block text-sm">Contract Address 2</Label>
+            <Label className="mb-2 block text-sm">{t("contractAddress2")}</Label>
             <Input
               value={address2}
               onChange={(e) => setAddress2(e.target.value)}
@@ -278,10 +280,10 @@ export function BytecodeDifferTool() {
       {/* Actions */}
       <div className="flex gap-2">
         <Button onClick={handleCompare} variant="primary" className="flex-1" disabled={loading}>
-          {loading ? "Comparing..." : "Compare Bytecode"}
+          {loading ? t("comparing") : t("compareBytecode")}
         </Button>
         <Button onClick={handleReset}>
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
@@ -298,7 +300,7 @@ export function BytecodeDifferTool() {
           {/* Similarity Score */}
           <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[var(--color-gray-200)]">
             <div className="flex items-center justify-between mb-2">
-              <Label className="text-sm">Similarity Score</Label>
+              <Label className="text-sm">{t("similarityScore")}</Label>
               <span className={`text-lg font-bold ${
                 result.similarity === 100 ? "text-[var(--color-green-500)]" :
                 result.similarity >= 90 ? "text-yellow-400" :
@@ -327,19 +329,19 @@ export function BytecodeDifferTool() {
           }`}>
             <div className="text-sm font-medium flex items-center gap-1">
               {result.similarity === 100
-                ? <><MdCheck className="w-4 h-4" /> Bytecodes are identical</>
-                : `${result.differences.filter(d => d.type === "differ").length} difference(s) detected`}
+                ? <><MdCheck className="w-4 h-4" /> {t("identical")}</>
+                : t("differencesDetected", { count: result.differences.filter(d => d.type === "differ").length })}
             </div>
           </div>
 
           {/* Metadata */}
           {(result.metadata1 || result.metadata2) && (
             <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[var(--color-gray-200)]">
-              <Label className="text-sm mb-2 block">Metadata Hash</Label>
+              <Label className="text-sm mb-2 block">{t("metadataHash")}</Label>
               <div className="space-y-2">
                 {result.metadata1 && (
                   <div>
-                    <div className="text-xs text-gray-400 mb-1">Bytecode 1:</div>
+                    <div className="text-xs text-gray-400 mb-1">{t("bytecode1Colon")}</div>
                     <div className="font-mono text-xs break-all text-yellow-400">
                       {result.metadata1}
                     </div>
@@ -347,7 +349,7 @@ export function BytecodeDifferTool() {
                 )}
                 {result.metadata2 && (
                   <div>
-                    <div className="text-xs text-gray-400 mb-1">Bytecode 2:</div>
+                    <div className="text-xs text-gray-400 mb-1">{t("bytecode2Colon")}</div>
                     <div className="font-mono text-xs break-all text-yellow-400">
                       {result.metadata2}
                     </div>
@@ -360,29 +362,29 @@ export function BytecodeDifferTool() {
           {/* Diff View */}
           <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[var(--color-gray-200)]">
             <div className="flex items-center justify-between mb-3">
-              <Label className="text-sm">Diff View</Label>
+              <Label className="text-sm">{t("diffView")}</Label>
               <div className="flex gap-3 text-xs">
                 <div className="flex items-center gap-1">
                   <div className="w-3 h-3 bg-green-500/30 border border-green-500/50 rounded-[12px]" />
-                  <span className="text-gray-400">Match</span>
+                  <span className="text-gray-400">{t("legendMatch")}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="w-3 h-3 bg-red-500/30 border border-red-500/50 rounded-[12px]" />
-                  <span className="text-gray-400">Differ</span>
+                  <span className="text-gray-400">{t("legendDiffer")}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="w-3 h-3 bg-yellow-500/30 border border-yellow-500/50 rounded-[12px]" />
-                  <span className="text-gray-400">Metadata</span>
+                  <span className="text-gray-400">{t("legendMetadata")}</span>
                 </div>
               </div>
             </div>
             <div className="max-h-[400px] overflow-auto">
               <div className="grid grid-cols-2 gap-2 font-mono text-xs">
                 <div className="text-gray-400 font-semibold pb-2 border-b border-[var(--color-gray-200)]">
-                  Bytecode 1
+                  {t("bytecode1Header")}
                 </div>
                 <div className="text-gray-400 font-semibold pb-2 border-b border-[var(--color-gray-200)]">
-                  Bytecode 2
+                  {t("bytecode2Header")}
                 </div>
                 {result.differences.map((diff, idx) => (
                   <>
@@ -396,7 +398,7 @@ export function BytecodeDifferTool() {
                           : "bg-[var(--color-red-50)] border border-red-500/30 text-[var(--color-red-500)]"
                       }`}
                     >
-                      {diff.bytecode1 || "(empty)"}
+                      {diff.bytecode1 || t("emptyCell")}
                     </div>
                     <div
                       key={`${idx}-2`}
@@ -408,7 +410,7 @@ export function BytecodeDifferTool() {
                           : "bg-[var(--color-red-50)] border border-red-500/30 text-[var(--color-red-500)]"
                       }`}
                     >
-                      {diff.bytecode2 || "(empty)"}
+                      {diff.bytecode2 || t("emptyCell")}
                     </div>
                   </>
                 ))}

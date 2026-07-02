@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -21,6 +22,7 @@ interface GeneratedUris {
 }
 
 export function TokenUriGeneratorTool() {
+  const t = useTranslations("toolUI.token-uri-generator");
   const [metadataJson, setMetadataJson] = useState("");
   const [storageType, setStorageType] = useState<"ipfs" | "arweave" | "data">("ipfs");
   const [generatedUris, setGeneratedUris] = useState<GeneratedUris | null>(null);
@@ -54,13 +56,13 @@ export function TokenUriGeneratorTool() {
       try {
         metadata = JSON.parse(metadataJson);
       } catch (e) {
-        setError("Invalid JSON format");
+        setError(t("errorInvalidJson"));
         return;
       }
 
       // Validate required fields
       if (!metadata.name || !metadata.description || !metadata.image) {
-        setError("Metadata must include at least: name, description, and image");
+        setError(t("errorRequiredFields"));
         return;
       }
 
@@ -88,7 +90,7 @@ export function TokenUriGeneratorTool() {
 
       setGeneratedUris(uris);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to generate URIs");
+      setError(e instanceof Error ? e.message : t("errorGenerateFailed"));
     }
   };
 
@@ -127,7 +129,7 @@ export function TokenUriGeneratorTool() {
     <div className="space-y-6">
       {/* Storage Type Selection */}
       <div>
-        <div className="text-sm font-medium mb-3">Storage Type</div>
+        <div className="text-sm font-medium mb-3">{t("storageTypeHeading")}</div>
         <div className="grid grid-cols-3 gap-2">
           <Button
             onClick={() => setStorageType("ipfs")}
@@ -155,7 +157,7 @@ export function TokenUriGeneratorTool() {
 
       {/* Metadata JSON Input */}
       <Textarea
-        label="NFT Metadata JSON"
+        label={t("metadataJsonLabel")}
         value={metadataJson}
         onChange={(e) => setMetadataJson(e.target.value)}
         placeholder='{\n  "name": "My NFT",\n  "description": "...",\n  "image": "ipfs://..."\n}'
@@ -165,10 +167,10 @@ export function TokenUriGeneratorTool() {
       {/* Actions */}
       <div className="flex gap-3">
         <Button onClick={handleGenerate} variant="primary" className="flex-1">
-          Generate URIs
+          {t("generateButton")}
         </Button>
         <Button onClick={handleReset}>
-          Reset
+          {t("resetButton")}
         </Button>
       </div>
 
@@ -184,38 +186,37 @@ export function TokenUriGeneratorTool() {
         <div className="space-y-6">
           {/* Info Note */}
           <div className="p-3 rounded-[12px] border border-blue-500/30 bg-blue-500/5 text-blue-400 text-xs">
-            Note: CID and Arweave ID are simulated for demonstration. In production, upload your
-            metadata to IPFS/Arweave to get real identifiers.
+            {t("infoNote")}
           </div>
 
           {/* IPFS URI */}
           <div className="space-y-3">
-            <div className="text-sm font-medium">IPFS URI (Standard Format)</div>
+            <div className="text-sm font-medium">{t("ipfsSectionTitle")}</div>
             <Input
-              label="ipfs:// URI"
+              label={t("ipfsUriLabel")}
               value={generatedUris.ipfsUri}
               readOnly
               showCopy
               className="font-mono text-sm"
             />
             <Input
-              label="Content Identifier (CID)"
+              label={t("cidLabel")}
               value={generatedUris.ipfsCid}
               readOnly
               showCopy
               className="font-mono text-sm"
             />
             <div className="text-xs text-muted-foreground">
-              Use this format in your smart contract's tokenURI
+              {t("ipfsHelp")}
             </div>
           </div>
 
           {/* Gateway URLs */}
           <div className="space-y-3">
-            <div className="text-sm font-medium">IPFS Gateway URLs</div>
+            <div className="text-sm font-medium">{t("gatewaySectionTitle")}</div>
 
             <Input
-              label="IPFS.io Gateway"
+              label={t("ipfsIoGateway")}
               value={generatedUris.gateways.ipfsIo}
               readOnly
               showCopy
@@ -223,7 +224,7 @@ export function TokenUriGeneratorTool() {
             />
 
             <Input
-              label="Cloudflare IPFS Gateway"
+              label={t("cloudflareGateway")}
               value={generatedUris.gateways.cloudflare}
               readOnly
               showCopy
@@ -231,7 +232,7 @@ export function TokenUriGeneratorTool() {
             />
 
             <Input
-              label="Pinata Gateway"
+              label={t("pinataGateway")}
               value={generatedUris.gateways.pinata}
               readOnly
               showCopy
@@ -239,7 +240,7 @@ export function TokenUriGeneratorTool() {
             />
 
             <Input
-              label="Infura IPFS Gateway"
+              label={t("infuraGateway")}
               value={generatedUris.gateways.infura}
               readOnly
               showCopy
@@ -247,7 +248,7 @@ export function TokenUriGeneratorTool() {
             />
 
             <Input
-              label="Dweb.link Gateway"
+              label={t("dwebGateway")}
               value={generatedUris.gateways.dweb}
               readOnly
               showCopy
@@ -255,37 +256,37 @@ export function TokenUriGeneratorTool() {
             />
 
             <div className="text-xs text-muted-foreground">
-              Gateway URLs allow browsers to fetch IPFS content via HTTP
+              {t("gatewayHelp")}
             </div>
           </div>
 
           {/* Arweave URI */}
           <div className="space-y-3">
-            <div className="text-sm font-medium">Arweave URI (Permanent Storage)</div>
+            <div className="text-sm font-medium">{t("arweaveSectionTitle")}</div>
             <Input
-              label="ar:// URI"
+              label={t("arweaveUriLabel")}
               value={generatedUris.arweaveUri}
               readOnly
               showCopy
               className="font-mono text-sm"
             />
             <Input
-              label="Arweave Gateway URL"
+              label={t("arweaveGatewayLabel")}
               value={`https://arweave.net/${generatedUris.arweaveUri.replace("ar://", "")}`}
               readOnly
               showCopy
               className="font-mono text-sm"
             />
             <div className="text-xs text-muted-foreground">
-              Arweave provides permanent, pay-once storage
+              {t("arweaveHelp")}
             </div>
           </div>
 
           {/* Data URI */}
           <div className="space-y-3">
-            <div className="text-sm font-medium">Data URI (On-Chain Storage)</div>
+            <div className="text-sm font-medium">{t("dataUriSectionTitle")}</div>
             <Textarea
-              label="Base64 Data URI"
+              label={t("base64Label")}
               value={generatedUris.dataUri}
               readOnly
               showCopy
@@ -293,14 +294,13 @@ export function TokenUriGeneratorTool() {
               rows={4}
             />
             <div className="text-xs text-muted-foreground">
-              Data URIs encode metadata directly in the URI. Expensive for on-chain storage but
-              guarantees immutability.
+              {t("dataUriHelp")}
             </div>
           </div>
 
           {/* Format Conversion Guide */}
           <div className="space-y-3">
-            <div className="text-sm font-medium">Format Conversion Examples</div>
+            <div className="text-sm font-medium">{t("conversionTitle")}</div>
             <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)] space-y-2 text-xs font-mono">
               <div>
                 <span className="text-blue-400">ipfs://</span>
@@ -322,7 +322,7 @@ export function TokenUriGeneratorTool() {
 
           {/* Metadata Preview */}
           <div className="space-y-3">
-            <div className="text-sm font-medium">Metadata Preview</div>
+            <div className="text-sm font-medium">{t("previewTitle")}</div>
             <Textarea
               value={JSON.stringify(JSON.parse(metadataJson), null, 2)}
               readOnly
@@ -334,30 +334,30 @@ export function TokenUriGeneratorTool() {
 
           {/* Storage Comparison */}
           <div className="space-y-3">
-            <div className="text-sm font-medium">Storage Type Comparison</div>
+            <div className="text-sm font-medium">{t("comparisonTitle")}</div>
             <div className="grid gap-3">
               <div className="p-3 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
                 <div className="font-medium text-sm mb-1">IPFS</div>
                 <div className="text-xs text-muted-foreground">
-                  Pros: Decentralized, content-addressed, widely supported
+                  {t("ipfsPros")}
                   <br />
-                  Cons: Requires pinning service, not permanent by default
+                  {t("ipfsCons")}
                 </div>
               </div>
               <div className="p-3 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
                 <div className="font-medium text-sm mb-1">Arweave</div>
                 <div className="text-xs text-muted-foreground">
-                  Pros: Permanent storage, pay once
+                  {t("arweavePros")}
                   <br />
-                  Cons: Higher upfront cost, less mature ecosystem
+                  {t("arweaveCons")}
                 </div>
               </div>
               <div className="p-3 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
                 <div className="font-medium text-sm mb-1">Data URI</div>
                 <div className="text-xs text-muted-foreground">
-                  Pros: Fully on-chain, immutable, no external dependencies
+                  {t("dataUriPros")}
                   <br />
-                  Cons: Very expensive gas costs, size limitations
+                  {t("dataUriCons")}
                 </div>
               </div>
             </div>
@@ -367,7 +367,7 @@ export function TokenUriGeneratorTool() {
 
       {/* Reset */}
       <Button onClick={handleReset} className="w-full">
-        Reset
+        {t("resetButton")}
       </Button>
     </div>
   );

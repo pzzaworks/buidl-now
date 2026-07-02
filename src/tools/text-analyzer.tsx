@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { ToolConfig } from "@/types/tool";
 
 export function TextAnalyzerTool() {
+  const t = useTranslations("toolUI.text-analyzer");
   const [text, setText] = useState("");
   const [stats, setStats] = useState({
     characters: 0,
@@ -132,10 +134,10 @@ export function TextAnalyzerTool() {
       {/* Input */}
       <div>
         <Textarea
-          label="Enter Text to Analyze"
+          label={t("inputLabel")}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Type or paste your text here for detailed statistical analysis..."
+          placeholder={t("inputPlaceholder")}
           className="min-h-[200px]"
         />
       </div>
@@ -144,87 +146,87 @@ export function TextAnalyzerTool() {
       {text && (
         <>
           <div>
-            <Label className="text-sm mb-3 block">Basic Counts</Label>
+            <Label className="text-sm mb-3 block">{t("basicCounts")}</Label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-                <div className="text-sm text-muted-foreground mb-1">Characters</div>
+                <div className="text-sm text-muted-foreground mb-1">{t("characters")}</div>
                 <div className="text-lg font-mono">{stats.characters.toLocaleString()}</div>
               </div>
 
               <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-                <div className="text-sm text-muted-foreground mb-1">Characters (no spaces)</div>
+                <div className="text-sm text-muted-foreground mb-1">{t("charactersNoSpaces")}</div>
                 <div className="text-lg font-mono">{stats.charactersNoSpaces.toLocaleString()}</div>
               </div>
 
               <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-                <div className="text-sm text-muted-foreground mb-1">Lines</div>
+                <div className="text-sm text-muted-foreground mb-1">{t("lines")}</div>
                 <div className="text-lg font-mono">{stats.lines.toLocaleString()}</div>
               </div>
 
               <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-                <div className="text-sm text-muted-foreground mb-1">Paragraphs</div>
+                <div className="text-sm text-muted-foreground mb-1">{t("paragraphs")}</div>
                 <div className="text-lg font-mono">{stats.paragraphs.toLocaleString()}</div>
               </div>
             </div>
           </div>
 
           <div>
-            <Label className="text-sm mb-3 block">Word Statistics</Label>
+            <Label className="text-sm mb-3 block">{t("wordStatistics")}</Label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-                <div className="text-sm text-muted-foreground mb-1">Total Words</div>
+                <div className="text-sm text-muted-foreground mb-1">{t("totalWords")}</div>
                 <div className="text-lg font-mono">{stats.totalWords.toLocaleString()}</div>
               </div>
 
               <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-                <div className="text-sm text-muted-foreground mb-1">Unique Words</div>
+                <div className="text-sm text-muted-foreground mb-1">{t("uniqueWords")}</div>
                 <div className="text-lg font-mono">{stats.uniqueWords.toLocaleString()}</div>
               </div>
 
               <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-                <div className="text-sm text-muted-foreground mb-1">Average Word Length</div>
+                <div className="text-sm text-muted-foreground mb-1">{t("avgWordLength")}</div>
                 <div className="text-lg font-mono">{stats.avgWordLength.toFixed(2)}</div>
               </div>
 
               <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-                <div className="text-sm text-muted-foreground mb-1">Lexical Density</div>
+                <div className="text-sm text-muted-foreground mb-1">{t("lexicalDensity")}</div>
                 <div className="text-lg font-mono">{stats.lexicalDensity.toFixed(1)}%</div>
               </div>
 
               <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-                <div className="text-sm text-muted-foreground mb-1">Longest Word</div>
+                <div className="text-sm text-muted-foreground mb-1">{t("longestWord")}</div>
                 <div className="text-lg font-mono truncate">{stats.longestWord || "-"}</div>
                 {stats.longestWord && (
                   <div className="text-xs text-muted-foreground mt-1">
-                    {stats.longestWord.length} characters
+                    {stats.longestWord.length} {t("charUnitPlural")}
                   </div>
                 )}
               </div>
 
               <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-                <div className="text-sm text-muted-foreground mb-1">Shortest Word</div>
+                <div className="text-sm text-muted-foreground mb-1">{t("shortestWord")}</div>
                 <div className="text-lg font-mono">{stats.shortestWord || "-"}</div>
                 {stats.shortestWord && (
                   <div className="text-xs text-muted-foreground mt-1">
-                    {stats.shortestWord.length} character{stats.shortestWord.length !== 1 ? "s" : ""}
+                    {stats.shortestWord.length} {stats.shortestWord.length !== 1 ? t("charUnitPlural") : t("charUnitSingular")}
                   </div>
                 )}
               </div>
 
               <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-                <div className="text-sm text-muted-foreground mb-1">Average Sentence Length</div>
+                <div className="text-sm text-muted-foreground mb-1">{t("avgSentenceLength")}</div>
                 <div className="text-lg font-mono">
-                  {stats.avgSentenceLength.toFixed(1)} words
+                  {stats.avgSentenceLength.toFixed(1)} {t("wordsUnit")}
                 </div>
               </div>
 
               <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-                <div className="text-sm text-muted-foreground mb-1">Reading Time</div>
+                <div className="text-sm text-muted-foreground mb-1">{t("readingTime")}</div>
                 <div className="text-lg font-mono">
-                  {stats.readingTime} {stats.readingTime === 1 ? "minute" : "minutes"}
+                  {stats.readingTime} {stats.readingTime === 1 ? t("minuteUnit") : t("minutesUnit")}
                 </div>
                 <div className="text-xs text-muted-foreground mt-1">
-                  Based on 200 words/min
+                  {t("readingTimeBasis")}
                 </div>
               </div>
             </div>
@@ -233,7 +235,7 @@ export function TextAnalyzerTool() {
           {/* Character Frequency */}
           {charFrequency.length > 0 && (
             <div>
-              <Label className="text-sm mb-3 block">Character Frequency Distribution</Label>
+              <Label className="text-sm mb-3 block">{t("charFreqDist")}</Label>
               <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
                 <div className="space-y-2">
                   {charFrequency.map(({ char, count, percentage }, index) => (
@@ -268,13 +270,13 @@ export function TextAnalyzerTool() {
 
           {/* Info */}
           <div className="p-3 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <Label className="text-sm mb-2 block">About These Metrics</Label>
+            <Label className="text-sm mb-2 block">{t("aboutMetrics")}</Label>
             <ul className="text-xs text-muted-foreground space-y-1">
               <li>
-                <strong>Lexical Density:</strong> Ratio of unique words to total words. Higher values indicate more varied vocabulary.
+                <strong>{t("lexicalDensityTermLabel")}</strong> {t("lexicalDensityTermDesc")}
               </li>
               <li>
-                <strong>Character Frequency:</strong> Shows the most common letters/numbers in your text.
+                <strong>{t("charFreqTermLabel")}</strong> {t("charFreqTermDesc")}
               </li>
             </ul>
           </div>

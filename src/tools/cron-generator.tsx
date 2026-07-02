@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -10,135 +11,130 @@ const MINUTES = Array.from({ length: 60 }, (_, i) => i.toString());
 const HOURS = Array.from({ length: 24 }, (_, i) => i.toString());
 const DAYS_OF_MONTH = Array.from({ length: 31 }, (_, i) => (i + 1).toString());
 const MONTHS = [
-  { value: "1", label: "January" },
-  { value: "2", label: "February" },
-  { value: "3", label: "March" },
-  { value: "4", label: "April" },
-  { value: "5", label: "May" },
-  { value: "6", label: "June" },
-  { value: "7", label: "July" },
-  { value: "8", label: "August" },
-  { value: "9", label: "September" },
-  { value: "10", label: "October" },
-  { value: "11", label: "November" },
-  { value: "12", label: "December" },
+  { value: "1", label: "January", labelKey: "monthJanuary" },
+  { value: "2", label: "February", labelKey: "monthFebruary" },
+  { value: "3", label: "March", labelKey: "monthMarch" },
+  { value: "4", label: "April", labelKey: "monthApril" },
+  { value: "5", label: "May", labelKey: "monthMay" },
+  { value: "6", label: "June", labelKey: "monthJune" },
+  { value: "7", label: "July", labelKey: "monthJuly" },
+  { value: "8", label: "August", labelKey: "monthAugust" },
+  { value: "9", label: "September", labelKey: "monthSeptember" },
+  { value: "10", label: "October", labelKey: "monthOctober" },
+  { value: "11", label: "November", labelKey: "monthNovember" },
+  { value: "12", label: "December", labelKey: "monthDecember" },
 ];
 const DAYS_OF_WEEK = [
-  { value: "0", label: "Sunday" },
-  { value: "1", label: "Monday" },
-  { value: "2", label: "Tuesday" },
-  { value: "3", label: "Wednesday" },
-  { value: "4", label: "Thursday" },
-  { value: "5", label: "Friday" },
-  { value: "6", label: "Saturday" },
+  { value: "0", label: "Sunday", labelKey: "daySunday" },
+  { value: "1", label: "Monday", labelKey: "dayMonday" },
+  { value: "2", label: "Tuesday", labelKey: "dayTuesday" },
+  { value: "3", label: "Wednesday", labelKey: "dayWednesday" },
+  { value: "4", label: "Thursday", labelKey: "dayThursday" },
+  { value: "5", label: "Friday", labelKey: "dayFriday" },
+  { value: "6", label: "Saturday", labelKey: "daySaturday" },
 ];
 
 const PRESETS = [
-  { label: "Every minute", expression: "* * * * *" },
-  { label: "Every hour", expression: "0 * * * *" },
-  { label: "Every day at midnight", expression: "0 0 * * *" },
-  { label: "Every day at noon", expression: "0 12 * * *" },
-  { label: "Every Monday at 9 AM", expression: "0 9 * * 1" },
-  { label: "Every weekday at 9 AM", expression: "0 9 * * 1-5" },
-  { label: "Every 5 minutes", expression: "*/5 * * * *" },
-  { label: "Every 15 minutes", expression: "*/15 * * * *" },
-  { label: "Every 30 minutes", expression: "*/30 * * * *" },
-  { label: "First day of every month", expression: "0 0 1 * *" },
+  { labelKey: "presetEveryMinute", expression: "* * * * *" },
+  { labelKey: "presetEveryHour", expression: "0 * * * *" },
+  { labelKey: "presetEveryDayMidnight", expression: "0 0 * * *" },
+  { labelKey: "presetEveryDayNoon", expression: "0 12 * * *" },
+  { labelKey: "presetEveryMonday9am", expression: "0 9 * * 1" },
+  { labelKey: "presetEveryWeekday9am", expression: "0 9 * * 1-5" },
+  { labelKey: "presetEvery5Minutes", expression: "*/5 * * * *" },
+  { labelKey: "presetEvery15Minutes", expression: "*/15 * * * *" },
+  { labelKey: "presetEvery30Minutes", expression: "*/30 * * * *" },
+  { labelKey: "presetFirstDayOfMonth", expression: "0 0 1 * *" },
 ];
 
-function describeCron(expression: string): string {
-  const parts = expression.trim().split(/\s+/);
-  if (parts.length !== 5) return "Invalid cron expression";
-
-  const [minute, hour, dayOfMonth, month, dayOfWeek] = parts;
-
-  const describeField = (value: string, unit: string, values?: { value: string; label: string }[]): string => {
-    if (value === "*") return `every ${unit}`;
-    if (value.startsWith("*/")) return `every ${value.slice(2)} ${unit}s`;
-    if (value.includes(",")) return `${unit}s ${value}`;
-    if (value.includes("-")) return `${unit}s ${value}`;
-    if (values) {
-      const match = values.find((v) => v.value === value);
-      return match ? match.label : value;
-    }
-    return value;
-  };
-
-  const parts_desc: string[] = [];
-
-  // Minute
-  if (minute === "*") {
-    parts_desc.push("every minute");
-  } else if (minute.startsWith("*/")) {
-    parts_desc.push(`every ${minute.slice(2)} minutes`);
-  } else {
-    parts_desc.push(`at minute ${minute}`);
-  }
-
-  // Hour
-  if (hour !== "*") {
-    if (hour.startsWith("*/")) {
-      parts_desc.push(`every ${hour.slice(2)} hours`);
-    } else {
-      const hourNum = parseInt(hour);
-      const ampm = hourNum >= 12 ? "PM" : "AM";
-      const hour12 = hourNum === 0 ? 12 : hourNum > 12 ? hourNum - 12 : hourNum;
-      parts_desc.push(`at ${hour12}:${minute.padStart(2, "0")} ${ampm}`);
-    }
-  }
-
-  // Day of month
-  if (dayOfMonth !== "*") {
-    if (dayOfMonth.startsWith("*/")) {
-      parts_desc.push(`every ${dayOfMonth.slice(2)} days`);
-    } else {
-      parts_desc.push(`on day ${dayOfMonth} of the month`);
-    }
-  }
-
-  // Month
-  if (month !== "*") {
-    const monthMatch = MONTHS.find((m) => m.value === month);
-    if (monthMatch) {
-      parts_desc.push(`in ${monthMatch.label}`);
-    } else {
-      parts_desc.push(`in month ${month}`);
-    }
-  }
-
-  // Day of week
-  if (dayOfWeek !== "*") {
-    if (dayOfWeek === "1-5") {
-      parts_desc.push("on weekdays");
-    } else if (dayOfWeek === "0,6") {
-      parts_desc.push("on weekends");
-    } else {
-      const dayMatch = DAYS_OF_WEEK.find((d) => d.value === dayOfWeek);
-      if (dayMatch) {
-        parts_desc.push(`on ${dayMatch.label}`);
-      } else {
-        parts_desc.push(`on day ${dayOfWeek} of the week`);
-      }
-    }
-  }
-
-  return parts_desc.join(", ").replace(/^./, (c) => c.toUpperCase());
-}
-
 export function CronGeneratorTool() {
+  const t = useTranslations("toolUI.cron-generator");
+  const locale = useLocale();
   const [minute, setMinute] = useState("*");
   const [hour, setHour] = useState("*");
   const [dayOfMonth, setDayOfMonth] = useState("*");
   const [month, setMonth] = useState("*");
   const [dayOfWeek, setDayOfWeek] = useState("*");
-  const [expression, setExpression] = useState("* * * * *");
-  const [description, setDescription] = useState("");
 
-  useEffect(() => {
-    const expr = `${minute} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`;
-    setExpression(expr);
-    setDescription(describeCron(expr));
-  }, [minute, hour, dayOfMonth, month, dayOfWeek]);
+  // Builds a fully localized human-readable description from the cron fields.
+  // Kept inside the component so it can compose translated fragments via `t`
+  // and format weekday/month/time names with the active locale.
+  const describeCron = (expr: string): string => {
+    const fields = expr.trim().split(/\s+/);
+    if (fields.length !== 5) return t("invalidExpression");
+
+    const [min, hr, dom, mon, dow] = fields;
+    const desc: string[] = [];
+
+    // Minute
+    if (min === "*") {
+      desc.push(t("everyMinute"));
+    } else if (min.startsWith("*/")) {
+      desc.push(t("everyNMinutes", { n: Number(min.slice(2)) }));
+    } else {
+      desc.push(t("atMinute", { minute: min }));
+    }
+
+    // Hour
+    if (hr !== "*") {
+      if (hr.startsWith("*/")) {
+        desc.push(t("everyNHours", { n: Number(hr.slice(2)) }));
+      } else {
+        const hourNum = parseInt(hr);
+        const minuteNum = /^\d+$/.test(min) ? parseInt(min) : 0;
+        const time = new Intl.DateTimeFormat(locale, {
+          hour: "numeric",
+          minute: "2-digit",
+          timeZone: "UTC",
+        }).format(new Date(Date.UTC(2000, 0, 1, hourNum, minuteNum)));
+        desc.push(t("atTime", { time }));
+      }
+    }
+
+    // Day of month
+    if (dom !== "*") {
+      if (dom.startsWith("*/")) {
+        desc.push(t("everyNDays", { n: Number(dom.slice(2)) }));
+      } else {
+        desc.push(t("onDayOfMonth", { day: dom }));
+      }
+    }
+
+    // Month
+    if (mon !== "*") {
+      const monthNum = parseInt(mon);
+      if (/^\d+$/.test(mon) && monthNum >= 1 && monthNum <= 12) {
+        const monthName = new Intl.DateTimeFormat(locale, { month: "long", timeZone: "UTC" }).format(
+          new Date(Date.UTC(2000, monthNum - 1, 1)),
+        );
+        desc.push(t("inMonth", { month: monthName }));
+      } else {
+        desc.push(t("inMonthNumber", { month: mon }));
+      }
+    }
+
+    // Day of week
+    if (dow !== "*") {
+      if (dow === "1-5") {
+        desc.push(t("onWeekdays"));
+      } else if (dow === "0,6") {
+        desc.push(t("onWeekends"));
+      } else if (/^\d+$/.test(dow) && Number(dow) >= 0 && Number(dow) <= 6) {
+        // 2000-01-02 is a Sunday, so adding the field value maps 0..6 to Sun..Sat.
+        const dayName = new Intl.DateTimeFormat(locale, { weekday: "long", timeZone: "UTC" }).format(
+          new Date(Date.UTC(2000, 0, 2 + Number(dow))),
+        );
+        desc.push(t("onDayOfWeek", { day: dayName }));
+      } else {
+        desc.push(t("onDayOfWeekNumber", { day: dow }));
+      }
+    }
+
+    return desc.join(", ").replace(/^./, (c) => c.toUpperCase());
+  };
+
+  const expression = `${minute} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`;
+  const description = describeCron(expression);
 
   const applyPreset = (expr: string) => {
     const parts = expr.split(" ");
@@ -163,7 +159,7 @@ export function CronGeneratorTool() {
     <div className="space-y-6">
       {/* Presets */}
       <div>
-        <Label className="mb-2 block text-sm">Quick Presets</Label>
+        <Label className="mb-2 block text-sm">{t("quickPresets")}</Label>
         <div className="flex flex-wrap gap-2">
           {PRESETS.slice(0, 6).map((preset) => (
             <Button
@@ -172,7 +168,7 @@ export function CronGeneratorTool() {
               size="sm"
               onClick={() => applyPreset(preset.expression)}
             >
-              {preset.label}
+              {t(preset.labelKey)}
             </Button>
           ))}
         </div>
@@ -181,17 +177,17 @@ export function CronGeneratorTool() {
       {/* Fields */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <div>
-          <Label className="mb-2 block text-sm">Minute</Label>
+          <Label className="mb-2 block text-sm">{t("minute")}</Label>
           <select
             value={minute}
             onChange={(e) => setMinute(e.target.value)}
             className="flex h-11 w-full rounded-[var(--radius-12)] bg-[var(--color-gray-0)] px-4 text-sm text-[var(--color-gray-950)] border border-[var(--color-gray-200)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-blue-500)]/20 focus-visible:border-[var(--color-blue-500)]"
           >
-            <option value="*">Every (*)</option>
-            <option value="*/5">Every 5 (*/5)</option>
-            <option value="*/10">Every 10 (*/10)</option>
-            <option value="*/15">Every 15 (*/15)</option>
-            <option value="*/30">Every 30 (*/30)</option>
+            <option value="*">{t("everyStar")}</option>
+            <option value="*/5">{t("minuteEvery5")}</option>
+            <option value="*/10">{t("minuteEvery10")}</option>
+            <option value="*/15">{t("minuteEvery15")}</option>
+            <option value="*/30">{t("minuteEvery30")}</option>
             {MINUTES.map((m) => (
               <option key={m} value={m}>
                 {m}
@@ -201,17 +197,17 @@ export function CronGeneratorTool() {
         </div>
 
         <div>
-          <Label className="mb-2 block text-sm">Hour</Label>
+          <Label className="mb-2 block text-sm">{t("hour")}</Label>
           <select
             value={hour}
             onChange={(e) => setHour(e.target.value)}
             className="flex h-11 w-full rounded-[var(--radius-12)] bg-[var(--color-gray-0)] px-4 text-sm text-[var(--color-gray-950)] border border-[var(--color-gray-200)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-blue-500)]/20 focus-visible:border-[var(--color-blue-500)]"
           >
-            <option value="*">Every (*)</option>
-            <option value="*/2">Every 2 (*/2)</option>
-            <option value="*/4">Every 4 (*/4)</option>
-            <option value="*/6">Every 6 (*/6)</option>
-            <option value="*/12">Every 12 (*/12)</option>
+            <option value="*">{t("everyStar")}</option>
+            <option value="*/2">{t("hourEvery2")}</option>
+            <option value="*/4">{t("hourEvery4")}</option>
+            <option value="*/6">{t("hourEvery6")}</option>
+            <option value="*/12">{t("hourEvery12")}</option>
             {HOURS.map((h) => (
               <option key={h} value={h}>
                 {h.padStart(2, "0")}:00
@@ -221,13 +217,13 @@ export function CronGeneratorTool() {
         </div>
 
         <div>
-          <Label className="mb-2 block text-sm">Day of Month</Label>
+          <Label className="mb-2 block text-sm">{t("dayOfMonth")}</Label>
           <select
             value={dayOfMonth}
             onChange={(e) => setDayOfMonth(e.target.value)}
             className="flex h-11 w-full rounded-[var(--radius-12)] bg-[var(--color-gray-0)] px-4 text-sm text-[var(--color-gray-950)] border border-[var(--color-gray-200)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-blue-500)]/20 focus-visible:border-[var(--color-blue-500)]"
           >
-            <option value="*">Every (*)</option>
+            <option value="*">{t("everyStar")}</option>
             {DAYS_OF_MONTH.map((d) => (
               <option key={d} value={d}>
                 {d}
@@ -237,34 +233,34 @@ export function CronGeneratorTool() {
         </div>
 
         <div>
-          <Label className="mb-2 block text-sm">Month</Label>
+          <Label className="mb-2 block text-sm">{t("month")}</Label>
           <select
             value={month}
             onChange={(e) => setMonth(e.target.value)}
             className="flex h-11 w-full rounded-[var(--radius-12)] bg-[var(--color-gray-0)] px-4 text-sm text-[var(--color-gray-950)] border border-[var(--color-gray-200)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-blue-500)]/20 focus-visible:border-[var(--color-blue-500)]"
           >
-            <option value="*">Every (*)</option>
+            <option value="*">{t("everyStar")}</option>
             {MONTHS.map((m) => (
               <option key={m.value} value={m.value}>
-                {m.label}
+                {t(m.labelKey)}
               </option>
             ))}
           </select>
         </div>
 
         <div>
-          <Label className="mb-2 block text-sm">Day of Week</Label>
+          <Label className="mb-2 block text-sm">{t("dayOfWeek")}</Label>
           <select
             value={dayOfWeek}
             onChange={(e) => setDayOfWeek(e.target.value)}
             className="flex h-11 w-full rounded-[var(--radius-12)] bg-[var(--color-gray-0)] px-4 text-sm text-[var(--color-gray-950)] border border-[var(--color-gray-200)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-blue-500)]/20 focus-visible:border-[var(--color-blue-500)]"
           >
-            <option value="*">Every (*)</option>
-            <option value="1-5">Weekdays (1-5)</option>
-            <option value="0,6">Weekends (0,6)</option>
+            <option value="*">{t("everyStar")}</option>
+            <option value="1-5">{t("weekdays")}</option>
+            <option value="0,6">{t("weekends")}</option>
             {DAYS_OF_WEEK.map((d) => (
               <option key={d.value} value={d.value}>
-                {d.label}
+                {t(d.labelKey)}
               </option>
             ))}
           </select>
@@ -273,13 +269,13 @@ export function CronGeneratorTool() {
 
       {/* Reset Button */}
       <Button onClick={handleReset} variant="secondary">
-        Reset to Default
+        {t("resetToDefault")}
       </Button>
 
       {/* Output */}
       <div className="space-y-4">
         <Input
-          label="Cron Expression"
+          label={t("cronExpression")}
           value={expression}
           readOnly
           showCopy
@@ -287,14 +283,14 @@ export function CronGeneratorTool() {
         />
 
         <div className="p-4 rounded-[12px] bg-[var(--color-blue-50)] border border-[var(--color-blue-200)]">
-          <Label className="block text-sm text-[var(--color-blue-700)] mb-1">Human-Readable Description</Label>
+          <Label className="block text-sm text-[var(--color-blue-700)] mb-1">{t("humanReadableDescription")}</Label>
           <p className="text-[var(--color-blue-900)] font-medium">{description}</p>
         </div>
       </div>
 
       {/* Format Reference */}
       <div className="p-4 rounded-[12px] bg-[var(--color-gray-50)] border border-[var(--color-gray-200)]">
-        <Label className="block text-sm mb-2">Cron Format Reference</Label>
+        <Label className="block text-sm mb-2">{t("cronFormatReference")}</Label>
         <code className="text-xs font-mono text-[var(--color-gray-600)]">
           ┌───────────── minute (0-59)<br />
           │ ┌───────────── hour (0-23)<br />

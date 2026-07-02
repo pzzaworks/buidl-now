@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -163,6 +164,7 @@ function parseUserAgent(ua: string): ParsedUserAgent {
 }
 
 export function UserAgentParserTool() {
+  const t = useTranslations("toolUI.user-agent-parser");
   const [input, setInput] = useState("");
   const [parsed, setParsed] = useState<ParsedUserAgent | null>(null);
   const [currentUserAgent, setCurrentUserAgent] = useState("");
@@ -195,20 +197,20 @@ export function UserAgentParserTool() {
     <div className="space-y-6">
       {/* Current Browser Info */}
       <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-        <div className="text-sm text-muted-foreground mb-1">Your current browser&apos;s User-Agent:</div>
-        <div className="font-mono text-xs break-all">{currentUserAgent || "Loading..."}</div>
+        <div className="text-sm text-muted-foreground mb-1">{t("currentUaLabel")}</div>
+        <div className="font-mono text-xs break-all">{currentUserAgent || t("loading")}</div>
         <Button onClick={handleUseCurrentUserAgent} variant="primary" className="mt-3">
-          Parse My User-Agent
+          {t("parseMine")}
         </Button>
       </div>
 
       {/* Input */}
       <div>
-        <Label className="mb-2 block text-sm">User-Agent String</Label>
+        <Label className="mb-2 block text-sm">{t("uaStringLabel")}</Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Paste a User-Agent string to parse..."
+          placeholder={t("uaPlaceholder")}
           className="min-h-[100px] font-mono text-xs"
         />
       </div>
@@ -216,9 +218,9 @@ export function UserAgentParserTool() {
       {/* Buttons */}
       <div className="flex gap-2">
         <Button onClick={handleParse} variant="primary" className="flex-1">
-          Parse User-Agent
+          {t("parse")}
         </Button>
-        <Button onClick={handleReset}>Reset</Button>
+        <Button onClick={handleReset}>{t("reset")}</Button>
       </div>
 
       {/* Parsed Results */}
@@ -226,64 +228,64 @@ export function UserAgentParserTool() {
         <div className="space-y-4">
           {/* Browser */}
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <div className="text-sm font-semibold mb-3">Browser</div>
+            <div className="text-sm font-semibold mb-3">{t("browser")}</div>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <Label className="text-xs text-muted-foreground">Name</Label>
+                <Label className="text-xs text-muted-foreground">{t("name")}</Label>
                 <div className="font-mono">{parsed.browser.name}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Version</Label>
-                <div className="font-mono">{parsed.browser.version || "N/A"}</div>
+                <Label className="text-xs text-muted-foreground">{t("version")}</Label>
+                <div className="font-mono">{parsed.browser.version || t("na")}</div>
               </div>
             </div>
           </div>
 
           {/* Operating System */}
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <div className="text-sm font-semibold mb-3">Operating System</div>
+            <div className="text-sm font-semibold mb-3">{t("operatingSystem")}</div>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <Label className="text-xs text-muted-foreground">Name</Label>
+                <Label className="text-xs text-muted-foreground">{t("name")}</Label>
                 <div className="font-mono">{parsed.os.name}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Version</Label>
-                <div className="font-mono">{parsed.os.version || "N/A"}</div>
+                <Label className="text-xs text-muted-foreground">{t("version")}</Label>
+                <div className="font-mono">{parsed.os.version || t("na")}</div>
               </div>
             </div>
           </div>
 
           {/* Device */}
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <div className="text-sm font-semibold mb-3">Device</div>
+            <div className="text-sm font-semibold mb-3">{t("device")}</div>
             <div className="grid grid-cols-3 gap-3 text-sm">
               <div>
-                <Label className="text-xs text-muted-foreground">Type</Label>
+                <Label className="text-xs text-muted-foreground">{t("type")}</Label>
                 <div className="font-mono">{parsed.device.type}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Vendor</Label>
-                <div className="font-mono">{parsed.device.vendor || "N/A"}</div>
+                <Label className="text-xs text-muted-foreground">{t("vendor")}</Label>
+                <div className="font-mono">{parsed.device.vendor || t("na")}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Model</Label>
-                <div className="font-mono">{parsed.device.model || "N/A"}</div>
+                <Label className="text-xs text-muted-foreground">{t("model")}</Label>
+                <div className="font-mono">{parsed.device.model || t("na")}</div>
               </div>
             </div>
           </div>
 
           {/* Engine */}
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <div className="text-sm font-semibold mb-3">Rendering Engine</div>
+            <div className="text-sm font-semibold mb-3">{t("renderingEngine")}</div>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <Label className="text-xs text-muted-foreground">Name</Label>
+                <Label className="text-xs text-muted-foreground">{t("name")}</Label>
                 <div className="font-mono">{parsed.engine.name}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Version</Label>
-                <div className="font-mono">{parsed.engine.version || "N/A"}</div>
+                <Label className="text-xs text-muted-foreground">{t("version")}</Label>
+                <div className="font-mono">{parsed.engine.version || t("na")}</div>
               </div>
             </div>
           </div>
@@ -292,7 +294,7 @@ export function UserAgentParserTool() {
 
       {/* Common User-Agent Examples */}
       <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-        <div className="text-sm font-semibold mb-3">Example User-Agents</div>
+        <div className="text-sm font-semibold mb-3">{t("exampleUas")}</div>
         <div className="space-y-2 text-xs">
           <button
             onClick={() => {

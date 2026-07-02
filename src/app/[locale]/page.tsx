@@ -11,23 +11,20 @@ import {
   useTransform,
 } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { BuidlWordmark } from "@/components/buidl-wordmark";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { Code } from "@/components/ui/code";
 import {
   FaqStructuredData,
   OrganizationStructuredData,
   WebsiteStructuredData,
 } from "@/components/structured-data";
-import { homepageFaq } from "@/lib/homepage-faq";
+import { type FaqItem } from "@/lib/homepage-faq";
 import { FaqAccordion } from "@/components/faq-accordion";
 import { tools } from "@/lib/tools-list";
-import {
-  externalLinkRel,
-  getToolCategoryKindLabel,
-  getToolCategoryLabel,
-} from "@/lib/seo";
+import { externalLinkRel } from "@/lib/seo";
 import { getToolById } from "@/tools";
 import { type Tool } from "@/types/tools";
 
@@ -68,23 +65,7 @@ const sansStyle: CSSProperties = {
 
 const defaultToolId = "function-selector";
 
-const headerActions: SiteAction[] = [
-  { href: "#tools", label: "Tools" },
-  {
-    external: true,
-    href: "https://github.com/pzzaworks/buidl-now",
-    label: "GitHub",
-  },
-];
-
-const footerActions: SiteAction[] = [
-  { href: "#tools", label: "Open Tools" },
-  {
-    external: true,
-    href: "https://github.com/pzzaworks/buidl-now",
-    label: "GitHub",
-  },
-];
+const githubUrl = "https://github.com/pzzaworks/buidl-now";
 
 const fadeUpVariants = {
   hidden: { opacity: 0, y: 32 },
@@ -149,21 +130,13 @@ const heroCopyVariants = {
   },
 };
 
-function formatCategoryLabel(category: string): string {
-  return category
-    .split("-")
-    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
-    .join(" ");
-}
-
-const toolCategoryOptions: ToolCategoryOption[] = [
-  { value: "all", label: "All Tools" },
-  ...Array.from(new Set(tools.map((tool) => tool.category)))
-    .sort((left, right) => left.localeCompare(right))
-    .map((category) => ({
-      value: category,
-      label: formatCategoryLabel(category),
-    })),
+// Category filter values in display order ("all" first, then categories sorted
+// stably). Labels are resolved from translations inside the component.
+const toolCategoryValues: string[] = [
+  "all",
+  ...Array.from(new Set(tools.map((tool) => tool.category))).sort(
+    (left, right) => left.localeCompare(right),
+  ),
 ];
 
 const homepageToolOverrides: Record<string, HomepageToolOverride> = {
@@ -486,6 +459,37 @@ export function HomePageClient({
   initialSelectedToolId,
   routeMode = "home",
 }: HomePageClientProps) {
+  const t = useTranslations("home");
+  const tNav = useTranslations("nav");
+  const tCat = useTranslations("categories");
+  const tKind = useTranslations("categoryKinds");
+  const tFaq = useTranslations("faq");
+  const faqItems = tFaq.raw("items") as FaqItem[];
+  const tManifest = useTranslations("manifest");
+  const tToolMeta = useTranslations("toolMeta");
+  const locale = useLocale();
+
+  // Localized tool name/description, falling back to the English source in
+  // tools-list when a locale has not translated that entry yet.
+  const toolName = (id: string, fallback: string) =>
+    id && tToolMeta.has(`${id}.name`) ? tToolMeta(`${id}.name`) : fallback;
+  const toolDescription = (id: string, fallback: string) =>
+    id && tToolMeta.has(`${id}.description`)
+      ? tToolMeta(`${id}.description`)
+      : fallback;
+
+  const headerActions: SiteAction[] = [
+    { href: "#tools", label: tNav("tools") },
+    { external: true, href: githubUrl, label: tNav("github") },
+  ];
+  const footerActions: SiteAction[] = [
+    { href: "#tools", label: tNav("openTools") },
+    { external: true, href: githubUrl, label: tNav("github") },
+  ];
+  const toolCategoryOptions: ToolCategoryOption[] = toolCategoryValues.map(
+    (value) => ({ value, label: tCat(value) }),
+  );
+
   const shouldReduceMotion = useReducedMotion();
   const isToolRoute = routeMode === "tool";
   const HeroHeading = isToolRoute ? motion.p : motion.h1;
@@ -506,15 +510,23 @@ export function HomePageClient({
     ? getToolById(activeToolMeta.id)
     : undefined;
   const ActiveToolComponent = activeToolConfig?.component;
-  const activeToolName = activeToolMeta?.name ?? activeToolConfig?.name ?? "";
-  const activeToolDescription =
-    activeToolMeta?.description ?? activeToolConfig?.description ?? "";
+  const activeToolName = toolName(
+    activeToolMeta?.id ?? "",
+    activeToolMeta?.name ?? activeToolConfig?.name ?? "",
+  );
+  const activeToolDescription = toolDescription(
+    activeToolMeta?.id ?? "",
+    activeToolMeta?.description ?? activeToolConfig?.description ?? "",
+  );
   const activeToolCategoryKind = activeToolMeta
-    ? getToolCategoryKindLabel(activeToolMeta.category)
+    ? tKind(activeToolMeta.category)
     : "";
   const activeToolHeading =
     activeToolName && activeToolCategoryKind
-      ? `${activeToolName} - free ${activeToolCategoryKind} tool`
+      ? t("toolHeadingWithKind", {
+          name: activeToolName,
+          kind: activeToolCategoryKind,
+        })
       : activeToolName;
   const toolSections = activeToolConfig?.sections ?? [];
   const toolExamples = activeToolConfig?.examples ?? [];
@@ -522,11 +534,20 @@ export function HomePageClient({
   const activeHomepageOverride =
     homepageToolOverrides[selectedToolId] ??
     homepageToolOverrides[activeToolMeta?.id ?? ""];
-  const toolStoryRows = buildToolStoryRows({
-    examples: toolExamples,
-    overrideRows: activeHomepageOverride?.storyRows,
-    sections: toolSections,
-  });
+  // Prefer the localized story rows from the catalog; fall back to deriving
+  // them from the tool config when a locale has no story entry.
+  const localizedStory =
+    activeToolMeta?.id && tToolMeta.has(`${activeToolMeta.id}.story`)
+      ? (tToolMeta.raw(`${activeToolMeta.id}.story`) as ToolStoryRow[])
+      : null;
+  const toolStoryRows =
+    localizedStory && localizedStory.length > 0
+      ? localizedStory.slice(0, 3)
+      : buildToolStoryRows({
+          examples: toolExamples,
+          overrideRows: activeHomepageOverride?.storyRows,
+          sections: toolSections,
+        });
   const activeCategoryOption =
     toolCategoryOptions.find((option) => option.value === selectedToolCategory) ??
     toolCategoryOptions[0];
@@ -535,7 +556,7 @@ export function HomePageClient({
   // mirror the BreadcrumbList JSON-LD emitted by ToolStructuredData and surface
   // an in-category "Related Tools" set for internal linking and AI context.
   const activeToolCategoryLabel = activeToolMeta
-    ? getToolCategoryLabel(activeToolMeta.category)
+    ? tCat(activeToolMeta.category)
     : "";
   const relatedTools = activeToolMeta
     ? tools
@@ -560,7 +581,10 @@ export function HomePageClient({
       return true;
     }
 
-    const haystack = `${tool.name} ${tool.description}`.toLowerCase();
+    // Search across both the English source and the localized name/description
+    // so a query works in the active language as well as in English.
+    const haystack =
+      `${tool.name} ${tool.description} ${toolName(tool.id, tool.name)} ${toolDescription(tool.id, tool.description)}`.toLowerCase();
     return haystack.includes(normalizedToolSearch);
   });
 
@@ -716,10 +740,14 @@ export function HomePageClient({
 
   return (
     <>
-      {includeSiteStructuredData ? <WebsiteStructuredData /> : null}
-      {includeSiteStructuredData ? <OrganizationStructuredData /> : null}
       {includeSiteStructuredData ? (
-        <FaqStructuredData items={homepageFaq} />
+        <WebsiteStructuredData locale={locale} description={t("footerTagline")} />
+      ) : null}
+      {includeSiteStructuredData ? (
+        <OrganizationStructuredData description={tManifest("description")} />
+      ) : null}
+      {includeSiteStructuredData ? (
+        <FaqStructuredData items={faqItems} />
       ) : null}
 
       <div className="min-h-screen w-full bg-[#f5f5f5] text-[#202020]">
@@ -733,11 +761,11 @@ export function HomePageClient({
             <Link
               href="/"
               className="inline-flex items-center justify-center"
-              aria-label="Buidl Now home"
+              aria-label={tNav("homeAriaLabel")}
             >
               <Image
                 src="/buildnow-inv.svg?v=20260517"
-                alt="Buidl Now icon"
+                alt={tNav("logoAlt")}
                 width={27}
                 height={48}
                 className="h-12 w-auto"
@@ -754,6 +782,7 @@ export function HomePageClient({
                   onInternalClick={scrollToTools}
                 />
               ))}
+              <LanguageSwitcher />
             </div>
           </motion.div>
         </header>
@@ -812,8 +841,7 @@ export function HomePageClient({
                   }
                   variants={shouldReduceMotion ? undefined : fadeUpVariants}
                 >
-                  The developer tools you reach for every day, all in one
-                  place.
+                  {t("heroHeading")}
                 </HeroHeading>
 
                 <motion.p
@@ -829,9 +857,7 @@ export function HomePageClient({
                   }
                   variants={shouldReduceMotion ? undefined : fadeUpVariants}
                 >
-                  Converters, formatters, hashes, validators, and the small
-                  utilities you keep reopening stay together instead of getting
-                  lost across tabs.
+                  {t("heroBody")}
                 </motion.p>
 
                 <motion.div
@@ -860,17 +886,17 @@ export function HomePageClient({
                         : scrollToTools
                     }
                   >
-                    Open Tools
+                    {tNav("openTools")}
                   </button>
 
                   <a
-                    href="https://github.com/pzzaworks/buidl-now"
+                    href={githubUrl}
                     target="_blank"
                     rel={externalLinkRel}
                     className="inline-flex rounded-none border border-[#202020] px-8 py-6 text-[13px] font-medium uppercase tracking-[0.22em] text-[#202020] transition-colors hover:bg-[#202020] hover:text-[#f0fb29]"
                     style={monoStyle}
                   >
-                    GitHub
+                    {tNav("github")}
                   </a>
                 </motion.div>
               </motion.div>
@@ -885,7 +911,7 @@ export function HomePageClient({
             shouldReduceMotion={Boolean(shouldReduceMotion)}
             variants={shouldReduceMotion ? undefined : staggerParentVariants}
           >
-            <SectionLabel title="/ Tools" />
+            <SectionLabel title={`/ ${t("sectionTools")}`} />
 
             <div className="grid grid-cols-1 gap-y-8 pt-10 lg:h-[760px] lg:grid-cols-[620px_minmax(0,1fr)] lg:items-stretch lg:gap-x-8 lg:pt-12">
               <motion.div
@@ -898,7 +924,7 @@ export function HomePageClient({
                       className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]"
                       style={monoStyle}
                     >
-                      / Tool Finder
+                      / {t("toolFinder")}
                     </div>
                   </div>
 
@@ -907,7 +933,7 @@ export function HomePageClient({
                       type="text"
                       value={toolSearchQuery}
                       onChange={(event) => setToolSearchQuery(event.target.value)}
-                      placeholder="Search every tool..."
+                      placeholder={t("searchPlaceholder")}
                       className="w-full rounded-none border border-[#202020] bg-[#f5f5f5] px-4 py-4 text-[15px] text-[#202020] outline-none placeholder:text-[#202020]/44"
                       style={monoStyle}
                     />
@@ -919,8 +945,8 @@ export function HomePageClient({
                       style={monoStyle}
                     >
                       {normalizedToolSearch
-                        ? `${filteredTools.length} results`
-                        : `${tools.length} tools`}
+                        ? t("resultsCount", { count: filteredTools.length })
+                        : t("toolsCount", { count: tools.length })}
                     </div>
                     <div className="relative" ref={categoryDropdownRef}>
                       <button
@@ -983,13 +1009,13 @@ export function HomePageClient({
                               className="text-[18px] leading-6 text-[#202020]"
                               style={sansStyle}
                             >
-                              {tool.name}
+                              {toolName(tool.id, tool.name)}
                             </div>
                             <div
                               className="mt-1 text-[13px] leading-5 text-[#202020]/68"
                               style={sansStyle}
                             >
-                              {tool.description}
+                              {toolDescription(tool.id, tool.description)}
                             </div>
                           </div>
                         </button>
@@ -1000,14 +1026,13 @@ export function HomePageClient({
                           className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]/60"
                           style={monoStyle}
                         >
-                          No matches
+                          {t("noMatchesTitle")}
                         </div>
                         <p
                           className="mt-3 max-w-[360px] text-[16px] leading-7 text-[#202020]"
                           style={sansStyle}
                         >
-                          Try a tool name like function selector, keccak, abi,
-                          json, base64, or checksum.
+                          {t("noMatchesBody")}
                         </p>
                       </div>
                     )}
@@ -1039,7 +1064,7 @@ export function HomePageClient({
                       className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]/72"
                       style={monoStyle}
                     >
-                      / {activeToolName || "Live Tool"}
+                      / {activeToolName || t("liveTool")}
                     </div>
                   </div>
 
@@ -1079,7 +1104,7 @@ export function HomePageClient({
                           }
                           transition={shouldReduceMotion ? undefined : toolSwapTransition}
                         >
-                          This tool is not available yet.
+                          {t("toolNotAvailable")}
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -1092,7 +1117,7 @@ export function HomePageClient({
               className="pt-16 lg:pt-20"
               variants={shouldReduceMotion ? undefined : fadeUpVariants}
             >
-              <SectionLabel title="/ Selected Tool" />
+              <SectionLabel title={`/ ${t("sectionSelectedTool")}`} />
 
               <div className="pt-8">
                 <AnimatePresence mode="wait" initial={false}>
@@ -1115,7 +1140,7 @@ export function HomePageClient({
                             href="/"
                             className="text-[#202020]/72 transition-colors hover:text-[#202020]"
                           >
-                            Home
+                            {t("breadcrumbHome")}
                           </Link>
                           <span aria-hidden="true">/</span>
                           <Link
@@ -1197,7 +1222,7 @@ export function HomePageClient({
                   className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]/72"
                   style={monoStyle}
                 >
-                  / Related Tools
+                  / {t("relatedTools")}
                 </div>
 
                 <div className="mt-5 grid grid-cols-1 border border-[#202020] bg-white sm:grid-cols-2">
@@ -1217,13 +1242,13 @@ export function HomePageClient({
                           className="text-[18px] leading-6 text-[#202020]"
                           style={sansStyle}
                         >
-                          {tool.name}
+                          {toolName(tool.id, tool.name)}
                         </div>
                         <div
                           className="mt-1 text-[13px] leading-5 text-[#202020]/68"
                           style={sansStyle}
                         >
-                          {tool.description}
+                          {toolDescription(tool.id, tool.description)}
                         </div>
                       </div>
                     </button>
@@ -1236,7 +1261,7 @@ export function HomePageClient({
               className="pt-24"
               variants={shouldReduceMotion ? undefined : fadeUpVariants}
             >
-              <SectionLabel title="/ Code" />
+              <SectionLabel title={`/ ${t("sectionCode")}`} />
 
               <div className="grid grid-cols-1 gap-y-10 pt-10 lg:grid-cols-[360px_minmax(0,1fr)] lg:gap-x-8 lg:pt-12">
                 <div>
@@ -1244,8 +1269,7 @@ export function HomePageClient({
                     className="max-w-[320px] text-[18px] leading-8 text-[#202020]"
                     style={sansStyle}
                   >
-                    Source code from the selected tool, shown here alongside the
-                    live version on the right.
+                    {t("codeIntro")}
                   </p>
                 </div>
 
@@ -1265,13 +1289,13 @@ export function HomePageClient({
                       className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]"
                       style={monoStyle}
                     >
-                      / Source Code
+                      / {t("sourceCode")}
                     </div>
                     <div
                       className="bg-[#f0fb29] px-3 py-2 text-[12px] font-medium uppercase tracking-[0.18em] text-[#202020]"
                       style={monoStyle}
                     >
-                      {toolCodeSnippet ? "TypeScript" : "Snippet"}
+                      {toolCodeSnippet ? "TypeScript" : t("snippetBadge")}
                     </div>
                   </div>
 
@@ -1316,7 +1340,7 @@ export function HomePageClient({
                           }
                           transition={shouldReduceMotion ? undefined : toolSwapTransition}
                         >
-                          Code examples for this tool will appear here.
+                          {t("codeEmpty")}
                         </motion.p>
                       )}
                     </AnimatePresence>
@@ -1335,7 +1359,7 @@ export function HomePageClient({
               shouldReduceMotion={Boolean(shouldReduceMotion)}
               variants={shouldReduceMotion ? undefined : staggerParentVariants}
             >
-              <SectionLabel title="/ FAQ" />
+              <SectionLabel title={`/ ${t("sectionFaq")}`} />
 
               <div className="grid grid-cols-1 gap-y-10 pt-10 lg:grid-cols-[360px_minmax(0,1fr)] lg:gap-x-8 lg:pt-12">
                 <div>
@@ -1343,22 +1367,21 @@ export function HomePageClient({
                     className="max-w-[320px] text-[32px] font-medium leading-[36px] tracking-[-2px] text-[#202020]"
                     style={sansStyle}
                   >
-                    Frequently asked questions
+                    {t("faqHeading")}
                   </h2>
 
                   <p
                     className="mt-6 max-w-[320px] text-[18px] leading-8 text-[#202020]"
                     style={sansStyle}
                   >
-                    What Buidl Now is, how the tools run, and where your data
-                    goes.
+                    {t("faqIntro")}
                   </p>
                 </div>
 
                 <motion.div
                   variants={shouldReduceMotion ? undefined : fadeUpVariants}
                 >
-                  <FaqAccordion items={homepageFaq} />
+                  <FaqAccordion items={faqItems} />
                 </motion.div>
               </div>
             </RevealSection>
@@ -1379,7 +1402,7 @@ export function HomePageClient({
             >
               <Image
                 src="/buildnow-inv.svg?v=20260517"
-                alt="Buidl Now icon"
+                alt={tNav("logoAlt")}
                 width={99}
                 height={176}
                 className="h-[64px] w-auto shrink-0 sm:h-[148px] lg:h-[176px]"
@@ -1401,16 +1424,14 @@ export function HomePageClient({
                   className="max-w-[760px] text-[40px] font-medium leading-[46px] tracking-[-2.5px] text-[#202020]"
                   style={sansStyle}
                 >
-                  Keep every utility in one place and stay inside the build
-                  flow.
+                  {t("footerHeading")}
                 </h2>
 
                 <p
                   className="mt-8 max-w-[560px] text-[18px] leading-8 text-[#202020]"
                   style={sansStyle}
                 >
-                  Pick a tool, finish the check, copy what you need, and get
-                  back to the actual product work.
+                  {t("footerBody")}
                 </p>
               </div>
 
@@ -1434,14 +1455,14 @@ export function HomePageClient({
                 className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]"
                 style={monoStyle}
               >
-                Developer tools for builders who ship fast.
+                {t("footerTagline")}
               </span>
 
               <span
                 className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]"
                 style={monoStyle}
               >
-                © 2026 Buidl Now. All rights reserved.
+                {t("copyright")}
               </span>
             </motion.div>
           </RevealSection>

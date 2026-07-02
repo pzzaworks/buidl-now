@@ -294,3 +294,86 @@ export function buildToolSeoKeywords(
 
   return result;
 }
+
+export interface LocalizedToolSeoInput {
+  category: Tool["category"];
+  /** Localized tool name. */
+  name: string;
+  /** Localized tool description. */
+  description: string;
+  /** Localized title qualifiers for the category. */
+  qualifierPrimary: string;
+  qualifierFallback: string;
+  /** Localized action phrase and click-through closing for the category. */
+  actionPhrase: string;
+  closing: string;
+  /** Comma-separated localized keyword angles for the category. */
+  keywordAngles: string;
+  /** Author-provided keywords from the tool config (kept as-is). */
+  customKeywords?: string[];
+}
+
+/**
+ * Locale-aware counterpart to the English SEO builders. It mirrors the same
+ * title/description/keyword shape but sources every phrase from the caller
+ * (resolved from the active locale's catalog) instead of the English
+ * constants, so tool pages get a localized <title>, meta description, and
+ * keyword set. Length heuristics are shared; for non-Latin scripts a qualifier
+ * that would overflow simply falls back to the plain localized name.
+ */
+export function buildLocalizedToolSeo(input: LocalizedToolSeoInput): {
+  title: string;
+  description: string;
+  keywords: string[];
+} {
+  const name = input.name.trim();
+
+  const primaryTitle = `${name} - ${input.qualifierPrimary}`;
+  const fallbackTitle = `${name} - ${input.qualifierFallback}`;
+  const title =
+    primaryTitle.length <= maximumTitlePartLength
+      ? primaryTitle
+      : fallbackTitle.length <= maximumTitlePartLength
+        ? fallbackTitle
+        : name;
+
+  const base = normalizeDescription(input.description);
+  let description: string;
+  if (base.length >= minimumMetaDescriptionLength) {
+    description = truncateAtWord(base, maximumMetaDescriptionLength);
+  } else {
+    const firstActionWord = input.actionPhrase.split(/[\s,]/)[0].toLowerCase();
+    const intent = base.toLowerCase().startsWith(firstActionWord)
+      ? normalizeDescription(base)
+      : normalizeDescription(`${input.actionPhrase}: ${lowerFirst(base)}`);
+    const candidate = `${intent}. ${input.closing}`;
+    description =
+      candidate.length <= maximumMetaDescriptionLength
+        ? normalizeDescription(candidate) + "."
+        : truncateAtWord(candidate, maximumMetaDescriptionLength);
+  }
+
+  const nameLower = name.toLowerCase();
+  const angles = input.keywordAngles
+    .split(",")
+    .map((angle) => angle.trim())
+    .filter(Boolean);
+  const ordered = [
+    ...(input.customKeywords ?? []),
+    nameLower,
+    ...angles,
+  ];
+  const seen = new Set<string>();
+  const keywords: string[] = [];
+  for (const raw of ordered) {
+    const keyword = raw.trim();
+    if (!keyword) continue;
+    const key = keyword.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    keywords.push(keyword);
+    if (keywords.length >= 12) break;
+  }
+
+  return { title, description, keywords };
+}

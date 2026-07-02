@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ToolConfig } from "@/types/tool";
 
 export function Rot13Tool() {
+  const t = useTranslations("toolUI.rot13");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
 
@@ -36,20 +38,20 @@ export function Rot13Tool() {
     <div className="space-y-6">
       {/* Input Section */}
       <div>
-        <Label className="mb-2 block text-sm">Input Text</Label>
+        <Label className="mb-2 block text-sm">{t("inputLabel")}</Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Enter text to encode/decode with ROT13..."
+          placeholder={t("inputPlaceholder")}
           rows={8}
           className="text-sm mb-2"
         />
         <div className="flex gap-2">
           <Button onClick={handleConvert} variant="primary" className="flex-1">
-            Convert (ROT13)
+            {t("convert")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -57,7 +59,7 @@ export function Rot13Tool() {
       {/* Output Section */}
       {output && (
         <Textarea
-          label="ROT13 Output"
+          label={t("outputLabel")}
           value={output}
           readOnly
           showCopy

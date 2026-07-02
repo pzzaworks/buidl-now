@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -9,6 +10,7 @@ import { ToolConfig } from "@/types/tool";
 import { MdClose } from "react-icons/md";
 
 export function EcdsaSignatureTool() {
+  const t = useTranslations("toolUI.ecdsa-signature");
   const [signature, setSignature] = useState("");
   const [r, setR] = useState("");
   const [s, setS] = useState("");
@@ -35,12 +37,12 @@ export function EcdsaSignatureTool() {
 
       // Check if it's a valid hex string
       if (!/^[0-9a-fA-F]+$/.test(cleanSig)) {
-        throw new Error("Invalid hex string");
+        throw new Error(t("errorHex"));
       }
 
       // Signature can be 64 bytes (128 hex) or 65 bytes (130 hex)
       if (cleanSig.length !== 128 && cleanSig.length !== 130) {
-        throw new Error("Signature must be 64 or 65 bytes (128 or 130 hex characters)");
+        throw new Error(t("errorLength"));
       }
 
       // Parse r and s (first 64 bytes)
@@ -58,18 +60,18 @@ export function EcdsaSignatureTool() {
         // Calculate yParity (0 or 1)
         // Common values: 27 or 28 (legacy), or 0 or 1 (EIP-155)
         if (vByte === 27 || vByte === 0) {
-          yParityValue = "0 (even)";
+          yParityValue = t("parityEven");
         } else if (vByte === 28 || vByte === 1) {
-          yParityValue = "1 (odd)";
+          yParityValue = t("parityOdd");
         } else {
           // EIP-155: v = chainId * 2 + 35 + yParity
           const chainId = Math.floor((vByte - 35) / 2);
           const parity = vByte - (chainId * 2 + 35);
-          yParityValue = `${parity} (Chain ID: ${chainId})`;
+          yParityValue = t("parityChainId", { parity, chainId });
         }
       } else {
-        vValue = "Not present (64-byte signature)";
-        yParityValue = "Not present (requires 65-byte signature)";
+        vValue = t("vNotPresent");
+        yParityValue = t("parityNotPresent");
       }
 
       setR(rValue);
@@ -78,7 +80,7 @@ export function EcdsaSignatureTool() {
       setYParity(yParityValue);
       setError("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Parsing failed");
+      setError(e instanceof Error ? e.message : t("parseFailed"));
       setR("");
       setS("");
       setV("");
@@ -106,7 +108,7 @@ export function EcdsaSignatureTool() {
     <div className="space-y-6">
       {/* Input Section */}
       <div>
-        <Label className="text-sm mb-2 block">Signature (hex string)</Label>
+        <Label className="text-sm mb-2 block">{t("signatureLabel")}</Label>
         <Textarea
           value={signature}
           onChange={handleInputChange}
@@ -115,10 +117,10 @@ export function EcdsaSignatureTool() {
         />
         <div className="flex gap-2 mt-2">
           <Button onClick={() => parseSignature(signature)} className="flex-1" variant="primary">
-            Parse
+            {t("parse")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -133,7 +135,7 @@ export function EcdsaSignatureTool() {
       {r && (
         <div className="space-y-4">
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <Label className="mb-2 block text-sm">Component: r</Label>
+            <Label className="mb-2 block text-sm">{t("componentR")}</Label>
             <Input
               value={r}
               readOnly
@@ -141,12 +143,12 @@ export function EcdsaSignatureTool() {
               className="font-mono text-sm bg-[var(--color-gray-0)]"
             />
             <p className="mt-2 text-xs text-muted-foreground">
-              First 32 bytes - X coordinate of the signature point
+              {t("descR")}
             </p>
           </div>
 
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <Label className="mb-2 block text-sm">Component: s</Label>
+            <Label className="mb-2 block text-sm">{t("componentS")}</Label>
             <Input
               value={s}
               readOnly
@@ -154,31 +156,31 @@ export function EcdsaSignatureTool() {
               className="font-mono text-sm bg-[var(--color-gray-0)]"
             />
             <p className="mt-2 text-xs text-muted-foreground">
-              Second 32 bytes - Signature proof value
+              {t("descS")}
             </p>
           </div>
 
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <Label className="mb-2 block text-sm">Component: v</Label>
+            <Label className="mb-2 block text-sm">{t("componentV")}</Label>
             <Input
               value={v}
               readOnly
               className="font-mono text-sm bg-[var(--color-gray-0)]"
             />
             <p className="mt-2 text-xs text-muted-foreground">
-              Recovery ID - Used to recover the public key from the signature
+              {t("descV")}
             </p>
           </div>
 
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <Label className="mb-2 block text-sm">Y Parity</Label>
+            <Label className="mb-2 block text-sm">{t("yParityLabel")}</Label>
             <Input
               value={yParity}
               readOnly
               className="font-mono text-sm bg-[var(--color-gray-0)]"
             />
             <p className="mt-2 text-xs text-muted-foreground">
-              Indicates whether the Y coordinate is even (0) or odd (1)
+              {t("descParity")}
             </p>
           </div>
         </div>
@@ -186,24 +188,24 @@ export function EcdsaSignatureTool() {
 
       {/* Info Section */}
       <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-        <Label className="mb-2 block text-sm">About ECDSA Signatures</Label>
+        <Label className="mb-2 block text-sm">{t("aboutTitle")}</Label>
         <div className="text-sm text-muted-foreground space-y-2">
           <p>
-            <strong>r:</strong> The x-coordinate of a random point on the elliptic curve (32 bytes)
+            <strong>r:</strong> {t("aboutR")}
           </p>
           <p>
-            <strong>s:</strong> The signature proof value (32 bytes)
+            <strong>s:</strong> {t("aboutS")}
           </p>
           <p>
-            <strong>v:</strong> Recovery ID that helps recover the public key (1 byte, optional)
+            <strong>v:</strong> {t("aboutV")}
           </p>
           <p className="mt-4">
-            <strong>Common v values:</strong>
+            <strong>{t("commonVValues")}</strong>
           </p>
           <ul className="list-disc list-inside ml-4 space-y-1">
-            <li>27 or 28: Legacy Ethereum signatures</li>
-            <li>0 or 1: Modern EIP-2098 compact signatures</li>
-            <li>35+: EIP-155 signatures with chain ID</li>
+            <li>{t("vLegacy")}</li>
+            <li>{t("vCompact")}</li>
+            <li>{t("vChainId")}</li>
           </ul>
         </div>
       </div>

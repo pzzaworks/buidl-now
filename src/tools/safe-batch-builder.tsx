@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -18,6 +19,7 @@ interface Transaction {
 }
 
 export function SafeBatchBuilderTool() {
+  const t = useTranslations("toolUI.safe-batch-builder");
   const [transactions, setTransactions] = useState<Transaction[]>([
     { id: "1", to: "", value: "0", data: "0x", operation: "0" },
   ]);
@@ -50,16 +52,16 @@ export function SafeBatchBuilderTool() {
       // Validate all transactions
       for (const tx of transactions) {
         if (!tx.to) {
-          throw new Error("All transactions must have a 'to' address");
+          throw new Error(t("errorNoToAddress"));
         }
         if (!tx.to.match(/^0x[a-fA-F0-9]{40}$/)) {
-          throw new Error(`Invalid address: ${tx.to}`);
+          throw new Error(t("errorInvalidAddress", { address: tx.to }));
         }
         if (!tx.data.startsWith("0x")) {
-          throw new Error(`Data must start with 0x: ${tx.data}`);
+          throw new Error(t("errorDataPrefix", { data: tx.data }));
         }
         if (isNaN(Number(tx.value)) || Number(tx.value) < 0) {
-          throw new Error(`Invalid value: ${tx.value}`);
+          throw new Error(t("errorInvalidValue", { value: tx.value }));
         }
       }
 
@@ -86,7 +88,7 @@ export function SafeBatchBuilderTool() {
       setJsonOutput(JSON.stringify(batch, null, 2));
       setError("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to generate batch");
+      setError(e instanceof Error ? e.message : t("errorGenerateFailed"));
       setJsonOutput("");
     }
   };
@@ -112,20 +114,20 @@ export function SafeBatchBuilderTool() {
         {transactions.map((tx, index) => (
           <div key={tx.id} className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)] space-y-3">
             <div className="flex justify-between items-center mb-2">
-              <Label className="text-sm font-semibold">Transaction #{index + 1}</Label>
+              <Label className="text-sm font-semibold">{t("transactionHeading", { number: index + 1 })}</Label>
               {transactions.length > 1 && (
                 <Button
                   onClick={() => removeTransaction(tx.id)}
-                 
+
                   className="text-xs h-7 px-2"
                 >
-                  Remove
+                  {t("remove")}
                 </Button>
               )}
             </div>
 
             <div>
-              <Label className="mb-2 block text-xs">To Address</Label>
+              <Label className="mb-2 block text-xs">{t("toAddressLabel")}</Label>
               <Input
                 value={tx.to}
                 onChange={(e) => updateTransaction(tx.id, "to", e.target.value)}
@@ -135,7 +137,7 @@ export function SafeBatchBuilderTool() {
             </div>
 
             <div>
-              <Label className="mb-2 block text-xs">Value (in Wei)</Label>
+              <Label className="mb-2 block text-xs">{t("valueLabel")}</Label>
               <Input
                 value={tx.value}
                 onChange={(e) => updateTransaction(tx.id, "value", e.target.value)}
@@ -145,7 +147,7 @@ export function SafeBatchBuilderTool() {
             </div>
 
             <div>
-              <Label className="mb-2 block text-xs">Operation</Label>
+              <Label className="mb-2 block text-xs">{t("operationLabel")}</Label>
               <div className="flex gap-2">
                 <Button
                   onClick={() => updateTransaction(tx.id, "operation", "0")}
@@ -153,7 +155,7 @@ export function SafeBatchBuilderTool() {
                   size="sm"
                   className="flex-1"
                 >
-                  Call (0)
+                  {t("callOption")}
                 </Button>
                 <Button
                   onClick={() => updateTransaction(tx.id, "operation", "1")}
@@ -161,13 +163,13 @@ export function SafeBatchBuilderTool() {
                   size="sm"
                   className="flex-1"
                 >
-                  DelegateCall (1)
+                  {t("delegateCallOption")}
                 </Button>
               </div>
             </div>
 
             <div>
-              <Label className="mb-2 block text-xs">Data (Hex)</Label>
+              <Label className="mb-2 block text-xs">{t("dataLabel")}</Label>
               <Textarea
                 value={tx.data}
                 onChange={(e) => updateTransaction(tx.id, "data", e.target.value)}
@@ -180,13 +182,13 @@ export function SafeBatchBuilderTool() {
 
         <div className="flex gap-2">
           <Button onClick={addTransaction} variant="primary" className="flex-1">
-            + Add Transaction
+            {t("addTransaction")}
           </Button>
           <Button onClick={generateBatch} variant="primary" className="flex-1">
-            Generate Batch
+            {t("generateBatch")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -202,12 +204,12 @@ export function SafeBatchBuilderTool() {
         <>
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
             <div className="flex justify-between items-center mb-2">
-              <Label className="text-sm">Batch JSON Output</Label>
+              <Label className="text-sm">{t("outputLabel")}</Label>
               <button
                 type="button"
                 onClick={handleCopy}
                 className="w-8 h-8 rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] flex items-center justify-center transition-colors cursor-pointer"
-                title={copied ? "Copied!" : "Copy to clipboard"}
+                title={copied ? t("copied") : t("copyToClipboard")}
               >
                 {copied ? (
                   <MdCheck style={{ width: 16, height: 16, color: 'var(--color-green-500)' }} />
@@ -223,18 +225,18 @@ export function SafeBatchBuilderTool() {
 
           <div className="p-4 rounded-[12px] border border-yellow-500/30 bg-yellow-500/10 text-yellow-200">
             <div className="text-sm">
-              <strong>Note:</strong> Update the <code className="bg-[var(--color-gray-100)] px-1 py-0.5 rounded-[12px]">chainId</code> field to match your target network before importing to Safe UI.
+              <strong>{t("noteLabel")}</strong> {t("chainIdNoteBefore")} <code className="bg-[var(--color-gray-100)] px-1 py-0.5 rounded-[12px]">chainId</code> {t("chainIdNoteAfter")}
             </div>
           </div>
 
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <Label className="mb-2 block text-sm">How to use with Safe UI</Label>
+            <Label className="mb-2 block text-sm">{t("howToUseLabel")}</Label>
             <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-              <li>Copy the JSON output above</li>
-              <li>Go to Safe Transaction Builder in your Safe UI</li>
-              <li>Click "Import transactions" or "Load from JSON"</li>
-              <li>Paste the JSON and review transactions</li>
-              <li>Sign and execute the batch</li>
+              <li>{t("step1")}</li>
+              <li>{t("step2")}</li>
+              <li>{t("step3")}</li>
+              <li>{t("step4")}</li>
+              <li>{t("step5")}</li>
             </ol>
           </div>
         </>

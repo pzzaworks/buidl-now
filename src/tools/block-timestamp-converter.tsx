@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -24,6 +25,7 @@ const chains: Chain[] = [
 type ConversionMode = "block-to-time" | "time-to-block";
 
 export function BlockTimestampConverterTool() {
+  const t = useTranslations("toolUI.block-timestamp-converter");
   const [mode, setMode] = useState<ConversionMode>("block-to-time");
   const [selectedChain, setSelectedChain] = useState<Chain>(chains[0]);
 
@@ -52,13 +54,13 @@ export function BlockTimestampConverterTool() {
     setError("");
 
     if (!blockNumber) {
-      setError("Please enter a block number");
+      setError(t("errEnterBlockNumber"));
       return;
     }
 
     const block = parseInt(blockNumber);
     if (isNaN(block) || block < 0) {
-      setError("Invalid block number");
+      setError(t("errInvalidBlockNumber"));
       return;
     }
 
@@ -70,7 +72,7 @@ export function BlockTimestampConverterTool() {
       const refTimestamp = parseInt(referenceTimestamp);
 
       if (isNaN(refBlock) || isNaN(refTimestamp)) {
-        setError("Invalid reference values");
+        setError(t("errInvalidReferenceValues"));
         return;
       }
 
@@ -102,18 +104,18 @@ export function BlockTimestampConverterTool() {
     if (targetDate) {
       const date = new Date(targetDate);
       if (isNaN(date.getTime())) {
-        setError("Invalid date");
+        setError(t("errInvalidDate"));
         return;
       }
       timestamp = Math.floor(date.getTime() / 1000);
     } else if (targetTimestamp) {
       timestamp = parseInt(targetTimestamp);
       if (isNaN(timestamp)) {
-        setError("Invalid timestamp");
+        setError(t("errInvalidTimestamp"));
         return;
       }
     } else {
-      setError("Please enter a timestamp or select a date");
+      setError(t("errEnterTimestampOrDate"));
       return;
     }
 
@@ -125,7 +127,7 @@ export function BlockTimestampConverterTool() {
       const refTimestamp = parseInt(referenceTimestamp);
 
       if (isNaN(refBlock) || isNaN(refTimestamp)) {
-        setError("Invalid reference values");
+        setError(t("errInvalidReferenceValues"));
         return;
       }
 
@@ -197,7 +199,7 @@ export function BlockTimestampConverterTool() {
     <div className="space-y-6">
       {/* Chain Selection */}
       <div>
-        <div className="text-sm font-medium mb-2">Select Chain</div>
+        <div className="text-sm font-medium mb-2">{t("selectChain")}</div>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
           {chains.map((chain) => (
             <Button
@@ -224,7 +226,7 @@ export function BlockTimestampConverterTool() {
 
       {/* Mode Selection */}
       <div>
-        <div className="text-sm font-medium mb-2">Conversion Mode</div>
+        <div className="text-sm font-medium mb-2">{t("conversionMode")}</div>
         <div className="grid grid-cols-2 gap-2">
           <Button
             onClick={() => {
@@ -234,8 +236,8 @@ export function BlockTimestampConverterTool() {
             variant={mode === "block-to-time" ? "primary" : "secondary"}
             className="p-3 h-auto flex flex-col items-start justify-start text-left"
           >
-            <div className="text-sm font-medium">Block → Timestamp</div>
-            <div className="text-xs mt-1">Convert block number to date/time</div>
+            <div className="text-sm font-medium">{t("blockToTimestamp")}</div>
+            <div className="text-xs mt-1">{t("blockToTimestampDesc")}</div>
           </Button>
           <Button
             onClick={() => {
@@ -245,8 +247,8 @@ export function BlockTimestampConverterTool() {
             variant={mode === "time-to-block" ? "primary" : "secondary"}
             className="p-3 h-auto flex flex-col items-start justify-start text-left"
           >
-            <div className="text-sm font-medium">Timestamp → Block</div>
-            <div className="text-xs mt-1">Convert date/time to block number</div>
+            <div className="text-sm font-medium">{t("timestampToBlock")}</div>
+            <div className="text-xs mt-1">{t("timestampToBlockDesc")}</div>
           </Button>
         </div>
       </div>
@@ -254,14 +256,14 @@ export function BlockTimestampConverterTool() {
       {/* Reference Point (Optional but recommended) */}
       <div className="p-4 rounded-[12px] border border-yellow-500/30 bg-yellow-500/5">
         <div className="text-sm font-medium text-yellow-400 mb-3">
-          Reference Point (Optional - for better accuracy)
+          {t("referencePointTitle")}
         </div>
         <div className="text-xs text-yellow-400/80 mb-3">
-          Provide a known block number and timestamp for more accurate calculations. Without this, estimates may be rough.
+          {t("referencePointDesc")}
         </div>
         <div className="grid grid-cols-2 gap-3">
           <Input
-            label="Reference Block"
+            label={t("referenceBlock")}
             value={referenceBlock}
             onChange={(e) => setReferenceBlock(e.target.value)}
             placeholder="e.g., 18000000"
@@ -270,7 +272,7 @@ export function BlockTimestampConverterTool() {
           <div className="space-y-1">
             <div className="flex gap-2">
               <Input
-                label="Reference Timestamp"
+                label={t("referenceTimestamp")}
                 value={referenceTimestamp}
                 onChange={(e) => setReferenceTimestamp(e.target.value)}
                 placeholder="e.g., 1693526400"
@@ -283,7 +285,7 @@ export function BlockTimestampConverterTool() {
                   size="sm"
                   className="text-xs h-9 whitespace-nowrap"
                 >
-                  Use Now
+                  {t("useNow")}
                 </Button>
               </div>
             </div>
@@ -295,7 +297,7 @@ export function BlockTimestampConverterTool() {
       {mode === "block-to-time" ? (
         <div>
           <Input
-            label="Block Number"
+            label={t("blockNumber")}
             value={blockNumber}
             onChange={(e) => {
               setBlockNumber(e.target.value);
@@ -310,7 +312,7 @@ export function BlockTimestampConverterTool() {
       ) : (
         <div className="flex gap-3 items-end">
           <Input
-            label="Target Timestamp (Unix)"
+            label={t("targetTimestamp")}
             value={targetTimestamp}
             onChange={(e) => {
               setTargetTimestamp(e.target.value);
@@ -322,10 +324,10 @@ export function BlockTimestampConverterTool() {
             className="font-mono text-sm flex-1"
             type="number"
           />
-          <div className="text-xs text-muted-foreground pb-[18px]">or</div>
+          <div className="text-xs text-muted-foreground pb-[18px]">{t("or")}</div>
           <div className="max-w-[200px]">
             <Input
-              label="Target Date"
+              label={t("targetDate")}
               value={targetDate}
               onChange={(e) => {
                 setTargetDate(e.target.value);
@@ -347,7 +349,7 @@ export function BlockTimestampConverterTool() {
             size="sm"
             className="text-xs h-9 whitespace-nowrap"
           >
-            Use Today
+            {t("useToday")}
           </Button>
         </div>
       )}
@@ -355,17 +357,17 @@ export function BlockTimestampConverterTool() {
       {/* Convert Button */}
       <div className="flex gap-2">
         <Button onClick={handleConvert} variant="primary" className="flex-1">
-          Convert
+          {t("convert")}
         </Button>
         <Button onClick={handleReset}>
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
       {/* Error Message */}
       {error && (
         <div className="p-3 rounded-[12px] border bg-[var(--color-red-50)] border-red-500/30 text-[var(--color-red-500)]">
-          <div className="text-sm font-medium">Error: {error}</div>
+          <div className="text-sm font-medium">{t("errorPrefix")} {error}</div>
         </div>
       )}
 
@@ -373,12 +375,12 @@ export function BlockTimestampConverterTool() {
       {result && (
         <div className="space-y-4">
           <div className="text-sm font-medium text-[var(--color-green-500)] border-b border-green-500/30 pb-2">
-            Conversion Results
+            {t("conversionResults")}
           </div>
 
           {result.estimatedBlock !== undefined && (
             <Input
-              label="Estimated Block Number"
+              label={t("estimatedBlockNumber")}
               value={result.estimatedBlock.toLocaleString()}
               readOnly
               showCopy
@@ -388,7 +390,7 @@ export function BlockTimestampConverterTool() {
 
           {result.estimatedTimestamp !== undefined && (
             <Input
-              label="Unix Timestamp"
+              label={t("unixTimestamp")}
               value={result.estimatedTimestamp.toString()}
               readOnly
               showCopy
@@ -399,14 +401,14 @@ export function BlockTimestampConverterTool() {
           {result.estimatedDate && (
             <div>
               <Input
-                label="Date & Time"
+                label={t("dateAndTime")}
                 value={formatDate(result.estimatedDate)}
                 readOnly
                 showCopy
                 className="text-sm bg-[var(--color-gray-0)]"
               />
               <div className="text-xs text-muted-foreground mt-1 ml-1">
-                ISO: {result.estimatedDate}
+                {t("isoPrefix")} {result.estimatedDate}
               </div>
             </div>
           )}
@@ -414,13 +416,13 @@ export function BlockTimestampConverterTool() {
           {result.blocksPerDay !== undefined && (
             <div className="grid grid-cols-2 gap-4">
               <div className="p-3 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-                <div className="text-xs text-muted-foreground mb-1">Blocks per Day</div>
+                <div className="text-xs text-muted-foreground mb-1">{t("blocksPerDay")}</div>
                 <div className="text-lg font-mono">
                   {result.blocksPerDay.toLocaleString()}
                 </div>
               </div>
               <div className="p-3 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-                <div className="text-xs text-muted-foreground mb-1">Block Time</div>
+                <div className="text-xs text-muted-foreground mb-1">{t("blockTime")}</div>
                 <div className="text-lg font-mono">
                   {selectedChain.blockTime}s
                 </div>
@@ -430,7 +432,7 @@ export function BlockTimestampConverterTool() {
 
           {!referenceBlock && (
             <div className="p-3 rounded-[12px] border border-yellow-500/30 bg-yellow-500/5 text-xs text-yellow-400">
-              Note: This is an estimate. For accurate results, provide a reference block and timestamp.
+              {t("estimateNote")}
             </div>
           )}
         </div>
@@ -440,12 +442,10 @@ export function BlockTimestampConverterTool() {
       <div className="p-4 rounded-[12px] border border-blue-500/30 bg-blue-500/5">
         <div className="text-sm text-blue-400 space-y-2">
           <div>
-            <strong>How it works:</strong> Block times vary by chain. This tool calculates
-            timestamps based on average block times. For best accuracy, provide a reference
-            point (a known block number and its timestamp).
+            <strong>{t("howItWorksTitle")}</strong> {t("howItWorksBody")}
           </div>
           <div className="text-xs">
-            <strong>Block Times:</strong> Ethereum ~12s, Polygon ~2s, BSC ~3s, Arbitrum ~0.25s, Optimism ~2s
+            <strong>{t("blockTimesTitle")}</strong> Ethereum ~12s, Polygon ~2s, BSC ~3s, Arbitrum ~0.25s, Optimism ~2s
           </div>
         </div>
       </div>

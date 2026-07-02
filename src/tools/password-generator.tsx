@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -13,6 +14,7 @@ const NUMBERS = "0123456789";
 const SYMBOLS = "!@#$%^&*()_+-=[]{}|;:,.<>?";
 
 export function PasswordGeneratorTool() {
+  const t = useTranslations("toolUI.password-generator");
   const [password, setPassword] = useState("");
   const [length, setLength] = useState("16");
   const [includeLowercase, setIncludeLowercase] = useState(true);
@@ -47,7 +49,7 @@ export function PasswordGeneratorTool() {
     <div className="space-y-6">
       {/* Length */}
       <div>
-        <Label className="mb-2 block text-sm">Password Length (4-128)</Label>
+        <Label className="mb-2 block text-sm">{t("passwordLength")}</Label>
         <Input
           type="number"
           min="4"
@@ -60,40 +62,40 @@ export function PasswordGeneratorTool() {
 
       {/* Options */}
       <div className="space-y-3">
-        <Label className="block text-sm">Character Types</Label>
+        <Label className="block text-sm">{t("characterTypes")}</Label>
         <div className="space-y-2">
           <Checkbox
             checked={includeLowercase}
             onChange={(e) => setIncludeLowercase(e.target.checked)}
-            label="Lowercase (a-z)"
+            label={t("lowercase")}
           />
           <Checkbox
             checked={includeUppercase}
             onChange={(e) => setIncludeUppercase(e.target.checked)}
-            label="Uppercase (A-Z)"
+            label={t("uppercase")}
           />
           <Checkbox
             checked={includeNumbers}
             onChange={(e) => setIncludeNumbers(e.target.checked)}
-            label="Numbers (0-9)"
+            label={t("numbers")}
           />
           <Checkbox
             checked={includeSymbols}
             onChange={(e) => setIncludeSymbols(e.target.checked)}
-            label="Symbols (!@#$%^&*...)"
+            label={t("symbols")}
           />
         </div>
       </div>
 
       {/* Generate Button */}
       <Button onClick={handleGenerate} variant="primary" className="w-full">
-        Generate Password
+        {t("generatePassword")}
       </Button>
 
       {/* Output */}
       {password && (
         <Input
-          label="Generated Password"
+          label={t("generatedPassword")}
           value={password}
           readOnly
           showCopy

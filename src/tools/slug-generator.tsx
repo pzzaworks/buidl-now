@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,7 @@ const TRANSLITERATION_MAP: Record<string, string> = {
 };
 
 export function SlugGeneratorTool() {
+  const t = useTranslations("toolUI.slug-generator");
   const [input, setInput] = useState("");
   const [lowercase, setLowercase] = useState(true);
   const [separator, setSeparator] = useState<"dash" | "underscore">("dash");
@@ -87,16 +89,16 @@ export function SlugGeneratorTool() {
     <div className="space-y-6">
       {/* Input */}
       <Textarea
-        label="Text Input"
+        label={t("inputLabel")}
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Enter text to convert to a URL-friendly slug..."
+        placeholder={t("inputPlaceholder")}
         className="min-h-[100px]"
       />
 
       {/* Options */}
       <div className="space-y-4">
-        <Label className="text-sm block">Options</Label>
+        <Label className="text-sm block">{t("options")}</Label>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-3">
@@ -104,18 +106,18 @@ export function SlugGeneratorTool() {
               id="lowercase"
               checked={lowercase}
               onChange={(e) => setLowercase(e.target.checked)}
-              label="Convert to lowercase"
+              label={t("lowercase")}
             />
             <Checkbox
               id="transliterate"
               checked={transliterate}
               onChange={(e) => setTransliterate(e.target.checked)}
-              label="Transliterate special characters"
+              label={t("transliterate")}
             />
           </div>
 
           <div>
-            <Label className="mb-2 block text-sm">Separator</Label>
+            <Label className="mb-2 block text-sm">{t("separator")}</Label>
             <div className="flex gap-2">
               <Button
                 variant={separator === "dash" ? "primary" : "secondary"}
@@ -123,7 +125,7 @@ export function SlugGeneratorTool() {
                 className="flex-1"
                 size="sm"
               >
-                Dash (-)
+                {t("dash")}
               </Button>
               <Button
                 variant={separator === "underscore" ? "primary" : "secondary"}
@@ -131,7 +133,7 @@ export function SlugGeneratorTool() {
                 className="flex-1"
                 size="sm"
               >
-                Underscore (_)
+                {t("underscore")}
               </Button>
             </div>
           </div>
@@ -140,13 +142,13 @@ export function SlugGeneratorTool() {
 
       {/* Reset Button */}
       <Button onClick={handleReset} className="w-full sm:w-auto">
-        Reset
+        {t("reset")}
       </Button>
 
       {/* Output */}
       {slug && (
         <Input
-          label="Generated Slug"
+          label={t("generatedSlug")}
           value={slug}
           readOnly
           showCopy

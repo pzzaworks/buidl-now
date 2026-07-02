@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -8,6 +9,7 @@ import { ToolConfig } from "@/types/tool";
 import { MdContentCopy, MdCheck } from "react-icons/md";
 
 export function ListComparerTool() {
+  const t = useTranslations("toolUI.list-comparer");
   const [list1, setList1] = useState("");
   const [list2, setList2] = useState("");
   const [onlyInList1, setOnlyInList1] = useState<string[]>([]);
@@ -82,7 +84,7 @@ export function ListComparerTool() {
     <div className="space-y-6">
       {/* List 1 */}
       <div>
-        <Label className="mb-2 block text-sm">List 1 (one item per line)</Label>
+        <Label className="mb-2 block text-sm">{t("list1Label")}</Label>
         <Textarea
           value={list1}
           onChange={(e) => setList1(e.target.value)}
@@ -93,7 +95,7 @@ export function ListComparerTool() {
 
       {/* List 2 */}
       <div>
-        <Label className="mb-2 block text-sm">List 2 (one item per line)</Label>
+        <Label className="mb-2 block text-sm">{t("list2Label")}</Label>
         <Textarea
           value={list2}
           onChange={(e) => setList2(e.target.value)}
@@ -105,10 +107,10 @@ export function ListComparerTool() {
       {/* Buttons */}
       <div className="flex gap-2">
         <Button onClick={handleCompare} variant="primary" className="flex-1">
-          Compare Lists
+          {t("compareLists")}
         </Button>
         <Button onClick={handleReset}>
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
@@ -119,14 +121,14 @@ export function ListComparerTool() {
           <div>
             <div className="mb-2 flex items-center justify-between">
               <Label className="text-sm">
-                Only in List 1 ({onlyInList1.length})
+                {t("onlyInList1", { count: onlyInList1.length })}
               </Label>
               {onlyInList1.length > 0 && (
                 <button
                   type="button"
                   onClick={handleCopyList1}
                   className="w-8 h-8 rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] flex items-center justify-center transition-colors cursor-pointer"
-                  title={copiedList1 ? "Copied!" : "Copy to clipboard"}
+                  title={copiedList1 ? t("copied") : t("copyToClipboard")}
                 >
                   {copiedList1 ? (
                     <MdCheck style={{ width: 16, height: 16, color: 'var(--color-green-500)' }} />
@@ -144,7 +146,7 @@ export function ListComparerTool() {
                   </div>
                 ))
               ) : (
-                <div className="text-sm text-muted-foreground">No unique items</div>
+                <div className="text-sm text-muted-foreground">{t("noUniqueItems")}</div>
               )}
             </div>
           </div>
@@ -153,14 +155,14 @@ export function ListComparerTool() {
           <div>
             <div className="mb-2 flex items-center justify-between">
               <Label className="text-sm">
-                Only in List 2 ({onlyInList2.length})
+                {t("onlyInList2", { count: onlyInList2.length })}
               </Label>
               {onlyInList2.length > 0 && (
                 <button
                   type="button"
                   onClick={handleCopyList2}
                   className="w-8 h-8 rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] flex items-center justify-center transition-colors cursor-pointer"
-                  title={copiedList2 ? "Copied!" : "Copy to clipboard"}
+                  title={copiedList2 ? t("copied") : t("copyToClipboard")}
                 >
                   {copiedList2 ? (
                     <MdCheck style={{ width: 16, height: 16, color: 'var(--color-green-500)' }} />
@@ -178,7 +180,7 @@ export function ListComparerTool() {
                   </div>
                 ))
               ) : (
-                <div className="text-sm text-muted-foreground">No unique items</div>
+                <div className="text-sm text-muted-foreground">{t("noUniqueItems")}</div>
               )}
             </div>
           </div>
@@ -187,14 +189,14 @@ export function ListComparerTool() {
           <div>
             <div className="mb-2 flex items-center justify-between">
               <Label className="text-sm">
-                In Both Lists ({inBoth.length})
+                {t("inBothLists", { count: inBoth.length })}
               </Label>
               {inBoth.length > 0 && (
                 <button
                   type="button"
                   onClick={handleCopyBoth}
                   className="w-8 h-8 rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] flex items-center justify-center transition-colors cursor-pointer"
-                  title={copiedBoth ? "Copied!" : "Copy to clipboard"}
+                  title={copiedBoth ? t("copied") : t("copyToClipboard")}
                 >
                   {copiedBoth ? (
                     <MdCheck style={{ width: 16, height: 16, color: 'var(--color-green-500)' }} />
@@ -212,7 +214,7 @@ export function ListComparerTool() {
                   </div>
                 ))
               ) : (
-                <div className="text-sm text-muted-foreground">No common items</div>
+                <div className="text-sm text-muted-foreground">{t("noCommonItems")}</div>
               )}
             </div>
           </div>

@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ToolConfig } from "@/types/tool";
 
 export function Base64TextTool() {
+  const t = useTranslations("toolUI.base64-text");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [mode, setMode] = useState<"encode" | "decode">("encode");
@@ -42,7 +44,7 @@ export function Base64TextTool() {
           }}
           className="flex-1"
         >
-          Encode
+          {t("encode")}
         </Button>
         <Button
           variant={mode === "decode" ? "primary" : "secondary"}
@@ -52,39 +54,39 @@ export function Base64TextTool() {
           }}
           className="flex-1"
         >
-          Decode
+          {t("decode")}
         </Button>
       </div>
 
       {/* Input Section */}
       <div>
         <Label className="mb-2 block text-sm">
-          {mode === "encode" ? "Text" : "Base64"}
+          {mode === "encode" ? t("text") : "Base64"}
         </Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={
             mode === "encode"
-              ? "Enter text to encode..."
-              : "Enter Base64 to decode..."
+              ? t("encodePlaceholder")
+              : t("decodePlaceholder")
           }
           rows={8}
           className="text-sm mb-2"
         />
         <div className="flex gap-2">
           <Button onClick={handleConvert} variant="primary" className="flex-1">
-            {mode === "encode" ? "Encode" : "Decode"}
+            {mode === "encode" ? t("encode") : t("decode")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
 
       {/* Output Section */}
       <Textarea
-        label={mode === "encode" ? "Base64" : "Text"}
+        label={mode === "encode" ? "Base64" : t("text")}
         value={output}
         readOnly
         showCopy

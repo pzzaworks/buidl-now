@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -8,6 +9,7 @@ import { keccak256, toBytes, toEventSignature } from "viem";
 import { ToolConfig } from "@/types/tool";
 
 export function EventTopicTool() {
+  const t = useTranslations("toolUI.event-topic");
   const [eventSig, setEventSig] = useState("");
   const [topic, setTopic] = useState("");
 
@@ -46,7 +48,7 @@ export function EventTopicTool() {
     <div className="space-y-6">
       {/* Input Section */}
       <div>
-        <Label className="mb-2 block text-sm">Event Signature</Label>
+        <Label className="mb-2 block text-sm">{t("eventSignatureLabel")}</Label>
         <Input
           value={eventSig}
           onChange={handleInputChange}
@@ -55,17 +57,17 @@ export function EventTopicTool() {
         />
         <div className="flex gap-2">
           <Button onClick={() => calculateTopic(eventSig)} className="flex-1" variant="primary">
-            Calculate
+            {t("calculate")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
 
       {/* Output Section */}
       <Input
-        label="Event Topic (Topic0 - 32 bytes)"
+        label={t("outputLabel")}
         value={topic}
         readOnly
         showCopy

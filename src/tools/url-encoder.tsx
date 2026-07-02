@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ToolConfig } from "@/types/tool";
 
 export function UrlEncoderTool() {
+  const t = useTranslations("toolUI.url-encoder");
   const [decoded, setDecoded] = useState("");
   const [encoded, setEncoded] = useState("");
 
@@ -47,7 +49,7 @@ export function UrlEncoderTool() {
     <div className="space-y-6">
       {/* Decoded */}
       <div>
-        <Label className="mb-2 block text-sm">Decoded Text</Label>
+        <Label className="mb-2 block text-sm">{t("decodedLabel")}</Label>
         <Textarea
           value={decoded}
           onChange={(e) => setDecoded(e.target.value)}
@@ -59,19 +61,19 @@ export function UrlEncoderTool() {
       {/* Buttons */}
       <div className="flex flex-col sm:flex-row gap-2">
         <Button onClick={handleEncode} variant="primary" className="flex-1">
-          Encode
+          {t("encode")}
         </Button>
         <Button onClick={handleDecode} className="flex-1 sm:flex-none">
-          Decode
+          {t("decode")}
         </Button>
         <Button onClick={handleReset} className="sm:flex-none">
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
       {/* Encoded */}
       <div>
-        <Label className="mb-2 block text-sm">URL Encoded Text</Label>
+        <Label className="mb-2 block text-sm">{t("encodedLabel")}</Label>
         <Textarea
           value={encoded}
           onChange={(e) => setEncoded(e.target.value)}

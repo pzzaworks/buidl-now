@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -8,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ToolConfig } from "@/types/tool";
 
 export function LineSorterTool() {
+  const t = useTranslations("toolUI.line-sorter");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -71,7 +73,7 @@ export function LineSorterTool() {
       {/* Input */}
       <div>
         <Textarea
-          label="Input Text (one item per line)"
+          label={t("inputLabel")}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="apple&#10;banana&#10;cherry&#10;apple&#10;date"
@@ -82,7 +84,7 @@ export function LineSorterTool() {
       {/* Options */}
       <div className="space-y-4">
         <div>
-          <Label className="mb-2 block text-sm">Sort Order</Label>
+          <Label className="mb-2 block text-sm">{t("sortOrder")}</Label>
           <div className="flex gap-2">
             <Button
               variant={sortOrder === "asc" ? "primary" : "secondary"}
@@ -90,7 +92,7 @@ export function LineSorterTool() {
               className="flex-1"
               size="sm"
             >
-              Ascending (A → Z)
+              {t("ascending")}
             </Button>
             <Button
               variant={sortOrder === "desc" ? "primary" : "secondary"}
@@ -98,7 +100,7 @@ export function LineSorterTool() {
               className="flex-1"
               size="sm"
             >
-              Descending (Z → A)
+              {t("descending")}
             </Button>
           </div>
         </div>
@@ -108,21 +110,21 @@ export function LineSorterTool() {
             id="caseSensitive"
             checked={caseSensitive}
             onChange={(e) => setCaseSensitive(e.target.checked)}
-            label="Case Sensitive"
+            label={t("caseSensitive")}
           />
 
           <Checkbox
             id="removeDuplicates"
             checked={removeDuplicates}
             onChange={(e) => setRemoveDuplicates(e.target.checked)}
-            label="Remove Duplicates"
+            label={t("removeDuplicates")}
           />
 
           <Checkbox
             id="removeEmptyLines"
             checked={removeEmptyLines}
             onChange={(e) => setRemoveEmptyLines(e.target.checked)}
-            label="Remove Empty Lines"
+            label={t("removeEmptyLines")}
           />
         </div>
       </div>
@@ -130,17 +132,17 @@ export function LineSorterTool() {
       {/* Buttons */}
       <div className="flex gap-2">
         <Button onClick={handleSort} variant="primary" className="flex-1">
-          Sort Lines
+          {t("sortLines")}
         </Button>
         <Button onClick={handleReset}>
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
       {/* Output */}
       {output && (
         <Textarea
-          label="Sorted Output"
+          label={t("sortedOutput")}
           value={output}
           readOnly
           showCopy

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -317,6 +318,7 @@ terraform.rc`,
 };
 
 export function GitignoreGeneratorTool() {
+  const t = useTranslations("toolUI.gitignore-generator");
   const [selected, setSelected] = useState<Set<string>>(new Set(["nodejs", "macos", "vscode"]));
   const [output, setOutput] = useState("");
 
@@ -363,13 +365,13 @@ export function GitignoreGeneratorTool() {
       {/* Selection */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label className="text-sm">Select Templates</Label>
+          <Label className="text-sm">{t("selectTemplates")}</Label>
           <div className="flex gap-2">
             <Button variant="secondary" size="sm" onClick={handleSelectAll}>
-              Select All
+              {t("selectAll")}
             </Button>
             <Button variant="secondary" size="sm" onClick={handleClearAll}>
-              Clear All
+              {t("clearAll")}
             </Button>
           </div>
         </div>
@@ -397,13 +399,13 @@ export function GitignoreGeneratorTool() {
 
       {/* Generate Button */}
       <Button onClick={handleGenerate} variant="primary" className="w-full">
-        Generate .gitignore
+        {t("generate")}
       </Button>
 
       {/* Output */}
       {output && (
         <Textarea
-          label="Generated .gitignore"
+          label={t("generatedLabel")}
           value={output}
           readOnly
           showCopy

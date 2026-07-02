@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -9,6 +10,7 @@ import { ToolConfig } from "@/types/tool";
 import { Code } from "@/components/ui/code";
 
 export function SvgViewerTool() {
+  const t = useTranslations("toolUI.svg-viewer");
   const [svgCode, setSvgCode] = useState("");
   const [width, setWidth] = useState("300");
   const [height, setHeight] = useState("300");
@@ -16,13 +18,13 @@ export function SvgViewerTool() {
 
   const validateSvg = (code: string): boolean => {
     if (!code.trim()) {
-      setError("Please enter SVG code");
+      setError(t("emptyError"));
       return false;
     }
 
     // Basic SVG validation
     if (!code.trim().includes("<svg")) {
-      setError("Invalid SVG: Must contain <svg> tag");
+      setError(t("mustContainSvg"));
       return false;
     }
 
@@ -52,10 +54,10 @@ export function SvgViewerTool() {
     <div className="space-y-6">
       {/* SVG Code Input */}
       <Textarea
-        label="SVG Code"
+        label={t("svgCodeLabel")}
         value={svgCode}
         onChange={(e) => setSvgCode(e.target.value)}
-        placeholder="Paste your SVG markup here..."
+        placeholder={t("placeholder")}
         rows={8}
         className="font-mono text-sm"
       />
@@ -63,7 +65,7 @@ export function SvgViewerTool() {
       {/* Preview Options */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label className="mb-2 block text-sm">Preview Width (px)</Label>
+          <Label className="mb-2 block text-sm">{t("previewWidthLabel")}</Label>
           <Input
             type="number"
             min="100"
@@ -74,7 +76,7 @@ export function SvgViewerTool() {
           />
         </div>
         <div>
-          <Label className="mb-2 block text-sm">Preview Height (px)</Label>
+          <Label className="mb-2 block text-sm">{t("previewHeightLabel")}</Label>
           <Input
             type="number"
             min="100"
@@ -89,10 +91,10 @@ export function SvgViewerTool() {
       {/* Action Buttons */}
       <div className="flex gap-2">
         <Button onClick={loadSampleSvg} variant="primary" className="flex-1">
-          Load Sample SVG
+          {t("loadSample")}
         </Button>
         <Button onClick={handleReset} className="flex-1">
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
@@ -108,7 +110,7 @@ export function SvgViewerTool() {
         <div className="space-y-4">
           {/* Rendered Preview */}
           <div>
-            <Label className="mb-2 block text-sm">SVG Preview</Label>
+            <Label className="mb-2 block text-sm">{t("svgPreviewLabel")}</Label>
             <div
               className="border border-[var(--color-gray-200)] rounded-[12px] p-6 bg-[var(--color-gray-50)] flex items-center justify-center"
               style={{
@@ -127,7 +129,7 @@ export function SvgViewerTool() {
 
           {/* Code View with Syntax Highlighting */}
           <div>
-            <Label className="text-sm mb-2 block">SVG Code</Label>
+            <Label className="text-sm mb-2 block">{t("svgCodeLabel")}</Label>
             <Code language="xml" showLineNumbers={true} showCopy={true}>
               {svgCode}
             </Code>
@@ -136,11 +138,11 @@ export function SvgViewerTool() {
           {/* SVG Information */}
           <div className="grid grid-cols-2 gap-4">
             <div className="p-3 bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] rounded-[12px]">
-              <Label className="text-xs text-[var(--color-gray-500)] mb-1 block">Code Length</Label>
-              <p className="text-sm font-mono">{svgCode.length} characters</p>
+              <Label className="text-xs text-[var(--color-gray-500)] mb-1 block">{t("codeLengthLabel")}</Label>
+              <p className="text-sm font-mono">{svgCode.length} {t("charactersUnit")}</p>
             </div>
             <div className="p-3 bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] rounded-[12px]">
-              <Label className="text-xs text-[var(--color-gray-500)] mb-1 block">File Size</Label>
+              <Label className="text-xs text-[var(--color-gray-500)] mb-1 block">{t("fileSizeLabel")}</Label>
               <p className="text-sm font-mono">
                 {(new Blob([svgCode]).size / 1024).toFixed(2)} KB
               </p>

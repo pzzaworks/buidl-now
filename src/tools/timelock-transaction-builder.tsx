@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { ToolConfig } from "@/types/tool";
 import { keccak256, toBytes } from "viem";
 
 export function TimelockTransactionBuilderTool() {
+  const t = useTranslations("toolUI.timelock-transaction-builder");
   const [targetAddress, setTargetAddress] = useState("");
   const [functionSignature, setFunctionSignature] = useState("");
   const [parameters, setParameters] = useState("");
@@ -27,11 +29,11 @@ export function TimelockTransactionBuilderTool() {
     try {
       // Validate inputs
       if (!targetAddress || !functionSignature) {
-        throw new Error("Target address and function signature are required");
+        throw new Error(t("errTargetFunctionRequired"));
       }
 
       if (!targetAddress.startsWith("0x") || targetAddress.length !== 42) {
-        throw new Error("Invalid target address");
+        throw new Error(t("errInvalidTargetAddress"));
       }
 
       const days = parseInt(delayDays) || 0;
@@ -39,7 +41,7 @@ export function TimelockTransactionBuilderTool() {
       const totalSeconds = (days * 24 * 3600) + (hours * 3600);
 
       if (totalSeconds <= 0) {
-        throw new Error("Delay must be greater than 0");
+        throw new Error(t("errDelayPositive"));
       }
 
       // Parse function signature and parameters
@@ -129,46 +131,46 @@ export function TimelockTransactionBuilderTool() {
       <div className="space-y-4">
         <div>
           <Input
-            label="Target Contract Address"
+            label={t("targetAddressLabel")}
             value={targetAddress}
             onChange={(e) => setTargetAddress(e.target.value)}
             placeholder="0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
             className="font-mono text-sm"
           />
           <div className="text-xs text-muted-foreground mt-1">
-            Address of the contract to call
+            {t("targetAddressHelp")}
           </div>
         </div>
 
         <div>
           <Input
-            label="Function Signature"
+            label={t("functionSignatureLabel")}
             value={functionSignature}
             onChange={(e) => setFunctionSignature(e.target.value)}
             placeholder="transfer(address,uint256)"
             className="font-mono text-sm"
           />
           <div className="text-xs text-muted-foreground mt-1">
-            Function signature without 'function' keyword
+            {t("functionSignatureHelp")}
           </div>
         </div>
 
         <div>
           <Input
-            label="Parameters (comma-separated)"
+            label={t("parametersLabel")}
             value={parameters}
             onChange={(e) => setParameters(e.target.value)}
             placeholder="0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb, 1000000000000000000"
             className="font-mono text-sm"
           />
           <div className="text-xs text-muted-foreground mt-1">
-            Function parameters separated by commas
+            {t("parametersHelp")}
           </div>
         </div>
 
         <div>
           <Input
-            label="Value (ETH)"
+            label={t("valueLabel")}
             value={value}
             onChange={(e) => setValue(e.target.value)}
             placeholder="0"
@@ -176,14 +178,14 @@ export function TimelockTransactionBuilderTool() {
             className="font-mono text-sm"
           />
           <div className="text-xs text-muted-foreground mt-1">
-            Amount of ETH to send with transaction (usually 0)
+            {t("valueHelp")}
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Input
-              label="Delay (Days)"
+              label={t("delayDaysLabel")}
               value={delayDays}
               onChange={(e) => setDelayDays(e.target.value)}
               placeholder="2"
@@ -193,7 +195,7 @@ export function TimelockTransactionBuilderTool() {
           </div>
           <div>
             <Input
-              label="Delay (Hours)"
+              label={t("delayHoursLabel")}
               value={delayHours}
               onChange={(e) => setDelayHours(e.target.value)}
               placeholder="12"
@@ -203,13 +205,13 @@ export function TimelockTransactionBuilderTool() {
           </div>
         </div>
         <div className="text-xs text-muted-foreground">
-          Minimum delay before transaction can be executed (typically 2-7 days)
+          {t("delayHelp")}
         </div>
       </div>
 
       {/* Calculate Button */}
       <Button onClick={buildTransaction} variant="primary" className="w-full">
-        Generate Timelock Data
+        {t("generateButton")}
       </Button>
 
       {/* Results Section */}
@@ -217,46 +219,46 @@ export function TimelockTransactionBuilderTool() {
         <div className="space-y-4 pt-4 border-t border-border">
           <div>
             <Input
-              label="Function Calldata"
+              label={t("calldataLabel")}
               value={calldata}
               readOnly
               showCopy
               className="font-mono text-sm bg-[var(--color-gray-0)]"
             />
             <div className="text-xs text-muted-foreground mt-1">
-              Encoded function call data
+              {t("calldataHelp")}
             </div>
           </div>
 
           <div>
             <Input
-              label="ETA Timestamp (Unix)"
+              label={t("etaTimestampLabel")}
               value={etaTimestamp}
               readOnly
               showCopy
               className="font-mono text-sm bg-[var(--color-gray-0)]"
             />
             <div className="text-xs text-muted-foreground mt-1">
-              Earliest execution time in Unix timestamp
+              {t("etaTimestampHelp")}
             </div>
           </div>
 
           <div>
             <Input
-              label="Execution Time (Human Readable)"
+              label={t("executionTimeLabel")}
               value={readableTime}
               readOnly
               showCopy
               className="font-mono text-sm bg-[var(--color-gray-0)]"
             />
             <div className="text-xs text-muted-foreground mt-1">
-              When the transaction can be executed
+              {t("executionTimeHelp")}
             </div>
           </div>
 
           <div>
             <Textarea
-              label="Queue Transaction Data"
+              label={t("queueDataLabel")}
               value={queueData}
               readOnly
               showCopy
@@ -264,13 +266,13 @@ export function TimelockTransactionBuilderTool() {
               className="bg-[var(--color-gray-0)]"
             />
             <div className="text-xs text-muted-foreground mt-1">
-              Data to call queueTransaction() on Timelock contract
+              {t("queueDataHelp")}
             </div>
           </div>
 
           <div>
             <Textarea
-              label="Execute Transaction Data"
+              label={t("executeDataLabel")}
               value={executeData}
               readOnly
               showCopy
@@ -278,24 +280,24 @@ export function TimelockTransactionBuilderTool() {
               className="bg-[var(--color-gray-0)]"
             />
             <div className="text-xs text-muted-foreground mt-1">
-              Data to call executeTransaction() after ETA
+              {t("executeDataHelp")}
             </div>
           </div>
 
           {/* Instructions */}
           <div className="bg-blue-500/10 border border-blue-500/20 rounded-[12px] p-4">
-            <div className="text-xs font-semibold text-blue-400 mb-2">Timelock Workflow</div>
+            <div className="text-xs font-semibold text-blue-400 mb-2">{t("workflowTitle")}</div>
             <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
-              <li>Call queueTransaction() with the Queue Data</li>
-              <li>Wait for the delay period to pass (until ETA)</li>
-              <li>Call executeTransaction() with the Execute Data</li>
-              <li>Transaction must be executed within grace period (typically 14 days)</li>
+              <li>{t("workflowStep1")}</li>
+              <li>{t("workflowStep2")}</li>
+              <li>{t("workflowStep3")}</li>
+              <li>{t("workflowStep4")}</li>
             </ol>
           </div>
 
           {/* Formula Display */}
           <div className="bg-[var(--color-gray-0)] rounded-[12px] border border-border p-4 space-y-2">
-            <div className="text-xs font-semibold text-blue-400 mb-1">Timelock Parameters</div>
+            <div className="text-xs font-semibold text-blue-400 mb-1">{t("parametersTitle")}</div>
             <div className="text-xs font-mono text-muted-foreground space-y-1">
               <div>ETA = currentTimestamp + delay</div>
               <div>txHash = keccak256(target, value, signature, data, eta)</div>
@@ -304,7 +306,7 @@ export function TimelockTransactionBuilderTool() {
           </div>
 
           <Button onClick={handleReset} className="w-full">
-            Reset Builder
+            {t("resetButton")}
           </Button>
         </div>
       )}

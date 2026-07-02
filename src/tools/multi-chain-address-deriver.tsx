@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ interface ChainAddress {
 }
 
 export function MultiChainAddressDeriverTool() {
+  const t = useTranslations("toolUI.multi-chain-address-deriver");
   const [inputType, setInputType] = useState<"private" | "mnemonic">("mnemonic");
   const [privateKey, setPrivateKey] = useState("");
   const [mnemonic, setMnemonic] = useState("");
@@ -85,14 +87,14 @@ export function MultiChainAddressDeriverTool() {
       if (inputType === "private") {
         // Validate private key
         if (!privateKey) {
-          throw new Error("Private key is required");
+          throw new Error(t("errPrivateKeyRequired"));
         }
 
         // Ensure private key starts with 0x
         const formattedKey = privateKey.startsWith("0x") ? privateKey : `0x${privateKey}`;
 
         if (formattedKey.length !== 66) {
-          throw new Error("Invalid private key length (should be 64 hex characters)");
+          throw new Error(t("errInvalidPrivateKeyLength"));
         }
 
         // Derive account from private key
@@ -101,12 +103,12 @@ export function MultiChainAddressDeriverTool() {
       } else {
         // Validate mnemonic
         if (!mnemonic) {
-          throw new Error("Mnemonic phrase is required");
+          throw new Error(t("errMnemonicRequired"));
         }
 
         const words = mnemonic.trim().split(/\s+/);
         if (words.length !== 12 && words.length !== 24) {
-          throw new Error("Mnemonic must be 12 or 24 words");
+          throw new Error(t("errMnemonicWordCount"));
         }
 
         // Derive account from mnemonic
@@ -124,7 +126,7 @@ export function MultiChainAddressDeriverTool() {
 
       setAddresses(derivedAddresses);
     } catch (e: any) {
-      setError(e.message || "Failed to derive addresses");
+      setError(e.message || t("errDeriveFailed"));
       setAddresses([]);
     }
   };
@@ -141,17 +143,17 @@ export function MultiChainAddressDeriverTool() {
     <div className="space-y-6">
       {/* Security Warning */}
       <div className="bg-[var(--color-red-50)] border border-[var(--color-red-200)] rounded-[12px] p-4">
-        <div className="text-xs font-semibold text-[var(--color-red-500)] mb-2 flex items-center gap-2"><MdWarning className="w-5 h-5" /> Security Warning</div>
+        <div className="text-xs font-semibold text-[var(--color-red-500)] mb-2 flex items-center gap-2"><MdWarning className="w-5 h-5" /> {t("securityWarningTitle")}</div>
         <div className="text-xs text-muted-foreground space-y-1">
-          <p>This tool runs entirely in your browser. Your keys never leave your device.</p>
-          <p>Never share your private key or mnemonic phrase with anyone.</p>
-          <p>Use only for development and testing purposes.</p>
+          <p>{t("securityWarning1")}</p>
+          <p>{t("securityWarning2")}</p>
+          <p>{t("securityWarning3")}</p>
         </div>
       </div>
 
       {/* Input Type Selection */}
       <div>
-        <label className="text-sm mb-2 block">Input Type</label>
+        <label className="text-sm mb-2 block">{t("inputTypeLabel")}</label>
         <div className="flex gap-2">
           <Button
             onClick={() => setInputType("mnemonic")}
@@ -159,7 +161,7 @@ export function MultiChainAddressDeriverTool() {
             size="sm"
             className="flex-1"
           >
-            Mnemonic Phrase
+            {t("mnemonicButton")}
           </Button>
           <Button
             onClick={() => setInputType("private")}
@@ -167,7 +169,7 @@ export function MultiChainAddressDeriverTool() {
             size="sm"
             className="flex-1"
           >
-            Private Key
+            {t("privateKeyButton")}
           </Button>
         </div>
       </div>
@@ -177,7 +179,7 @@ export function MultiChainAddressDeriverTool() {
         {inputType === "mnemonic" ? (
           <>
             <div>
-              <label className="text-sm mb-2 block">Mnemonic Phrase (12 or 24 words)</label>
+              <label className="text-sm mb-2 block">{t("mnemonicFieldLabel")}</label>
               <textarea
                 value={mnemonic}
                 onChange={(e) => setMnemonic(e.target.value)}
@@ -189,27 +191,27 @@ export function MultiChainAddressDeriverTool() {
                 rows={3}
               />
               <div className="text-xs text-muted-foreground mt-1">
-                Your recovery phrase (seed phrase)
+                {t("mnemonicFieldHelp")}
               </div>
             </div>
 
             <div>
               <Input
-                label="Derivation Path"
+                label={t("derivationPathLabel")}
                 value={derivationPath}
                 onChange={(e) => setDerivationPath(e.target.value)}
                 placeholder="m/44'/60'/0'/0/0"
                 className="font-mono text-sm"
               />
               <div className="text-xs text-muted-foreground mt-1">
-                BIP44 derivation path (default: m/44'/60'/0'/0/0)
+                {t("derivationPathHelp")}
               </div>
             </div>
           </>
         ) : (
           <div>
             <Input
-              label="Private Key"
+              label={t("privateKeyLabel")}
               value={privateKey}
               onChange={(e) => setPrivateKey(e.target.value)}
               placeholder="0x1234567890abcdef..."
@@ -217,7 +219,7 @@ export function MultiChainAddressDeriverTool() {
               className="font-mono text-sm"
             />
             <div className="text-xs text-muted-foreground mt-1">
-              Your private key (with or without 0x prefix)
+              {t("privateKeyHelp")}
             </div>
           </div>
         )}
@@ -232,13 +234,13 @@ export function MultiChainAddressDeriverTool() {
 
       {/* Derive Button */}
       <Button onClick={deriveAddresses} variant="primary" className="w-full">
-        Derive Addresses
+        {t("deriveButton")}
       </Button>
 
       {/* Results Section */}
       {addresses.length > 0 && (
         <div className="space-y-4 pt-4 border-t border-border">
-          <div className="text-sm font-semibold text-blue-400">Addresses Across Chains</div>
+          <div className="text-sm font-semibold text-blue-400">{t("resultsTitle")}</div>
 
           {addresses.map((chain) => (
             <div key={chain.chainId} className="bg-[var(--color-gray-0)] rounded-[12px] border border-border p-4">
@@ -253,7 +255,7 @@ export function MultiChainAddressDeriverTool() {
                   />
                   <div>
                     <div className="text-sm font-semibold">{chain.chain}</div>
-                    <div className="text-xs text-muted-foreground">Chain ID: {chain.chainId}</div>
+                    <div className="text-xs text-muted-foreground">{t("chainIdLabel", { id: chain.chainId })}</div>
                   </div>
                 </div>
               </div>
@@ -273,7 +275,7 @@ export function MultiChainAddressDeriverTool() {
                     rel="nofollow noopener noreferrer"
                     className="text-xs text-blue-400 hover:text-blue-300 underline"
                   >
-                    View on Explorer
+                    {t("viewExplorer")}
                   </a>
                 </div>
               </div>
@@ -282,18 +284,16 @@ export function MultiChainAddressDeriverTool() {
 
           {/* Information Box */}
           <div className="bg-blue-500/10 border border-blue-500/20 rounded-[12px] p-4">
-            <div className="text-xs font-semibold text-blue-400 mb-2">Why Same Address?</div>
+            <div className="text-xs font-semibold text-blue-400 mb-2">{t("whySameTitle")}</div>
             <div className="text-xs text-muted-foreground">
-              All EVM-compatible chains use the same address format. Your private key or mnemonic
-              generates the same Ethereum address that works across Ethereum, BSC, Polygon, and other
-              EVM chains. However, your balances and transactions are separate on each chain.
+              {t("whySameBody")}
             </div>
           </div>
 
           {/* Derivation Info */}
           {inputType === "mnemonic" && (
             <div className="bg-[var(--color-gray-0)] rounded-[12px] border border-border p-4">
-              <div className="text-xs font-semibold text-blue-400 mb-2">BIP44 Derivation Path</div>
+              <div className="text-xs font-semibold text-blue-400 mb-2">{t("bip44Title")}</div>
               <div className="text-xs font-mono text-muted-foreground space-y-1">
                 <div>m / purpose' / coin_type' / account' / change / address_index</div>
                 <div className="mt-2 space-y-0.5 text-muted-foreground">
@@ -310,13 +310,13 @@ export function MultiChainAddressDeriverTool() {
           {/* Common Paths */}
           {inputType === "mnemonic" && (
             <div className="bg-[var(--color-gray-0)] rounded-[12px] border border-border p-4">
-              <div className="text-xs font-semibold text-blue-400 mb-2">Common Derivation Paths</div>
+              <div className="text-xs font-semibold text-blue-400 mb-2">{t("commonPathsTitle")}</div>
               <div className="space-y-2">
                 {[
-                  { path: "m/44'/60'/0'/0/0", desc: "First address (default)" },
-                  { path: "m/44'/60'/0'/0/1", desc: "Second address" },
-                  { path: "m/44'/60'/0'/0/2", desc: "Third address" },
-                  { path: "m/44'/60'/1'/0/0", desc: "Second account, first address" },
+                  { path: "m/44'/60'/0'/0/0", desc: t("pathDesc1") },
+                  { path: "m/44'/60'/0'/0/1", desc: t("pathDesc2") },
+                  { path: "m/44'/60'/0'/0/2", desc: t("pathDesc3") },
+                  { path: "m/44'/60'/1'/0/0", desc: t("pathDesc4") },
                 ].map((item) => (
                   <div key={item.path} className="flex items-center justify-between">
                     <div>
@@ -328,7 +328,7 @@ export function MultiChainAddressDeriverTool() {
                      
                       size="sm"
                     >
-                      Use
+                      {t("useButton")}
                     </Button>
                   </div>
                 ))}
@@ -337,7 +337,7 @@ export function MultiChainAddressDeriverTool() {
           )}
 
           <Button onClick={handleReset} className="w-full">
-            Reset & Clear Data
+            {t("resetButton")}
           </Button>
         </div>
       )}

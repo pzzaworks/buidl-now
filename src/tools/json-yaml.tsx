@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { ToolConfig } from "@/types/tool";
@@ -91,6 +92,7 @@ function jsonToYaml(json: string, indent = 0): string {
 }
 
 export function JsonYamlTool() {
+  const t = useTranslations("toolUI.json-yaml");
   const [jsonInput, setJsonInput] = useState("");
   const [yamlInput, setYamlInput] = useState("");
   const [error, setError] = useState("");
@@ -104,7 +106,7 @@ export function JsonYamlTool() {
         setYamlInput(yaml);
         setError("");
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Invalid JSON");
+        setError(e instanceof Error ? e.message : t("errorInvalidJson"));
       }
     }
   }, [jsonInput, lastEdited]);
@@ -116,7 +118,7 @@ export function JsonYamlTool() {
         setJsonInput(json);
         setError("");
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Invalid YAML");
+        setError(e instanceof Error ? e.message : t("errorInvalidYaml"));
       }
     }
   }, [yamlInput, lastEdited]);
@@ -149,7 +151,7 @@ export function JsonYamlTool() {
         <button
           onClick={handleSwap}
           className="w-10 h-10 rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] flex items-center justify-center transition-colors cursor-pointer"
-          title="Swap"
+          title={t("swap")}
         >
           <MdSwapVert className="w-5 h-5" />
         </button>

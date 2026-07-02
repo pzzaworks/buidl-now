@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -21,6 +22,7 @@ interface MetadataAttribute {
 }
 
 export function NftMetadataValidatorTool() {
+  const t = useTranslations("toolUI.nft-metadata-validator");
   const [metadataInput, setMetadataInput] = useState("");
   const [metadataUri, setMetadataUri] = useState("");
   const [inputType, setInputType] = useState<"json" | "uri">("json");
@@ -34,7 +36,7 @@ export function NftMetadataValidatorTool() {
 
     // Required fields (ERC-721/ERC-1155)
     if (!metadata) {
-      errors.push("Metadata is empty or invalid JSON");
+      errors.push(t("errorEmptyMetadata"));
       return { valid: false, score: 0, errors, warnings };
     }
 
@@ -42,43 +44,43 @@ export function NftMetadataValidatorTool() {
     if (metadata.name) {
       score += 20;
       if (typeof metadata.name !== "string") {
-        errors.push("'name' must be a string");
+        errors.push(t("errorNameString"));
       } else if (metadata.name.length > 50) {
-        warnings.push("'name' is longer than 50 characters (may be truncated on some platforms)");
+        warnings.push(t("warnNameLong"));
       }
     } else {
-      errors.push("Missing required field: 'name'");
+      errors.push(t("errorNameMissing"));
     }
 
     // Description (required)
     if (metadata.description) {
       score += 20;
       if (typeof metadata.description !== "string") {
-        errors.push("'description' must be a string");
+        errors.push(t("errorDescriptionString"));
       } else if (metadata.description.length > 1000) {
-        warnings.push("'description' is longer than 1000 characters (may be truncated)");
+        warnings.push(t("warnDescriptionLong"));
       }
     } else {
-      errors.push("Missing required field: 'description'");
+      errors.push(t("errorDescriptionMissing"));
     }
 
     // Image (required)
     if (metadata.image) {
       score += 20;
       if (typeof metadata.image !== "string") {
-        errors.push("'image' must be a string (URI)");
+        errors.push(t("errorImageString"));
       } else {
         const validProtocols = ["ipfs://", "https://", "http://", "ar://", "data:"];
         const hasValidProtocol = validProtocols.some((p) => metadata.image.startsWith(p));
         if (!hasValidProtocol) {
-          errors.push("'image' should use ipfs://, https://, ar://, or data: URI");
+          errors.push(t("errorImageProtocol"));
         }
         if (metadata.image.startsWith("http://")) {
-          warnings.push("Using http:// for image (https:// is recommended for security)");
+          warnings.push(t("warnImageHttp"));
         }
       }
     } else {
-      errors.push("Missing required field: 'image'");
+      errors.push(t("errorImageMissing"));
     }
 
     // Attributes (optional but recommended)
@@ -87,29 +89,29 @@ export function NftMetadataValidatorTool() {
         score += 15;
         metadata.attributes.forEach((attr: any, idx: number) => {
           if (!attr.trait_type) {
-            warnings.push(`Attribute ${idx} missing 'trait_type'`);
+            warnings.push(t("warnAttrTraitType", { idx }));
           }
           if (attr.value === undefined) {
-            warnings.push(`Attribute ${idx} missing 'value'`);
+            warnings.push(t("warnAttrValue", { idx }));
           }
           if (attr.display_type && !["number", "boost_percentage", "boost_number", "date"].includes(attr.display_type)) {
-            warnings.push(`Attribute ${idx} has invalid 'display_type': ${attr.display_type}`);
+            warnings.push(t("warnAttrDisplayType", { idx, displayType: attr.display_type }));
           }
         });
       } else {
-        errors.push("'attributes' must be an array");
+        errors.push(t("errorAttributesArray"));
       }
     } else {
-      warnings.push("No 'attributes' field (recommended for trait-based NFTs)");
+      warnings.push(t("warnNoAttributes"));
     }
 
     // External URL (optional)
     if (metadata.external_url) {
       score += 10;
       if (typeof metadata.external_url !== "string") {
-        errors.push("'external_url' must be a string (URI)");
+        errors.push(t("errorExternalUrlString"));
       } else if (!metadata.external_url.startsWith("http")) {
-        warnings.push("'external_url' should be a valid HTTP(S) URL");
+        warnings.push(t("warnExternalUrlHttp"));
       }
     }
 
@@ -117,12 +119,12 @@ export function NftMetadataValidatorTool() {
     if (metadata.animation_url) {
       score += 10;
       if (typeof metadata.animation_url !== "string") {
-        errors.push("'animation_url' must be a string (URI)");
+        errors.push(t("errorAnimationUrlString"));
       } else {
         const ext = metadata.animation_url.split(".").pop()?.toLowerCase();
         const validExts = ["mp4", "webm", "mp3", "wav", "ogg", "gltf", "glb", "html"];
         if (ext && !validExts.includes(ext)) {
-          warnings.push(`'animation_url' has uncommon extension: .${ext}`);
+          warnings.push(t("warnAnimationExt", { ext }));
         }
       }
     }
@@ -131,15 +133,15 @@ export function NftMetadataValidatorTool() {
     if (metadata.background_color) {
       score += 5;
       if (typeof metadata.background_color !== "string") {
-        errors.push("'background_color' must be a string");
+        errors.push(t("errorBackgroundColorString"));
       } else if (!/^[0-9A-Fa-f]{6}$/.test(metadata.background_color)) {
-        warnings.push("'background_color' should be a 6-character hex color (without #)");
+        warnings.push(t("warnBackgroundColorHex"));
       }
     }
 
     // Properties (alternative to attributes for some platforms)
     if (metadata.properties) {
-      warnings.push("'properties' field found (some platforms prefer 'attributes')");
+      warnings.push(t("warnPropertiesField"));
     }
 
     // Unknown fields
@@ -156,7 +158,7 @@ export function NftMetadataValidatorTool() {
     ];
     Object.keys(metadata).forEach((key) => {
       if (!knownFields.includes(key)) {
-        warnings.push(`Unknown field: '${key}' (may not be displayed on all platforms)`);
+        warnings.push(t("warnUnknownField", { key }));
       }
     });
 
@@ -184,7 +186,7 @@ export function NftMetadataValidatorTool() {
           setValidationResult({
             valid: false,
             score: 0,
-            errors: ["Invalid JSON format"],
+            errors: [t("errorInvalidJson")],
             warnings: [],
           });
           setLoading(false);
@@ -196,7 +198,7 @@ export function NftMetadataValidatorTool() {
           setValidationResult({
             valid: false,
             score: 0,
-            errors: ["Please enter a URI"],
+            errors: [t("errorEnterUri")],
             warnings: [],
           });
           setLoading(false);
@@ -221,7 +223,7 @@ export function NftMetadataValidatorTool() {
           setValidationResult({
             valid: false,
             score: 0,
-            errors: [e instanceof Error ? e.message : "Failed to fetch metadata"],
+            errors: [e instanceof Error ? e.message : t("errorFetchFailed")],
             warnings: [],
           });
           setLoading(false);
@@ -235,7 +237,7 @@ export function NftMetadataValidatorTool() {
       setValidationResult({
         valid: false,
         score: 0,
-        errors: [e instanceof Error ? e.message : "Validation failed"],
+        errors: [e instanceof Error ? e.message : t("errorValidationFailed")],
         warnings: [],
       });
     } finally {
@@ -266,21 +268,21 @@ export function NftMetadataValidatorTool() {
           variant={inputType === "json" ? "primary" : "secondary"}
           className="flex-1"
         >
-          JSON Input
+          {t("jsonInputButton")}
         </Button>
         <Button
           onClick={() => setInputType("uri")}
           variant={inputType === "uri" ? "primary" : "secondary"}
           className="flex-1"
         >
-          URI Input
+          {t("uriInputButton")}
         </Button>
       </div>
 
       {/* JSON Input */}
       {inputType === "json" && (
         <Textarea
-          label="NFT Metadata JSON"
+          label={t("metadataJsonLabel")}
           value={metadataInput}
           onChange={(e) => setMetadataInput(e.target.value)}
           placeholder='{\n  "name": "My NFT",\n  "description": "...",\n  "image": "ipfs://..."\n}'
@@ -291,7 +293,7 @@ export function NftMetadataValidatorTool() {
       {/* URI Input */}
       {inputType === "uri" && (
         <Input
-          label="Metadata URI (IPFS/HTTP)"
+          label={t("metadataUriLabel")}
           value={metadataUri}
           onChange={(e) => setMetadataUri(e.target.value)}
           placeholder="ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/1"
@@ -302,10 +304,10 @@ export function NftMetadataValidatorTool() {
       {/* Actions */}
       <div className="flex gap-3">
         <Button onClick={handleValidate} variant="primary" className="flex-1" disabled={loading}>
-          {loading ? "Validating..." : "Validate Metadata"}
+          {loading ? t("validating") : t("validateButton")}
         </Button>
         <Button onClick={handleReset}>
-          Reset
+          {t("resetButton")}
         </Button>
       </div>
 
@@ -315,7 +317,7 @@ export function NftMetadataValidatorTool() {
           {/* Score */}
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Compliance Score</span>
+              <span className="text-sm font-medium">{t("complianceScore")}</span>
               <span className={`text-lg font-bold ${getScoreColor(validationResult.score)}`}>
                 {validationResult.score}%
               </span>
@@ -338,7 +340,7 @@ export function NftMetadataValidatorTool() {
           {validationResult.errors.length > 0 && (
             <div className="space-y-2">
               <div className="text-sm font-medium text-[var(--color-red-500)]">
-                Errors ({validationResult.errors.length})
+                {t("errorsHeading", { count: validationResult.errors.length })}
               </div>
               <div className="space-y-1">
                 {validationResult.errors.map((error, idx) => (
@@ -357,7 +359,7 @@ export function NftMetadataValidatorTool() {
           {validationResult.warnings.length > 0 && (
             <div className="space-y-2">
               <div className="text-sm font-medium text-yellow-400">
-                Warnings ({validationResult.warnings.length})
+                {t("warningsHeading", { count: validationResult.warnings.length })}
               </div>
               <div className="space-y-1">
                 {validationResult.warnings.map((warning, idx) => (
@@ -375,32 +377,32 @@ export function NftMetadataValidatorTool() {
           {/* Success */}
           {validationResult.valid && validationResult.errors.length === 0 && (
             <div className="p-3 rounded-[12px] border border-green-500/30 bg-green-500/5 text-[var(--color-green-500)] text-sm">
-              Metadata is valid and follows OpenSea/ERC-721/ERC-1155 standards!
+              {t("validSuccess")}
             </div>
           )}
 
           {/* Preview */}
           {validationResult.metadata && (
             <div className="space-y-3">
-              <div className="text-sm font-medium">OpenSea Preview</div>
+              <div className="text-sm font-medium">{t("openseaPreview")}</div>
               <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
                 {/* Image */}
                 {validationResult.metadata.image && (
                   <div className="mb-3 p-3 bg-[var(--color-gray-100)] rounded-[12px] text-center">
                     <div className="text-xs text-muted-foreground">
-                      Image: {validationResult.metadata.image.substring(0, 50)}...
+                      {t("imageLabel")} {validationResult.metadata.image.substring(0, 50)}...
                     </div>
                   </div>
                 )}
 
                 {/* Name */}
                 <div className="text-lg font-bold mb-2">
-                  {validationResult.metadata.name || "Unnamed NFT"}
+                  {validationResult.metadata.name || t("unnamedNft")}
                 </div>
 
                 {/* Description */}
                 <div className="text-sm text-muted-foreground mb-3">
-                  {validationResult.metadata.description || "No description"}
+                  {validationResult.metadata.description || t("noDescription")}
                 </div>
 
                 {/* Attributes */}
@@ -408,7 +410,7 @@ export function NftMetadataValidatorTool() {
                   Array.isArray(validationResult.metadata.attributes) &&
                   validationResult.metadata.attributes.length > 0 && (
                     <div className="space-y-2">
-                      <div className="text-xs font-medium text-muted-foreground">PROPERTIES</div>
+                      <div className="text-xs font-medium text-muted-foreground">{t("propertiesLabel")}</div>
                       <div className="grid grid-cols-2 gap-2">
                         {validationResult.metadata.attributes.map(
                           (attr: MetadataAttribute, idx: number) => (
@@ -417,7 +419,7 @@ export function NftMetadataValidatorTool() {
                               className="p-2 rounded-[12px] bg-[var(--color-gray-100)] border border-border"
                             >
                               <div className="text-xs text-blue-400">
-                                {attr.trait_type || "Unnamed"}
+                                {attr.trait_type || t("unnamedTrait")}
                               </div>
                               <div className="text-sm font-medium">{String(attr.value)}</div>
                             </div>
@@ -434,7 +436,7 @@ export function NftMetadataValidatorTool() {
 
       {/* Reset */}
       <Button onClick={handleReset} className="w-full">
-        Reset
+        {t("resetButton")}
       </Button>
     </div>
   );

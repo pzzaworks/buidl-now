@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ToolConfig } from "@/types/tool";
 
 export function EscapeUnescapeTool() {
+  const t = useTranslations("toolUI.escape-unescape");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
 
@@ -59,11 +61,11 @@ export function EscapeUnescapeTool() {
     <div className="space-y-6">
       {/* Input */}
       <div>
-        <Label className="mb-2 block text-sm">Input Text</Label>
+        <Label className="mb-2 block text-sm">{t("inputLabel")}</Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Enter text with special characters..."
+          placeholder={t("inputPlaceholder")}
           className="min-h-[150px]"
         />
       </div>
@@ -71,20 +73,20 @@ export function EscapeUnescapeTool() {
       {/* Buttons */}
       <div className="flex flex-col sm:flex-row gap-2">
         <Button onClick={handleEscape} className="flex-1" variant="primary">
-          Escape
+          {t("escape")}
         </Button>
         <Button onClick={handleUnescape} className="flex-1 sm:flex-none">
-          Unescape
+          {t("unescape")}
         </Button>
         <Button onClick={handleReset} className="sm:flex-none">
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
       {/* Output */}
       {output && (
         <Textarea
-          label="Output"
+          label={t("output")}
           value={output}
           readOnly
           showCopy

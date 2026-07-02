@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -213,6 +214,15 @@ const cheatcodes: Cheatcode[] = [
 const categories = ["All", "Pranking", "Balance", "Time", "Block", "Mock"];
 
 export function FoundryCheatcodeGeneratorTool() {
+  const t = useTranslations("toolUI.foundry-cheatcode-generator");
+  const categoryLabels: Record<string, string> = {
+    All: t("categoryAll"),
+    Pranking: t("categoryPranking"),
+    Balance: t("categoryBalance"),
+    Time: t("categoryTime"),
+    Block: t("categoryBlock"),
+    Mock: t("categoryMock"),
+  };
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCheatcode, setSelectedCheatcode] = useState<Cheatcode | null>(null);
@@ -275,7 +285,7 @@ export function FoundryCheatcodeGeneratorTool() {
         <div className="relative">
           <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder="Search cheatcodes..."
+            placeholder={t("searchPlaceholder")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
@@ -291,7 +301,7 @@ export function FoundryCheatcodeGeneratorTool() {
               variant={selectedCategory === category ? "primary" : "secondary"}
               size="sm"
             >
-              {category}
+              {categoryLabels[category] ?? category}
             </Button>
           ))}
         </div>
@@ -300,7 +310,7 @@ export function FoundryCheatcodeGeneratorTool() {
       {/* Cheatcode List */}
       <div className="space-y-2">
         <div className="text-sm font-medium text-muted-foreground">
-          Available Cheatcodes ({filteredCheatcodes.length})
+          {t("availableCheatcodes")} ({filteredCheatcodes.length})
         </div>
         <div className="grid gap-2 max-h-[300px] overflow-y-auto pr-2">
           {filteredCheatcodes.map((cheatcode) => (
@@ -320,7 +330,7 @@ export function FoundryCheatcodeGeneratorTool() {
                   </div>
                 </div>
                 <div className="text-xs px-2 py-0.5 rounded-[12px] bg-[var(--color-gray-0)] text-muted-foreground shrink-0">
-                  {cheatcode.category}
+                  {categoryLabels[cheatcode.category] ?? cheatcode.category}
                 </div>
               </div>
             </Button>
@@ -332,7 +342,7 @@ export function FoundryCheatcodeGeneratorTool() {
       {selectedCheatcode && (
         <div className="space-y-4 p-4 rounded-[12px] border border-blue-500/30 bg-blue-500/5">
           <div>
-            <div className="text-sm font-medium text-blue-400 mb-2">Syntax</div>
+            <div className="text-sm font-medium text-blue-400 mb-2">{t("syntax")}</div>
             <div className="p-3 rounded-[12px] bg-[var(--color-gray-0)] border border-border font-mono text-sm">
               {selectedCheatcode.syntax}
             </div>
@@ -341,7 +351,7 @@ export function FoundryCheatcodeGeneratorTool() {
           {/* Parameters */}
           {selectedCheatcode.params.length > 0 && (
             <div className="space-y-3">
-              <div className="text-sm font-medium text-blue-400">Parameters</div>
+              <div className="text-sm font-medium text-blue-400">{t("parameters")}</div>
               {selectedCheatcode.params.map((param) => (
                 <div key={param.name}>
                   <Input
@@ -361,19 +371,19 @@ export function FoundryCheatcodeGeneratorTool() {
 
           {/* Generate Button */}
           <Button onClick={generateCode} className="w-full" variant="primary">
-            Generate Code
+            {t("generateCode")}
           </Button>
 
           {/* Generated Code */}
           {generatedCode && (
             <div>
               <div className="flex items-center justify-between mb-2">
-                <div className="text-sm font-medium text-[var(--color-green-500)]">Generated Code</div>
+                <div className="text-sm font-medium text-[var(--color-green-500)]">{t("generatedCode")}</div>
                 <button
                   type="button"
                   onClick={() => handleCopy(generatedCode)}
                   className="w-8 h-8 rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] flex items-center justify-center transition-colors cursor-pointer"
-                  title={copied ? "Copied!" : "Copy to clipboard"}
+                  title={copied ? t("copied") : t("copyToClipboard")}
                 >
                   {copied ? (
                     <MdCheck style={{ width: 16, height: 16, color: 'var(--color-green-500)' }} />
@@ -391,12 +401,12 @@ export function FoundryCheatcodeGeneratorTool() {
           {/* Example Usage */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <div className="text-sm font-medium text-blue-400">Example Usage</div>
+              <div className="text-sm font-medium text-blue-400">{t("exampleUsage")}</div>
               <button
                 type="button"
                 onClick={() => handleCopy(selectedCheatcode.example)}
                 className="w-8 h-8 rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] flex items-center justify-center transition-colors cursor-pointer"
-                title="Copy to clipboard"
+                title={t("copyToClipboard")}
               >
                 <MdContentCopy style={{ width: 16, height: 16 }} />
               </button>
@@ -413,16 +423,15 @@ export function FoundryCheatcodeGeneratorTool() {
       {/* Reset Button */}
       {(selectedCheatcode || searchQuery || selectedCategory !== "All") && (
         <Button onClick={handleReset} className="w-full">
-          Reset All
+          {t("resetAll")}
         </Button>
       )}
 
       {/* Info Box */}
       <div className="p-4 rounded-[12px] border border-blue-500/30 bg-blue-500/5">
         <div className="text-sm text-blue-400">
-          <strong>Foundry Cheatcodes:</strong> Special testing functions that manipulate the EVM state.
-          Use these in your Foundry tests to control time, impersonate accounts, mock calls, and more.
-          All cheatcodes are prefixed with <code className="px-1 py-0.5 rounded-[12px] bg-[var(--color-gray-0)]">vm.</code>
+          <strong>{t("infoBoxTitle")}</strong> {t("infoBoxText")}{" "}
+          <code className="px-1 py-0.5 rounded-[12px] bg-[var(--color-gray-0)]">vm.</code>
         </div>
       </div>
     </div>

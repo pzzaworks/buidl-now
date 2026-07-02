@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { ToolConfig } from "@/types/tool";
 import QRCode from "qrcode";
 
 export function QrCodeGeneratorTool() {
+  const t = useTranslations("toolUI.qr-code-generator");
   const [input, setInput] = useState("");
   const [size, setSize] = useState("256");
   const [qrDataUrl, setQrDataUrl] = useState("");
@@ -18,7 +20,7 @@ export function QrCodeGeneratorTool() {
 
   const handleGenerate = async () => {
     if (!input.trim()) {
-      setError("Please enter text or URL");
+      setError(t("enterTextOrUrl"));
       setQrDataUrl("");
       return;
     }
@@ -37,7 +39,7 @@ export function QrCodeGeneratorTool() {
       setQrImageSize(qrSize);
       setError("");
     } catch (e) {
-      setError("Failed to generate QR code");
+      setError(t("failedToGenerate"));
       setQrDataUrl("");
     }
   };
@@ -55,17 +57,17 @@ export function QrCodeGeneratorTool() {
     <div className="space-y-6">
       {/* Input Section */}
       <Textarea
-        label="Text or URL"
+        label={t("textOrUrl")}
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Enter text, URL, or any data to encode..."
+        placeholder={t("inputPlaceholder")}
         rows={4}
         className="text-sm"
       />
 
       {/* Size Input */}
       <div>
-        <Label className="mb-2 block text-sm">QR Code Size (128-1024)</Label>
+        <Label className="mb-2 block text-sm">{t("qrCodeSize")}</Label>
         <Input
           type="number"
           min="128"
@@ -78,7 +80,7 @@ export function QrCodeGeneratorTool() {
 
       {/* Generate Button */}
       <Button onClick={handleGenerate} variant="primary" className="w-full">
-        Generate QR Code
+        {t("generateQrCode")}
       </Button>
 
       {/* Error Display */}
@@ -94,14 +96,14 @@ export function QrCodeGeneratorTool() {
           <div className="flex flex-col items-center justify-center p-6 bg-[var(--color-gray-0)] rounded-[12px]">
             <img
               src={qrDataUrl}
-              alt="QR Code"
+              alt={t("qrCodeAlt")}
               width={qrImageSize}
               height={qrImageSize}
               className="max-w-full"
             />
           </div>
           <Button onClick={handleDownload} className="w-full">
-            Download QR Code
+            {t("downloadQrCode")}
           </Button>
         </div>
       )}

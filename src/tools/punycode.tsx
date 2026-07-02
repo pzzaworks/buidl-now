@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -174,6 +175,7 @@ function toUnicode(domain: string): string {
 }
 
 export function PunycodeTool() {
+  const t = useTranslations("toolUI.punycode");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [mode, setMode] = useState<"encode" | "decode">("encode");
@@ -193,7 +195,7 @@ export function PunycodeTool() {
         setOutput(toUnicode(input));
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Conversion failed");
+      setError(e instanceof Error ? e.message : t("conversionFailed"));
       setOutput("");
     }
   };
@@ -217,7 +219,7 @@ export function PunycodeTool() {
           }}
           className="flex-1"
         >
-          Encode (Unicode to Punycode)
+          {t("encodeTab")}
         </Button>
         <Button
           variant={mode === "decode" ? "primary" : "secondary"}
@@ -228,31 +230,31 @@ export function PunycodeTool() {
           }}
           className="flex-1"
         >
-          Decode (Punycode to Unicode)
+          {t("decodeTab")}
         </Button>
       </div>
 
       {/* Input Section */}
       <div>
         <Label className="mb-2 block text-sm">
-          {mode === "encode" ? "Unicode Domain" : "Punycode Domain"}
+          {mode === "encode" ? t("unicodeDomainLabel") : t("punycodeDomainLabel")}
         </Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={
             mode === "encode"
-              ? "Enter Unicode domain (e.g., munchen.de or example.com)"
-              : "Enter Punycode domain (e.g., xn--mnchen-3ya.de)"
+              ? t("unicodePlaceholder")
+              : t("punycodePlaceholder")
           }
           rows={4}
           className="text-sm mb-2"
         />
         <div className="flex gap-2">
           <Button onClick={handleConvert} variant="primary" className="flex-1">
-            {mode === "encode" ? "Encode to Punycode" : "Decode to Unicode"}
+            {mode === "encode" ? t("encodeButton") : t("decodeButton")}
           </Button>
-          <Button onClick={handleReset}>Reset</Button>
+          <Button onClick={handleReset}>{t("reset")}</Button>
         </div>
       </div>
 
@@ -266,7 +268,7 @@ export function PunycodeTool() {
       {/* Output Section */}
       {output && (
         <Textarea
-          label={mode === "encode" ? "Punycode Domain" : "Unicode Domain"}
+          label={mode === "encode" ? t("punycodeDomainLabel") : t("unicodeDomainLabel")}
           value={output}
           readOnly
           showCopy

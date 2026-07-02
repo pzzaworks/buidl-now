@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { keccak256, toBytes } from "viem";
 import { ToolConfig } from "@/types/tool";
 
 export function KeccakHashTool() {
+  const t = useTranslations("toolUI.keccak-hash");
   const [input, setInput] = useState("");
   const [inputType, setInputType] = useState<"text" | "hex">("text");
   const [hash, setHash] = useState("");
@@ -62,46 +64,46 @@ export function KeccakHashTool() {
           onClick={() => handleTypeChange("text")}
           className="flex-1"
         >
-          Text
+          {t("text")}
         </Button>
         <Button
           variant={inputType === "hex" ? "primary" : "secondary"}
           onClick={() => handleTypeChange("hex")}
           className="flex-1"
         >
-          Hex
+          {t("hex")}
         </Button>
       </div>
 
       {/* Input Section */}
       <div>
         <Label className="mb-2 block text-sm">
-          Input {inputType === "hex" ? "(Hexadecimal)" : "(Text)"}
+          {t("inputLabel")} {inputType === "hex" ? t("hexadecimal") : t("textLabel")}
         </Label>
         <Textarea
           value={input}
           onChange={handleInputChange}
           placeholder={
             inputType === "hex"
-              ? "Enter hex data (e.g., 0xdeadbeef)..."
-              : "Enter text to hash..."
+              ? t("hexPlaceholder")
+              : t("textPlaceholder")
           }
           rows={8}
           className="text-sm mb-2"
         />
         <div className="flex gap-2">
           <Button onClick={() => calculateHash(input, inputType)} variant="primary" className="flex-1">
-            Hash
+            {t("hash")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
 
       {/* Output Section */}
       <Input
-        label="Keccak-256 Hash"
+        label={t("outputLabel")}
         value={hash}
         readOnly
         showCopy
