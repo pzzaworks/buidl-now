@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ToolConfig } from "@/types/tool";
 
 export function CssFormatterTool() {
+  const t = useTranslations("toolUI.css-formatter");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [mode, setMode] = useState<"format" | "minify">("format");
@@ -97,7 +99,7 @@ export function CssFormatterTool() {
           }}
           className="flex-1"
         >
-          Format
+          {t("format")}
         </Button>
         <Button
           variant={mode === "minify" ? "primary" : "secondary"}
@@ -107,30 +109,30 @@ export function CssFormatterTool() {
           }}
           className="flex-1"
         >
-          Minify
+          {t("minify")}
         </Button>
       </div>
 
       {/* Input Section */}
       <div>
-        <Label className="mb-2 block text-sm">CSS Input</Label>
+        <Label className="mb-2 block text-sm">{t("cssInputLabel")}</Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={
             mode === "format"
-              ? "Enter CSS to format..."
-              : "Enter CSS to minify..."
+              ? t("formatPlaceholder")
+              : t("minifyPlaceholder")
           }
           rows={10}
           className="font-mono text-sm mb-2"
         />
         <div className="flex gap-2">
           <Button onClick={handleConvert} variant="primary" className="flex-1">
-            {mode === "format" ? "Format" : "Minify"}
+            {mode === "format" ? t("format") : t("minify")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -138,7 +140,7 @@ export function CssFormatterTool() {
       {/* Output Section */}
       {output && (
         <Textarea
-          label={mode === "format" ? "Formatted CSS" : "Minified CSS"}
+          label={mode === "format" ? t("formattedLabel") : t("minifiedLabel")}
           value={output}
           readOnly
           showCopy

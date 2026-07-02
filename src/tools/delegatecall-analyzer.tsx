@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -35,6 +36,7 @@ interface Conflict {
 }
 
 export function DelegatecallAnalyzerTool() {
+  const t = useTranslations("toolUI.delegatecall-analyzer");
   const [proxySource, setProxySource] = useState("");
   const [implementationSource, setImplementationSource] = useState("");
   const [result, setResult] = useState<AnalysisResult | null>(null);
@@ -162,7 +164,7 @@ export function DelegatecallAnalyzerTool() {
               proxyVar: proxySlot.name,
               implVar: implSlot.name,
               severity: "high",
-              description: `Storage collision at slot ${proxySlot.slot}: ${proxySlot.name} (proxy) conflicts with ${implSlot.name} (implementation)`,
+              description: t("collisionDescription", { slot: proxySlot.slot, proxyName: proxySlot.name, implName: implSlot.name }),
             });
           }
         }
@@ -188,7 +190,7 @@ export function DelegatecallAnalyzerTool() {
             proxyVar: proxySlot.name,
             implVar: implSlot.name,
             severity: "medium",
-            description: `Type mismatch at slot ${proxySlot.slot}: ${proxySlot.name} (${proxySlot.type}) vs ${implSlot.name} (${implSlot.type})`,
+            description: t("typeMismatchDescription", { slot: proxySlot.slot, proxyName: proxySlot.name, proxyType: proxySlot.type, implName: implSlot.name, implType: implSlot.type }),
           });
         }
       }
@@ -224,22 +226,16 @@ export function DelegatecallAnalyzerTool() {
     const recommendations: string[] = [];
 
     if (conflicts.length > 0) {
-      recommendations.push(
-        "Resolve storage conflicts by ensuring proxy and implementation use different slots"
-      );
+      recommendations.push(t("recResolveConflicts"));
     }
 
     if (!hasGap) {
-      recommendations.push(
-        "Add a storage gap (e.g., uint256[50] private __gap) to allow for future storage variables"
-      );
+      recommendations.push(t("recAddGap"));
     }
 
     const highConflicts = conflicts.filter((c) => c.severity === "high");
     if (highConflicts.length > 0) {
-      recommendations.push(
-        "Critical: Storage collisions detected. Do not deploy this configuration."
-      );
+      recommendations.push(t("recCritical"));
     }
 
     if (implSlots.length > 0 && proxySlots.length > 0) {
@@ -247,20 +243,16 @@ export function DelegatecallAnalyzerTool() {
       const firstImplSlot = Math.min(...implSlots.map((s) => s.slot));
 
       if (firstImplSlot <= lastProxySlot) {
-        recommendations.push(
-          "Implementation storage should start after proxy storage. Consider using storage gaps or different slot ranges."
-        );
+        recommendations.push(t("recImplAfterProxy"));
       }
     }
 
     if (proxySlots.some((s) => s.name === "_owner" || s.name === "owner")) {
-      recommendations.push(
-        "Proxy contains ownership variable. Ensure implementation doesn't override it."
-      );
+      recommendations.push(t("recOwnership"));
     }
 
     if (recommendations.length === 0) {
-      recommendations.push("Storage layout appears safe for upgradeable proxy pattern");
+      recommendations.push(t("recSafe"));
     }
 
     return recommendations;
@@ -273,7 +265,7 @@ export function DelegatecallAnalyzerTool() {
 
     try {
       if (!proxySource || !implementationSource) {
-        throw new Error("Please provide both proxy and implementation contract sources");
+        throw new Error(t("errorProvideSources"));
       }
 
       const proxySlots = parseStorageLayout(proxySource);
@@ -302,7 +294,7 @@ export function DelegatecallAnalyzerTool() {
         gapSize,
       });
     } catch (e) {
-      setError(e instanceof Error ? e.message : "An error occurred");
+      setError(e instanceof Error ? e.message : t("errorGeneric"));
     } finally {
       setLoading(false);
     }
@@ -341,11 +333,23 @@ export function DelegatecallAnalyzerTool() {
     }
   };
 
+  const safetyLabels: Record<AnalysisResult["safetyScore"], string> = {
+    Safe: t("safetySafe"),
+    Warning: t("safetyWarning"),
+    Dangerous: t("safetyDangerous"),
+  };
+
+  const severityLabels: Record<Conflict["severity"], string> = {
+    high: t("severityHigh"),
+    medium: t("severityMedium"),
+    low: t("severityLow"),
+  };
+
   return (
     <div className="space-y-6">
       {/* Proxy Contract */}
       <div>
-        <Label className="mb-2 block text-sm">Proxy Contract Source (or ABI)</Label>
+        <Label className="mb-2 block text-sm">{t("proxyContractLabel")}</Label>
         <Textarea
           value={proxySource}
           onChange={(e) => setProxySource(e.target.value)}
@@ -360,7 +364,7 @@ export function DelegatecallAnalyzerTool() {
 
       {/* Implementation Contract */}
       <div>
-        <Label className="mb-2 block text-sm">Implementation Contract Source (or ABI)</Label>
+        <Label className="mb-2 block text-sm">{t("implementationContractLabel")}</Label>
         <Textarea
           value={implementationSource}
           onChange={(e) => setImplementationSource(e.target.value)}
@@ -377,10 +381,10 @@ export function DelegatecallAnalyzerTool() {
       {/* Actions */}
       <div className="flex gap-2">
         <Button onClick={handleAnalyze} variant="primary" className="flex-1" disabled={loading}>
-          {loading ? "Analyzing..." : "Analyze Storage Layout"}
+          {loading ? t("analyzing") : t("analyzeStorageLayout")}
         </Button>
         <Button onClick={handleReset}>
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
@@ -397,12 +401,12 @@ export function DelegatecallAnalyzerTool() {
           {/* Safety Score */}
           <div className={`p-4 rounded-[12px] border ${getSafetyColor(result.safetyScore)}`}>
             <div className="flex items-center justify-between">
-              <Label className="text-sm font-semibold">Safety Score</Label>
-              <span className="text-lg font-bold">{result.safetyScore}</span>
+              <Label className="text-sm font-semibold">{t("safetyScore")}</Label>
+              <span className="text-lg font-bold">{safetyLabels[result.safetyScore]}</span>
             </div>
             {result.hasGap && (
               <div className="text-xs mt-2">
-                Storage gap detected: {result.gapSize} slots reserved for future variables
+                {t("storageGapDetected", { gapSize: result.gapSize ?? 0 })}
               </div>
             )}
           </div>
@@ -411,7 +415,7 @@ export function DelegatecallAnalyzerTool() {
           {result.conflicts.length > 0 && (
             <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[var(--color-gray-200)]">
               <Label className="text-sm mb-3 block text-[var(--color-red-500)] font-semibold">
-                Storage Conflicts ({result.conflicts.length})
+                {t("storageConflicts", { count: result.conflicts.length })}
               </Label>
               <div className="space-y-2">
                 {result.conflicts.map((conflict, idx) => (
@@ -421,19 +425,19 @@ export function DelegatecallAnalyzerTool() {
                   >
                     <div className="flex items-start justify-between mb-2 gap-2">
                       <div className="font-mono text-sm font-semibold">
-                        Slot {conflict.slot}
+                        {t("slot", { slot: conflict.slot })}
                       </div>
                       <span className="text-xs uppercase font-semibold whitespace-nowrap">
-                        {conflict.severity}
+                        {severityLabels[conflict.severity]}
                       </span>
                     </div>
                     <div className="text-sm break-words">{conflict.description}</div>
                     <div className="flex flex-wrap gap-2 mt-2 text-xs">
                       <span className="bg-[var(--color-gray-0)] px-2 py-1 rounded-[12px] break-all">
-                        Proxy: {conflict.proxyVar}
+                        {t("proxyPrefix")} {conflict.proxyVar}
                       </span>
                       <span className="bg-[var(--color-gray-0)] px-2 py-1 rounded-[12px] break-all">
-                        Impl: {conflict.implVar}
+                        {t("implPrefix")} {conflict.implVar}
                       </span>
                     </div>
                   </div>
@@ -444,12 +448,12 @@ export function DelegatecallAnalyzerTool() {
 
           {/* Storage Layout Comparison */}
           <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[var(--color-gray-200)]">
-            <Label className="text-sm mb-3 block">Storage Layout Comparison</Label>
+            <Label className="text-sm mb-3 block">{t("storageLayoutComparison")}</Label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Proxy Storage */}
               <div>
                 <div className="text-xs text-gray-400 mb-2 font-semibold">
-                  Proxy Contract
+                  {t("proxyContract")}
                 </div>
                 <div className="space-y-1">
                   {result.proxySlots.length > 0 ? (
@@ -462,15 +466,15 @@ export function DelegatecallAnalyzerTool() {
                           <span className="font-mono font-semibold text-blue-400 break-all">
                             {slot.name}
                           </span>
-                          <span className="text-gray-500 whitespace-nowrap">Slot {slot.slot}</span>
+                          <span className="text-gray-500 whitespace-nowrap">{t("slot", { slot: slot.slot })}</span>
                         </div>
                         <div className="text-gray-400 break-all">
-                          Type: {slot.type} | Offset: {slot.offset} | Size: {slot.size}
+                          {t("slotDetails", { type: slot.type, offset: slot.offset, size: slot.size })}
                         </div>
                       </div>
                     ))
                   ) : (
-                    <div className="text-xs text-gray-500">No storage variables</div>
+                    <div className="text-xs text-gray-500">{t("noStorage")}</div>
                   )}
                 </div>
               </div>
@@ -478,7 +482,7 @@ export function DelegatecallAnalyzerTool() {
               {/* Implementation Storage */}
               <div>
                 <div className="text-xs text-gray-400 mb-2 font-semibold">
-                  Implementation Contract
+                  {t("implementationContract")}
                 </div>
                 <div className="space-y-1">
                   {result.implementationSlots.length > 0 ? (
@@ -499,15 +503,15 @@ export function DelegatecallAnalyzerTool() {
                           >
                             {slot.name}
                           </span>
-                          <span className="text-gray-500 whitespace-nowrap">Slot {slot.slot}</span>
+                          <span className="text-gray-500 whitespace-nowrap">{t("slot", { slot: slot.slot })}</span>
                         </div>
                         <div className="text-gray-400 break-all">
-                          Type: {slot.type} | Offset: {slot.offset} | Size: {slot.size}
+                          {t("slotDetails", { type: slot.type, offset: slot.offset, size: slot.size })}
                         </div>
                       </div>
                     ))
                   ) : (
-                    <div className="text-xs text-gray-500">No storage variables</div>
+                    <div className="text-xs text-gray-500">{t("noStorage")}</div>
                   )}
                 </div>
               </div>
@@ -516,7 +520,7 @@ export function DelegatecallAnalyzerTool() {
 
           {/* Recommendations */}
           <div className="p-4 rounded-[12px] border bg-[var(--color-gray-0)] border-[var(--color-gray-200)]">
-            <Label className="text-sm mb-3 block">Recommendations</Label>
+            <Label className="text-sm mb-3 block">{t("recommendations")}</Label>
             <ul className="space-y-2">
               {result.recommendations.map((rec, idx) => (
                 <li key={idx} className="text-sm text-gray-300 flex items-start gap-2">

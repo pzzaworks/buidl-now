@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -8,6 +9,7 @@ import { ToolConfig } from "@/types/tool";
 import { MdClose } from "react-icons/md";
 
 export function HtmlFormatterTool() {
+  const t = useTranslations("toolUI.html-formatter");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
@@ -137,7 +139,7 @@ export function HtmlFormatterTool() {
       }
       setError("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to process HTML");
+      setError(e instanceof Error ? e.message : t("failedToProcess"));
       setOutput("");
     }
   };
@@ -160,7 +162,7 @@ export function HtmlFormatterTool() {
           }}
           className="flex-1"
         >
-          Format
+          {t("format")}
         </Button>
         <Button
           variant={mode === "minify" ? "primary" : "secondary"}
@@ -170,29 +172,29 @@ export function HtmlFormatterTool() {
           }}
           className="flex-1"
         >
-          Minify
+          {t("minify")}
         </Button>
       </div>
 
       {/* Input Section */}
       <div>
-        <Label className="mb-2 block text-sm">HTML Input</Label>
+        <Label className="mb-2 block text-sm">{t("inputLabel")}</Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={
             mode === "format"
               ? "<div><p>Hello World</p></div>"
-              : "Enter HTML to minify..."
+              : t("minifyPlaceholder")
           }
           rows={10}
           className="font-mono text-sm mb-2"
         />
         <div className="flex gap-2">
           <Button onClick={handleConvert} variant="primary" className="flex-1">
-            {mode === "format" ? "Format HTML" : "Minify HTML"}
+            {mode === "format" ? t("formatHtml") : t("minifyHtml")}
           </Button>
-          <Button onClick={handleReset}>Reset</Button>
+          <Button onClick={handleReset}>{t("reset")}</Button>
         </div>
       </div>
 
@@ -208,7 +210,7 @@ export function HtmlFormatterTool() {
       {/* Output Section */}
       {output && !error && (
         <Textarea
-          label={mode === "format" ? "Formatted HTML" : "Minified HTML"}
+          label={mode === "format" ? t("formattedHtml") : t("minifiedHtml")}
           value={output}
           readOnly
           showCopy

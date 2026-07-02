@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { ToolConfig } from "@/types/tool";
 
 export function BorderRadiusGeneratorTool() {
+  const t = useTranslations("toolUI.border-radius-generator");
   const [topLeft, setTopLeft] = useState(12);
   const [topRight, setTopRight] = useState(12);
   const [bottomRight, setBottomRight] = useState(12);
@@ -148,7 +150,7 @@ export function BorderRadiusGeneratorTool() {
     <div className="space-y-6">
       {/* Unit Selector */}
       <div>
-        <Label className="mb-2 block text-sm">Unit</Label>
+        <Label className="mb-2 block text-sm">{t("unit")}</Label>
         <div className="grid grid-cols-3 gap-2">
           {(["px", "%", "rem"] as const).map((u) => (
             <Button
@@ -165,7 +167,7 @@ export function BorderRadiusGeneratorTool() {
 
       {/* Presets */}
       <div>
-        <Label className="mb-2 block text-sm">Presets</Label>
+        <Label className="mb-2 block text-sm">{t("presets")}</Label>
         <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
           {["none", "sm", "md", "lg", "xl", "2xl", "full", "pill", "blob-1", "blob-2", "ticket", "leaf"].map((preset) => (
             <Button
@@ -189,7 +191,7 @@ export function BorderRadiusGeneratorTool() {
             onChange={(e) => setLinked(e.target.checked)}
             className="w-4 h-4 accent-[var(--color-blue-500)]"
           />
-          Link all corners
+          {t("linkAllCorners")}
         </label>
       </div>
 
@@ -197,7 +199,7 @@ export function BorderRadiusGeneratorTool() {
       <div className="grid grid-cols-2 gap-4">
         {/* Top Left */}
         <div>
-          <Label className="mb-1 block text-xs">Top Left: {topLeft}{unit}</Label>
+          <Label className="mb-1 block text-xs">{t("topLeft")}: {topLeft}{unit}</Label>
           <input
             type="range"
             min="0"
@@ -210,7 +212,7 @@ export function BorderRadiusGeneratorTool() {
 
         {/* Top Right */}
         <div>
-          <Label className="mb-1 block text-xs">Top Right: {topRight}{unit}</Label>
+          <Label className="mb-1 block text-xs">{t("topRight")}: {topRight}{unit}</Label>
           <input
             type="range"
             min="0"
@@ -223,7 +225,7 @@ export function BorderRadiusGeneratorTool() {
 
         {/* Bottom Left */}
         <div>
-          <Label className="mb-1 block text-xs">Bottom Left: {bottomLeft}{unit}</Label>
+          <Label className="mb-1 block text-xs">{t("bottomLeft")}: {bottomLeft}{unit}</Label>
           <input
             type="range"
             min="0"
@@ -236,7 +238,7 @@ export function BorderRadiusGeneratorTool() {
 
         {/* Bottom Right */}
         <div>
-          <Label className="mb-1 block text-xs">Bottom Right: {bottomRight}{unit}</Label>
+          <Label className="mb-1 block text-xs">{t("bottomRight")}: {bottomRight}{unit}</Label>
           <input
             type="range"
             min="0"
@@ -251,7 +253,7 @@ export function BorderRadiusGeneratorTool() {
       {/* Preview Settings */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label className="mb-2 block text-sm">Preview Color</Label>
+          <Label className="mb-2 block text-sm">{t("previewColor")}</Label>
           <div className="flex items-center gap-2">
             <input
               type="color"
@@ -267,7 +269,7 @@ export function BorderRadiusGeneratorTool() {
           </div>
         </div>
         <div>
-          <Label className="mb-2 block text-sm">Preview Size: {previewSize}px</Label>
+          <Label className="mb-2 block text-sm">{t("previewSize")}: {previewSize}px</Label>
           <input
             type="range"
             min="50"
@@ -281,7 +283,7 @@ export function BorderRadiusGeneratorTool() {
 
       {/* Preview */}
       <div>
-        <Label className="mb-2 block text-sm">Preview</Label>
+        <Label className="mb-2 block text-sm">{t("preview")}</Label>
         <div className="h-64 w-full rounded-[12px] border border-[var(--color-gray-200)] bg-[var(--color-gray-50)] flex items-center justify-center">
           <div
             style={{
@@ -297,7 +299,7 @@ export function BorderRadiusGeneratorTool() {
 
       {/* CSS Output */}
       <Input
-        label="CSS Code"
+        label={t("cssCode")}
         value={`border-radius: ${cssValue};`}
         readOnly
         showCopy
@@ -306,7 +308,7 @@ export function BorderRadiusGeneratorTool() {
 
       {/* Individual Properties */}
       <div>
-        <Label className="mb-2 block text-sm">Individual Corner Properties</Label>
+        <Label className="mb-2 block text-sm">{t("individualProperties")}</Label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <Input
             value={`border-top-left-radius: ${topLeft}${unit};`}
@@ -337,7 +339,7 @@ export function BorderRadiusGeneratorTool() {
 
       {/* Tailwind Class */}
       <Input
-        label="Tailwind Class"
+        label={t("tailwindClass")}
         value={topLeft === topRight && topRight === bottomRight && bottomRight === bottomLeft
           ? `rounded-[${topLeft}${unit}]`
           : `rounded-tl-[${topLeft}${unit}] rounded-tr-[${topRight}${unit}] rounded-br-[${bottomRight}${unit}] rounded-bl-[${bottomLeft}${unit}]`

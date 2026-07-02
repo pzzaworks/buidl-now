@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -19,6 +20,7 @@ interface WordDiff {
 }
 
 export function DiffViewerTool() {
+  const t = useTranslations("toolUI.diff-viewer");
   const [text1, setText1] = useState("");
   const [text2, setText2] = useState("");
   const [diffMode, setDiffMode] = useState<"line" | "word">("line");
@@ -191,19 +193,19 @@ export function DiffViewerTool() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Textarea
-            label="Original Text"
+            label={t("originalLabel")}
             value={text1}
             onChange={(e) => setText1(e.target.value)}
-            placeholder="Enter original text..."
+            placeholder={t("originalPlaceholder")}
             className="min-h-[200px] font-mono text-sm"
           />
         </div>
         <div>
           <Textarea
-            label="Modified Text"
+            label={t("modifiedLabel")}
             value={text2}
             onChange={(e) => setText2(e.target.value)}
-            placeholder="Enter modified text..."
+            placeholder={t("modifiedPlaceholder")}
             className="min-h-[200px] font-mono text-sm"
           />
         </div>
@@ -211,7 +213,7 @@ export function DiffViewerTool() {
 
       {/* Diff Mode Selection */}
       <div>
-        <Label className="mb-2 block text-sm">Diff Mode</Label>
+        <Label className="mb-2 block text-sm">{t("diffModeLabel")}</Label>
         <div className="flex gap-2">
           <Button
             variant={diffMode === "line" ? "primary" : "secondary"}
@@ -219,7 +221,7 @@ export function DiffViewerTool() {
             className="flex-1"
             size="sm"
           >
-            Line by Line
+            {t("lineByLine")}
           </Button>
           <Button
             variant={diffMode === "word" ? "primary" : "secondary"}
@@ -227,7 +229,7 @@ export function DiffViewerTool() {
             className="flex-1"
             size="sm"
           >
-            Word by Word
+            {t("wordByWord")}
           </Button>
         </div>
       </div>
@@ -235,31 +237,31 @@ export function DiffViewerTool() {
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-2">
         <Button onClick={handleCompare} variant="primary" className="flex-1">
-          Compare
+          {t("compare")}
         </Button>
         <Button onClick={handleSwap} className="sm:flex-none">
-          Swap
+          {t("swap")}
         </Button>
         <Button onClick={handleReset} className="sm:flex-none">
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
       {/* Statistics */}
       {(lineDiff.length > 0 || wordDiff.length > 0) && (
         <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-          <Label className="text-sm mb-2 block">Statistics</Label>
+          <Label className="text-sm mb-2 block">{t("statistics")}</Label>
           <div className="grid grid-cols-3 gap-4 text-sm">
             <div>
-              <span className="text-[var(--color-green-500)]">+ Additions:</span>{" "}
+              <span className="text-[var(--color-green-500)]">+ {t("additions")}</span>{" "}
               <span className="font-mono">{stats.additions}</span>
             </div>
             <div>
-              <span className="text-[var(--color-red-500)]">- Deletions:</span>{" "}
+              <span className="text-[var(--color-red-500)]">- {t("deletions")}</span>{" "}
               <span className="font-mono">{stats.deletions}</span>
             </div>
             <div>
-              <span className="text-muted-foreground">Unchanged:</span>{" "}
+              <span className="text-muted-foreground">{t("unchanged")}</span>{" "}
               <span className="font-mono">{stats.unchanged}</span>
             </div>
           </div>
@@ -269,7 +271,7 @@ export function DiffViewerTool() {
       {/* Line Diff Display */}
       {lineDiff.length > 0 && (
         <div>
-          <Label className="text-sm mb-2 block">Differences</Label>
+          <Label className="text-sm mb-2 block">{t("differences")}</Label>
           <div className="border border-border rounded-[12px] overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm font-mono">
@@ -322,7 +324,7 @@ export function DiffViewerTool() {
       {/* Word Diff Display */}
       {wordDiff.length > 0 && (
         <div>
-          <Label className="text-sm mb-2 block">Differences</Label>
+          <Label className="text-sm mb-2 block">{t("differences")}</Label>
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px] min-h-[150px] font-mono text-sm whitespace-pre-wrap break-words">
             {wordDiff.map((part, index) => (
               <span

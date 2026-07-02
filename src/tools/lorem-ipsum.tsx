@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -22,6 +23,7 @@ const LOREM_WORDS = [
 const LOREM_START = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
 
 export function LoremIpsumTool() {
+  const t = useTranslations("toolUI.lorem-ipsum");
   const [count, setCount] = useState("3");
   const [type, setType] = useState<"paragraphs" | "sentences" | "words">("paragraphs");
   const [startWithLorem, setStartWithLorem] = useState(true);
@@ -115,7 +117,7 @@ export function LoremIpsumTool() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Input
-            label="Count"
+            label={t("count")}
             type="number"
             min="1"
             max="100"
@@ -126,7 +128,7 @@ export function LoremIpsumTool() {
         </div>
 
         <div>
-          <Label className="mb-2 block text-sm">Type</Label>
+          <Label className="mb-2 block text-sm">{t("type")}</Label>
           <div className="flex gap-2">
             <Button
               variant={type === "paragraphs" ? "primary" : "secondary"}
@@ -134,7 +136,7 @@ export function LoremIpsumTool() {
               className="flex-1"
               size="sm"
             >
-              Paragraphs
+              {t("paragraphs")}
             </Button>
             <Button
               variant={type === "sentences" ? "primary" : "secondary"}
@@ -142,7 +144,7 @@ export function LoremIpsumTool() {
               className="flex-1"
               size="sm"
             >
-              Sentences
+              {t("sentences")}
             </Button>
             <Button
               variant={type === "words" ? "primary" : "secondary"}
@@ -150,7 +152,7 @@ export function LoremIpsumTool() {
               className="flex-1"
               size="sm"
             >
-              Words
+              {t("words")}
             </Button>
           </div>
         </div>
@@ -162,19 +164,19 @@ export function LoremIpsumTool() {
           id="startWithLorem"
           checked={startWithLorem}
           onChange={(e) => setStartWithLorem(e.target.checked)}
-          label="Start with &quot;Lorem ipsum dolor sit amet&quot;"
+          label={t("startWithLorem")}
         />
       </div>
 
       {/* Generate Button */}
       <Button onClick={handleGenerate} variant="primary" className="w-full">
-        Generate Lorem Ipsum
+        {t("generate")}
       </Button>
 
       {/* Output */}
       {output && (
         <Textarea
-          label="Generated Text"
+          label={t("generatedText")}
           value={output}
           readOnly
           showCopy

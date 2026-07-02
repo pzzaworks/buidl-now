@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -18,6 +19,7 @@ interface SizeResult {
 }
 
 export function ContractSizeCalculatorTool() {
+  const t = useTranslations("toolUI.contract-size-calculator");
   const [inputMode, setInputMode] = useState<"bytecode" | "solidity">("bytecode");
   const [bytecode, setBytecode] = useState("");
   const [solidityCode, setSolidityCode] = useState("");
@@ -35,14 +37,14 @@ export function ContractSizeCalculatorTool() {
 
       if (inputMode === "bytecode") {
         if (!bytecode) {
-          setError("Please provide contract bytecode");
+          setError(t("errorNoBytecode"));
           return;
         }
         cleanBytecode = bytecode.trim();
       } else {
         // Solidity mode - estimate size from character count
         if (!solidityCode) {
-          setError("Please provide Solidity code");
+          setError(t("errorNoSolidity"));
           return;
         }
         // Very rough estimation: 1 line of Solidity ≈ 10-20 bytes of bytecode
@@ -58,7 +60,7 @@ export function ContractSizeCalculatorTool() {
           remainingBytes: MAX_CONTRACT_SIZE - estimatedBytes,
         });
 
-        setError("⚠️ This is a rough estimation. Compile your contract to get accurate bytecode size.");
+        setError(t("estimationWarning"));
         return;
       }
 
@@ -69,7 +71,7 @@ export function ContractSizeCalculatorTool() {
 
       // Validate hex
       if (!/^[0-9a-fA-F]*$/.test(cleanBytecode)) {
-        throw new Error("Bytecode must be valid hexadecimal");
+        throw new Error(t("errorInvalidHex"));
       }
 
       // Calculate size (each pair of hex chars = 1 byte)
@@ -99,7 +101,7 @@ export function ContractSizeCalculatorTool() {
         remainingBytes,
       });
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Calculation failed");
+      setError(e instanceof Error ? e.message : t("errorCalculationFailed"));
       setSizeResult(null);
     }
   };
@@ -136,11 +138,11 @@ export function ContractSizeCalculatorTool() {
   const getStatusMessage = (status: "safe" | "warning" | "danger") => {
     switch (status) {
       case "safe":
-        return "Contract size is within safe limits";
+        return t("statusSafe");
       case "warning":
-        return "Contract is approaching the size limit - consider optimization";
+        return t("statusWarning");
       case "danger":
-        return "Contract exceeds or is very close to the 24KB limit!";
+        return t("statusDanger");
     }
   };
 
@@ -153,14 +155,14 @@ export function ContractSizeCalculatorTool() {
           variant={inputMode === "bytecode" ? "primary" : "secondary"}
           className="flex-1"
         >
-          Bytecode
+          {t("tabBytecode")}
         </Button>
         <Button
           onClick={() => setInputMode("solidity")}
           variant={inputMode === "solidity" ? "primary" : "secondary"}
           className="flex-1"
         >
-          Solidity Code
+          {t("tabSolidity")}
         </Button>
       </div>
 
@@ -168,7 +170,7 @@ export function ContractSizeCalculatorTool() {
       <div>
         {inputMode === "bytecode" ? (
           <>
-            <Label className="mb-2 block text-sm">Contract Bytecode (Hex)</Label>
+            <Label className="mb-2 block text-sm">{t("bytecodeLabel")}</Label>
             <Textarea
               value={bytecode}
               onChange={(e) => setBytecode(e.target.value)}
@@ -178,7 +180,7 @@ export function ContractSizeCalculatorTool() {
           </>
         ) : (
           <>
-            <Label className="mb-2 block text-sm">Solidity Source Code (Estimation)</Label>
+            <Label className="mb-2 block text-sm">{t("solidityLabel")}</Label>
             <Textarea
               value={solidityCode}
               onChange={(e) => setSolidityCode(e.target.value)}
@@ -186,17 +188,17 @@ export function ContractSizeCalculatorTool() {
               className="font-mono text-sm min-h-[200px] mb-2"
             />
             <p className="text-xs text-muted-foreground mb-2">
-              Note: This provides a rough estimation. For accurate size, compile and use bytecode.
+              {t("solidityNote")}
             </p>
           </>
         )}
 
         <div className="flex gap-2">
           <Button onClick={calculateSize} variant="primary" className="flex-1">
-            Calculate Size
+            {t("calculateButton")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -222,7 +224,7 @@ export function ContractSizeCalculatorTool() {
           {/* Progress Bar */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <Label>Size Limit Progress</Label>
+              <Label>{t("sizeLimitProgress")}</Label>
               <span className="font-mono">{sizeResult.percentage.toFixed(1)}%</span>
             </div>
             <div className="w-full h-6 bg-border rounded-[12px] overflow-hidden">
@@ -232,18 +234,18 @@ export function ContractSizeCalculatorTool() {
               />
             </div>
             <div className="flex justify-between text-xs text-muted-foreground">
-              <span>0 bytes</span>
-              <span>24,576 bytes (24 KB limit)</span>
+              <span>{t("progressStart")}</span>
+              <span>{t("progressLimit")}</span>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-              <Label className="mb-1 block text-xs text-muted-foreground">Current Size</Label>
+              <Label className="mb-1 block text-xs text-muted-foreground">{t("currentSize")}</Label>
               <div className="font-mono text-base font-semibold">{sizeResult.bytes} bytes</div>
             </div>
             <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-              <Label className="mb-1 block text-xs text-muted-foreground">Remaining</Label>
+              <Label className="mb-1 block text-xs text-muted-foreground">{t("remaining")}</Label>
               <div className="font-mono text-base font-semibold">
                 {sizeResult.remainingBytes > 0 ? sizeResult.remainingBytes : 0} bytes
               </div>
@@ -253,55 +255,55 @@ export function ContractSizeCalculatorTool() {
           {sizeResult.status !== "safe" && (
             <div className="p-4 rounded-[12px] border border-blue-500/30 bg-blue-500/10">
               <Label className="mb-3 block text-sm font-semibold text-blue-400">
-                Optimization Tips
+                {t("optimizationTips")}
               </Label>
               <ul className="space-y-2 text-sm">
                 <li className="flex items-start gap-2">
                   <span className="text-blue-400 font-bold">•</span>
                   <span>
-                    <strong>Enable optimizer:</strong> Use Solidity compiler with optimizer enabled (recommended runs: 200-1000)
+                    <strong>{t("tipOptimizerTitle")}</strong> {t("tipOptimizerDesc")}
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-blue-400 font-bold">•</span>
                   <span>
-                    <strong>Shorten error messages:</strong> Use custom errors instead of require strings (Solidity 0.8.4+)
+                    <strong>{t("tipErrorsTitle")}</strong> {t("tipErrorsDesc")}
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-blue-400 font-bold">•</span>
                   <span>
-                    <strong>Extract libraries:</strong> Move reusable code to external libraries
+                    <strong>{t("tipLibrariesTitle")}</strong> {t("tipLibrariesDesc")}
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-blue-400 font-bold">•</span>
                   <span>
-                    <strong>Use proxies:</strong> Split logic across multiple contracts with proxy pattern
+                    <strong>{t("tipProxiesTitle")}</strong> {t("tipProxiesDesc")}
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-blue-400 font-bold">•</span>
                   <span>
-                    <strong>Remove unused code:</strong> Delete dead code, unused imports, and redundant functions
+                    <strong>{t("tipUnusedTitle")}</strong> {t("tipUnusedDesc")}
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-blue-400 font-bold">•</span>
                   <span>
-                    <strong>Optimize storage:</strong> Pack storage variables efficiently, use smaller types when possible
+                    <strong>{t("tipStorageTitle")}</strong> {t("tipStorageDesc")}
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-blue-400 font-bold">•</span>
                   <span>
-                    <strong>Use function modifiers:</strong> Extract repeated checks into modifiers
+                    <strong>{t("tipModifiersTitle")}</strong> {t("tipModifiersDesc")}
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-blue-400 font-bold">•</span>
                   <span>
-                    <strong>Avoid inheritance bloat:</strong> Only inherit from necessary contracts
+                    <strong>{t("tipInheritanceTitle")}</strong> {t("tipInheritanceDesc")}
                   </span>
                 </li>
               </ul>
@@ -309,7 +311,7 @@ export function ContractSizeCalculatorTool() {
           )}
 
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <Label className="mb-2 block text-sm">Get Contract Bytecode</Label>
+            <Label className="mb-2 block text-sm">{t("getBytecodeLabel")}</Label>
             <Code language="javascript">
 {`// Using Hardhat
 const MyContract = await ethers.getContractFactory("MyContract");
@@ -329,7 +331,7 @@ console.log("Size:", (code.length - 2) / 2, "bytes");`}
           </div>
 
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <Label className="mb-2 block text-sm">Hardhat Config for Optimization</Label>
+            <Label className="mb-2 block text-sm">{t("hardhatConfigLabel")}</Label>
             <Code language="javascript">
 {`// hardhat.config.js
 module.exports = {
@@ -348,7 +350,7 @@ module.exports = {
           </div>
 
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <Label className="mb-2 block text-sm">Example: Using Custom Errors (Saves Space)</Label>
+            <Label className="mb-2 block text-sm">{t("customErrorsLabel")}</Label>
             <Code language="solidity">
 {`// ❌ Before (uses more bytecode)
 require(msg.sender == owner, "Only owner can call this function");

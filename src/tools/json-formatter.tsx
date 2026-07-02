@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -8,6 +9,7 @@ import { ToolConfig } from "@/types/tool";
 import { MdCheck, MdClose } from "react-icons/md";
 
 export function JsonFormatterTool() {
+  const t = useTranslations("toolUI.json-formatter");
   const [input, setInput] = useState("");
   const [isValid, setIsValid] = useState<boolean | null>(null);
   const [error, setError] = useState("");
@@ -28,7 +30,7 @@ export function JsonFormatterTool() {
       setParsed(JSON.stringify(result, null, 2));
     } catch (e) {
       setIsValid(false);
-      setError(e instanceof Error ? e.message : "Invalid JSON");
+      setError(e instanceof Error ? e.message : t("invalidJson"));
       setParsed("");
     }
   };
@@ -48,7 +50,7 @@ export function JsonFormatterTool() {
       setParsed(JSON.stringify(result));
     } catch (e) {
       setIsValid(false);
-      setError(e instanceof Error ? e.message : "Invalid JSON");
+      setError(e instanceof Error ? e.message : t("invalidJson"));
       setParsed("");
     }
   };
@@ -64,7 +66,7 @@ export function JsonFormatterTool() {
     <div className="space-y-6">
       {/* Input */}
       <div>
-        <Label className="mb-2 block text-sm">JSON Input</Label>
+        <Label className="mb-2 block text-sm">{t("jsonInputLabel")}</Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -76,14 +78,14 @@ export function JsonFormatterTool() {
       {/* Buttons */}
       <div className="flex flex-col sm:flex-row gap-2">
         <Button onClick={handleFormat} variant="primary" className="flex-1">
-          <span className="hidden sm:inline">Format (Pretty)</span>
-          <span className="sm:hidden">Format</span>
+          <span className="hidden sm:inline">{t("formatPretty")}</span>
+          <span className="sm:hidden">{t("format")}</span>
         </Button>
         <Button onClick={handleMinify} variant="primary" className="flex-1 sm:flex-none">
-          Minify
+          {t("minify")}
         </Button>
         <Button onClick={handleReset} className="sm:flex-none">
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
@@ -97,7 +99,7 @@ export function JsonFormatterTool() {
           }`}
         >
           <div className="text-sm font-medium flex items-center gap-1">
-            {isValid ? <><MdCheck className="w-4 h-4" /> Valid JSON</> : <><MdClose className="w-4 h-4" /> Invalid JSON: {error}</>}
+            {isValid ? <><MdCheck className="w-4 h-4" /> {t("valid")}</> : <><MdClose className="w-4 h-4" /> {t("invalidPrefix")} {error}</>}
           </div>
         </div>
       )}
@@ -105,7 +107,7 @@ export function JsonFormatterTool() {
       {/* Parsed Output */}
       {parsed && (
         <Textarea
-          label="Formatted JSON"
+          label={t("formattedLabel")}
           value={parsed}
           readOnly
           showCopy

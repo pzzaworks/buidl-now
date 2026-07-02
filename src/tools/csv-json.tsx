@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -135,6 +136,7 @@ function jsonToCsv(json: string, delimiter: DelimiterType): string {
 }
 
 export function CsvJsonTool() {
+  const t = useTranslations("toolUI.csv-json");
   const [csvInput, setCsvInput] = useState("");
   const [jsonInput, setJsonInput] = useState("");
   const [delimiter, setDelimiter] = useState<DelimiterType>("comma");
@@ -150,7 +152,7 @@ export function CsvJsonTool() {
         setJsonInput(json);
         setError("");
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Invalid CSV");
+        setError(e instanceof Error ? e.message : t("errorInvalidCsv"));
       }
     }
   }, [csvInput, delimiter, hasHeaders, lastEdited]);
@@ -163,7 +165,7 @@ export function CsvJsonTool() {
         setCsvInput(csv);
         setError("");
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Invalid JSON");
+        setError(e instanceof Error ? e.message : t("errorInvalidJson"));
       }
     }
   }, [jsonInput, delimiter, lastEdited]);
@@ -181,47 +183,47 @@ export function CsvJsonTool() {
       {/* Options */}
       <div className="flex flex-col sm:flex-row gap-4 p-4 rounded-[12px] border border-border bg-card">
         <div className="flex-1">
-          <Label className="mb-2 block text-sm">Delimiter</Label>
+          <Label className="mb-2 block text-sm">{t("delimiter")}</Label>
           <div className="flex gap-2 flex-wrap">
             <Button
               onClick={() => setDelimiter("comma")}
               variant={delimiter === "comma" ? "primary" : "secondary"}
               size="sm"
             >
-              Comma (,)
+              {t("comma")}
             </Button>
             <Button
               onClick={() => setDelimiter("semicolon")}
               variant={delimiter === "semicolon" ? "primary" : "secondary"}
               size="sm"
             >
-              Semicolon (;)
+              {t("semicolon")}
             </Button>
             <Button
               onClick={() => setDelimiter("tab")}
               variant={delimiter === "tab" ? "primary" : "secondary"}
               size="sm"
             >
-              Tab
+              {t("tab")}
             </Button>
           </div>
         </div>
         <div className="flex-1">
-          <Label className="mb-2 block text-sm">First Row</Label>
+          <Label className="mb-2 block text-sm">{t("firstRow")}</Label>
           <div className="flex gap-2 flex-wrap">
             <Button
               onClick={() => setHasHeaders(true)}
               variant={hasHeaders ? "primary" : "secondary"}
               size="sm"
             >
-              Contains Headers
+              {t("containsHeaders")}
             </Button>
             <Button
               onClick={() => setHasHeaders(false)}
               variant={!hasHeaders ? "primary" : "secondary"}
               size="sm"
             >
-              No Headers
+              {t("noHeaders")}
             </Button>
           </div>
         </div>
@@ -245,7 +247,7 @@ export function CsvJsonTool() {
         <button
           onClick={handleSwap}
           className="w-10 h-10 rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] flex items-center justify-center transition-colors cursor-pointer"
-          title="Swap"
+          title={t("swap")}
         >
           <MdSwapVert className="w-5 h-5" />
         </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -8,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ToolConfig } from "@/types/tool";
 
 export function RemoveDuplicatesTool() {
+  const t = useTranslations("toolUI.remove-duplicates");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [caseSensitive, setCaseSensitive] = useState(false);
@@ -64,17 +66,17 @@ export function RemoveDuplicatesTool() {
             setOutput("");
             setStats({ original: 0, unique: 0, removed: 0 });
           }}
-          label="Case Sensitive"
+          label={t("caseSensitive")}
         />
       </div>
 
       {/* Input */}
       <div>
-        <Label className="mb-2 block text-sm">Input Text (one line per item)</Label>
+        <Label className="mb-2 block text-sm">{t("inputLabel")}</Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Enter lines with potential duplicates...&#10;apple&#10;banana&#10;apple&#10;cherry"
+          placeholder={t("inputPlaceholder")}
           className="min-h-[200px]"
         />
       </div>
@@ -82,10 +84,10 @@ export function RemoveDuplicatesTool() {
       {/* Action Buttons */}
       <div className="flex gap-2">
         <Button onClick={handleRemoveDuplicates} variant="primary" className="flex-1">
-          Remove Duplicates
+          {t("removeDuplicates")}
         </Button>
         <Button onClick={handleReset}>
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
@@ -94,15 +96,15 @@ export function RemoveDuplicatesTool() {
         <div className="grid grid-cols-3 gap-4">
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
             <div className="text-lg font-bold">{stats.original}</div>
-            <div className="text-sm text-muted-foreground">Original Lines</div>
+            <div className="text-sm text-muted-foreground">{t("originalLines")}</div>
           </div>
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
             <div className="text-lg font-bold">{stats.unique}</div>
-            <div className="text-sm text-muted-foreground">Unique Lines</div>
+            <div className="text-sm text-muted-foreground">{t("uniqueLines")}</div>
           </div>
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
             <div className="text-lg font-bold text-blue-400">{stats.removed}</div>
-            <div className="text-sm text-muted-foreground">Duplicates Removed</div>
+            <div className="text-sm text-muted-foreground">{t("duplicatesRemoved")}</div>
           </div>
         </div>
       )}
@@ -110,7 +112,7 @@ export function RemoveDuplicatesTool() {
       {/* Output */}
       {output && (
         <Textarea
-          label="Output (Duplicates Removed)"
+          label={t("outputLabel")}
           value={output}
           readOnly
           showCopy

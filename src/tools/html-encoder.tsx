@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -26,6 +27,7 @@ const reverseHtmlEntities: Record<string, string> = {
 };
 
 export function HtmlEncoderTool() {
+  const t = useTranslations("toolUI.html-encoder");
   const [decoded, setDecoded] = useState("");
   const [encoded, setEncoded] = useState("");
 
@@ -61,7 +63,7 @@ export function HtmlEncoderTool() {
     <div className="space-y-6">
       {/* Decoded */}
       <div>
-        <Label className="mb-2 block text-sm">Plain Text</Label>
+        <Label className="mb-2 block text-sm">{t("plainTextLabel")}</Label>
         <Textarea
           value={decoded}
           onChange={(e) => setDecoded(e.target.value)}
@@ -73,19 +75,19 @@ export function HtmlEncoderTool() {
       {/* Buttons */}
       <div className="flex flex-col sm:flex-row gap-2">
         <Button onClick={handleEncode} className="flex-1" variant="primary">
-          Encode
+          {t("encode")}
         </Button>
         <Button onClick={handleDecode} className="flex-1 sm:flex-none">
-          Decode
+          {t("decode")}
         </Button>
         <Button onClick={handleReset} className="sm:flex-none">
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
       {/* Encoded */}
       <div>
-        <Label className="mb-2 block text-sm">HTML Encoded Text</Label>
+        <Label className="mb-2 block text-sm">{t("encodedTextLabel")}</Label>
         <Textarea
           value={encoded}
           onChange={(e) => setEncoded(e.target.value)}

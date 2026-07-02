@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { ToolConfig } from "@/types/tool";
 
 export function ImageBase64Tool() {
+  const t = useTranslations("toolUI.image-base64");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [base64String, setBase64String] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
@@ -33,13 +35,13 @@ export function ImageBase64Tool() {
 
     // Check if file is an image
     if (!file.type.startsWith("image/")) {
-      setError("Please select a valid image file");
+      setError(t("errorInvalidImage"));
       return;
     }
 
     // Check file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      setError("Image size must be less than 5MB");
+      setError(t("errorTooLarge"));
       return;
     }
 
@@ -64,7 +66,7 @@ export function ImageBase64Tool() {
       image.src = result;
     };
     reader.onerror = () => {
-      setError("Failed to read file");
+      setError(t("errorReadFailed"));
     };
     reader.readAsDataURL(file);
   };
@@ -86,7 +88,7 @@ export function ImageBase64Tool() {
     <div className="space-y-6">
       {/* File Upload Section */}
       <div>
-        <Label className="mb-2 block text-sm">Select Image</Label>
+        <Label className="mb-2 block text-sm">{t("selectImage")}</Label>
         <input
           ref={fileInputRef}
           type="file"
@@ -95,7 +97,7 @@ export function ImageBase64Tool() {
           className="block w-full text-sm text-[var(--color-gray-500)] file:mr-4 file:py-2.5 file:px-4 file:rounded-[var(--radius-10)] file:border file:border-[var(--color-gray-200)] file:text-sm file:font-medium file:bg-[var(--color-gray-0)] file:text-[var(--color-gray-950)] hover:file:bg-[var(--color-gray-50)] file:cursor-pointer file:transition-colors"
         />
         <p className="mt-2 text-xs text-[var(--color-gray-400)]">
-          Maximum file size: 5MB. Supported formats: PNG, JPG, GIF, SVG, WebP
+          {t("fileHelp")}
         </p>
       </div>
 
@@ -111,11 +113,11 @@ export function ImageBase64Tool() {
         <div className="space-y-4">
           {/* Image Preview */}
           <div>
-            <Label className="mb-2 block text-sm">Image Preview</Label>
+            <Label className="mb-2 block text-sm">{t("imagePreview")}</Label>
             <div className="border border-[var(--color-gray-200)] rounded-[12px] p-4 bg-[var(--color-gray-0)] flex items-center justify-center">
               <img
                 src={previewUrl}
-                alt="Preview"
+                alt={t("previewAlt")}
                 width={previewDimensions.width}
                 height={previewDimensions.height}
                 className="max-w-full max-h-64 object-contain"
@@ -126,18 +128,18 @@ export function ImageBase64Tool() {
           {/* File Information */}
           <div className="grid grid-cols-2 gap-4">
             <div className="p-3 bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] rounded-[12px]">
-              <Label className="text-xs text-[var(--color-gray-500)] mb-1 block">Original Size</Label>
+              <Label className="text-xs text-[var(--color-gray-500)] mb-1 block">{t("originalSize")}</Label>
               <p className="text-sm font-mono">{formatBytes(originalSize)}</p>
             </div>
             <div className="p-3 bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] rounded-[12px]">
-              <Label className="text-xs text-[var(--color-gray-500)] mb-1 block">Encoded Size</Label>
+              <Label className="text-xs text-[var(--color-gray-500)] mb-1 block">{t("encodedSize")}</Label>
               <p className="text-sm font-mono">{formatBytes(encodedSize)}</p>
             </div>
           </div>
 
           {/* Base64 Output */}
           <Input
-            label="Base64 Data URL"
+            label={t("base64DataUrl")}
             value={base64String}
             readOnly
             showCopy
@@ -147,13 +149,13 @@ export function ImageBase64Tool() {
           {/* Size Warning */}
           {encodedSize > originalSize * 1.5 && (
             <div className="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-[12px] text-yellow-400 text-sm">
-              Note: Base64 encoding increases file size by approximately 33%. Consider using direct file references for large images.
+              {t("sizeWarning")}
             </div>
           )}
 
           {/* Reset Button */}
           <Button onClick={handleReset} className="w-full">
-            Reset
+            {t("reset")}
           </Button>
         </div>
       )}

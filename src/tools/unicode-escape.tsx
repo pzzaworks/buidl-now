@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -121,6 +122,7 @@ function encodeAllCharacters(text: string, format: EscapeFormat): string {
 }
 
 export function UnicodeEscapeTool() {
+  const t = useTranslations("toolUI.unicode-escape");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [mode, setMode] = useState<"encode" | "decode">("encode");
@@ -140,7 +142,7 @@ export function UnicodeEscapeTool() {
         setOutput(decodeUnicodeEscape(input, format));
       }
     } catch {
-      setOutput("Error: Invalid input");
+      setOutput(t("invalidInput"));
     }
   };
 
@@ -168,7 +170,7 @@ export function UnicodeEscapeTool() {
           }}
           className="flex-1"
         >
-          Encode
+          {t("encode")}
         </Button>
         <Button
           variant={mode === "decode" ? "primary" : "secondary"}
@@ -178,13 +180,13 @@ export function UnicodeEscapeTool() {
           }}
           className="flex-1"
         >
-          Decode
+          {t("decode")}
         </Button>
       </div>
 
       {/* Format Selection */}
       <div>
-        <Label className="mb-2 block text-sm">Escape Format</Label>
+        <Label className="mb-2 block text-sm">{t("escapeFormatLabel")}</Label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {(Object.keys(formatLabels) as EscapeFormat[]).map((fmt) => (
             <Button
@@ -216,7 +218,7 @@ export function UnicodeEscapeTool() {
             className="w-4 h-4 rounded border-[var(--color-gray-300)]"
           />
           <Label htmlFor="encodeAll" className="text-sm cursor-pointer">
-            Encode all characters (including ASCII)
+            {t("encodeAllLabel")}
           </Label>
         </div>
       )}
@@ -224,31 +226,31 @@ export function UnicodeEscapeTool() {
       {/* Input Section */}
       <div>
         <Label className="mb-2 block text-sm">
-          {mode === "encode" ? "Text Input" : "Escaped Input"}
+          {mode === "encode" ? t("textInputLabel") : t("escapedInputLabel")}
         </Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={
             mode === "encode"
-              ? "Enter text with Unicode characters..."
-              : "Enter escaped text (e.g., \\u0048\\u0065\\u006c\\u006c\\u006f)"
+              ? t("textPlaceholder")
+              : t("escapedPlaceholder")
           }
           rows={6}
           className="font-mono text-sm mb-2"
         />
         <div className="flex gap-2">
           <Button onClick={handleConvert} variant="primary" className="flex-1">
-            {mode === "encode" ? "Encode" : "Decode"}
+            {mode === "encode" ? t("encode") : t("decode")}
           </Button>
-          <Button onClick={handleReset}>Reset</Button>
+          <Button onClick={handleReset}>{t("reset")}</Button>
         </div>
       </div>
 
       {/* Output Section */}
       {output && (
         <Textarea
-          label={mode === "encode" ? "Escaped Output" : "Decoded Text"}
+          label={mode === "encode" ? t("escapedOutputLabel") : t("decodedTextLabel")}
           value={output}
           readOnly
           showCopy

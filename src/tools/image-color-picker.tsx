@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,7 @@ interface PickedColor {
 }
 
 export function ImageColorPickerTool() {
+  const t = useTranslations("toolUI.image-color-picker");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
   const [imageDimensions, setImageDimensions] = useState({
@@ -78,12 +80,12 @@ export function ImageColorPickerTool() {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      setError("Please select a valid image file");
+      setError(t("errorInvalidFile"));
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      setError("Image size must be less than 5MB");
+      setError(t("errorFileSize"));
       return;
     }
 
@@ -195,7 +197,7 @@ export function ImageColorPickerTool() {
     <div className="space-y-6">
       {/* File Upload Section */}
       <div>
-        <Label className="mb-2 block text-sm">Select Image</Label>
+        <Label className="mb-2 block text-sm">{t("selectImageLabel")}</Label>
         <input
           ref={fileInputRef}
           type="file"
@@ -204,7 +206,7 @@ export function ImageColorPickerTool() {
           className="block w-full text-sm text-[var(--color-gray-500)] file:mr-4 file:py-2.5 file:px-4 file:rounded-[var(--radius-10)] file:border file:border-[var(--color-gray-200)] file:text-sm file:font-medium file:bg-[var(--color-gray-0)] file:text-[var(--color-gray-950)] hover:file:bg-[var(--color-gray-50)] file:cursor-pointer file:transition-colors"
         />
         <p className="mt-2 text-xs text-[var(--color-gray-400)]">
-          Maximum file size: 5MB. Click on the image to pick a color.
+          {t("uploadHint")}
         </p>
       </div>
 
@@ -220,13 +222,13 @@ export function ImageColorPickerTool() {
         <div className="space-y-4">
           <div>
             <Label className="mb-2 block text-sm">
-              Click on the image to pick a color
+              {t("clickToPick")}
             </Label>
             <div className="border border-[var(--color-gray-200)] rounded-[12px] p-4 bg-[var(--color-gray-0)] flex items-center justify-center">
               <img
                 ref={imageRef}
                 src={imageUrl}
-                alt="Color picker"
+                alt={t("imageAlt")}
                 width={imageDimensions.width}
                 height={imageDimensions.height}
                 onClick={handleImageClick}
@@ -242,13 +244,13 @@ export function ImageColorPickerTool() {
             className="w-full"
             disabled={isExtracting}
           >
-            {isExtracting ? "Extracting..." : "Extract Dominant Colors"}
+            {isExtracting ? t("extracting") : t("extractDominant")}
           </Button>
 
           {/* Picked Color Display */}
           {pickedColor && (
             <div className="space-y-3">
-              <Label className="text-sm">Picked Color</Label>
+              <Label className="text-sm">{t("pickedColor")}</Label>
               <div className="border border-[var(--color-gray-200)] rounded-[12px] overflow-hidden">
                 <div
                   className="h-24 w-full"
@@ -284,7 +286,7 @@ export function ImageColorPickerTool() {
           {/* Dominant Colors Display */}
           {dominantColors.length > 0 && (
             <div className="space-y-3">
-              <Label className="text-sm">Dominant Colors</Label>
+              <Label className="text-sm">{t("dominantColors")}</Label>
               <div className="grid gap-3">
                 {dominantColors.map((color, index) => (
                   <div
@@ -304,7 +306,7 @@ export function ImageColorPickerTool() {
                         type="button"
                         onClick={() => copyColor(color.hex, index)}
                         className="w-8 h-8 rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] flex items-center justify-center transition-colors cursor-pointer"
-                        title={copiedIndex === index ? "Copied!" : "Copy to clipboard"}
+                        title={copiedIndex === index ? t("copied") : t("copyToClipboard")}
                       >
                         {copiedIndex === index ? (
                           <MdCheck style={{ width: 16, height: 16, color: 'var(--color-green-500)' }} />
@@ -321,7 +323,7 @@ export function ImageColorPickerTool() {
 
           {/* Reset Button */}
           <Button onClick={handleReset} className="w-full">
-            Reset
+            {t("reset")}
           </Button>
         </div>
       )}

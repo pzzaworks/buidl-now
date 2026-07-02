@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -82,6 +83,7 @@ function generateAsciiTable(): AsciiChar[] {
 }
 
 export function AsciiTableTool() {
+  const t = useTranslations("toolUI.ascii-table");
   const [search, setSearch] = useState("");
   const [rangeStart, setRangeStart] = useState("");
   const [rangeEnd, setRangeEnd] = useState("63");
@@ -133,17 +135,17 @@ export function AsciiTableTool() {
       {/* Search */}
       <div>
         <Input
-          label="Search"
+          label={t("searchLabel")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by decimal, hex, character, or description..."
+          placeholder={t("searchPlaceholder")}
           className="text-sm"
         />
       </div>
 
       {/* Range Filter */}
       <div>
-        <Label className="mb-2 block text-sm">Filter by Range (Decimal)</Label>
+        <Label className="mb-2 block text-sm">{t("rangeLabel")}</Label>
         <div className="grid grid-cols-2 gap-2">
           <Input
             type="number"
@@ -151,7 +153,7 @@ export function AsciiTableTool() {
             max="127"
             value={rangeStart}
             onChange={(e) => setRangeStart(e.target.value)}
-            placeholder="Start (0)"
+            placeholder={t("startPlaceholder")}
             className="text-sm"
           />
           <Input
@@ -160,7 +162,7 @@ export function AsciiTableTool() {
             max="127"
             value={rangeEnd}
             onChange={(e) => setRangeEnd(e.target.value)}
-            placeholder="End (127)"
+            placeholder={t("endPlaceholder")}
             className="text-sm"
           />
         </div>
@@ -172,26 +174,26 @@ export function AsciiTableTool() {
           onClick={() => setFilterType("all")}
           variant={filterType === "all" ? "primary" : "secondary"}
         >
-          All (128)
+          {t("filterAll")} (128)
         </Button>
         <Button
           onClick={() => setFilterType("printable")}
           variant={filterType === "printable" ? "primary" : "secondary"}
         >
-          Printable (95)
+          {t("printable")} (95)
         </Button>
         <Button
           onClick={() => setFilterType("control")}
           variant={filterType === "control" ? "primary" : "secondary"}
         >
-          Control (33)
+          {t("control")} (33)
         </Button>
-        <Button onClick={handleReset}>Reset</Button>
+        <Button onClick={handleReset}>{t("reset")}</Button>
       </div>
 
       {/* Results Count */}
       <div className="text-sm text-muted-foreground">
-        Showing {filteredTable.length} of 128 characters
+        {t("showing", { count: filteredTable.length })}
       </div>
 
       {/* ASCII Table */}
@@ -199,12 +201,12 @@ export function AsciiTableTool() {
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="bg-[var(--color-gray-50)]">
-              <th className="border border-border p-2 text-left font-semibold">Dec</th>
-              <th className="border border-border p-2 text-left font-semibold">Hex</th>
-              <th className="border border-border p-2 text-left font-semibold">Oct</th>
-              <th className="border border-border p-2 text-left font-semibold">Binary</th>
-              <th className="border border-border p-2 text-left font-semibold">Char</th>
-              <th className="border border-border p-2 text-left font-semibold">Description</th>
+              <th className="border border-border p-2 text-left font-semibold">{t("colDec")}</th>
+              <th className="border border-border p-2 text-left font-semibold">{t("colHex")}</th>
+              <th className="border border-border p-2 text-left font-semibold">{t("colOct")}</th>
+              <th className="border border-border p-2 text-left font-semibold">{t("colBinary")}</th>
+              <th className="border border-border p-2 text-left font-semibold">{t("colChar")}</th>
+              <th className="border border-border p-2 text-left font-semibold">{t("colDescription")}</th>
             </tr>
           </thead>
           <tbody>
@@ -224,7 +226,7 @@ export function AsciiTableTool() {
 
       {filteredTable.length === 0 && (
         <div className="text-center text-muted-foreground py-8">
-          No characters match your search criteria
+          {t("noResults")}
         </div>
       )}
     </div>

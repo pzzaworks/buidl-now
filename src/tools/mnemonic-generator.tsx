@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -25,6 +26,7 @@ const WORD_LIST = [
 ];
 
 export function MnemonicGeneratorTool() {
+  const t = useTranslations("toolUI.mnemonic-generator");
   const [mode, setMode] = useState<"generate" | "validate">("generate");
   const [wordCount, setWordCount] = useState<12 | 24>(12);
   const [mnemonic, setMnemonic] = useState("");
@@ -47,7 +49,7 @@ export function MnemonicGeneratorTool() {
     if (!mnemonic.trim()) {
       setValidationResult({
         isValid: false,
-        message: "Please enter a mnemonic phrase",
+        message: t("errorEmpty"),
       });
       return;
     }
@@ -58,7 +60,7 @@ export function MnemonicGeneratorTool() {
     if (words.length !== 12 && words.length !== 24) {
       setValidationResult({
         isValid: false,
-        message: `Invalid word count: ${words.length}. Must be 12 or 24 words.`,
+        message: t("invalidWordCount", { count: words.length }),
       });
       return;
     }
@@ -68,7 +70,7 @@ export function MnemonicGeneratorTool() {
     if (invalidWords.length > 0) {
       setValidationResult({
         isValid: false,
-        message: `Invalid words found: ${invalidWords.join(", ")}. (Note: This is a demo using limited word list)`,
+        message: t("invalidWords", { words: invalidWords.join(", ") }),
       });
       return;
     }
@@ -76,7 +78,7 @@ export function MnemonicGeneratorTool() {
     // In production, you would also validate the checksum
     setValidationResult({
       isValid: true,
-      message: "Mnemonic appears valid! (Demo validation - use proper BIP39 library in production)",
+      message: t("validMnemonic"),
     });
   };
 
@@ -92,12 +94,12 @@ export function MnemonicGeneratorTool() {
         <div className="flex items-start gap-3">
           <MdWarning className="w-5 h-5 text-[var(--color-red-500)] flex-shrink-0 mt-0.5" />
           <div className="text-sm text-[var(--color-red-500)]">
-            <strong className="block mb-1">Security Warning</strong>
+            <strong className="block mb-1">{t("securityWarning")}</strong>
             <ul className="list-disc list-inside space-y-1">
-              <li>Never share your mnemonic phrase with anyone</li>
-              <li>Store it securely offline (paper wallet, hardware wallet)</li>
-              <li>Anyone with your mnemonic can access all your funds</li>
-              <li>This demo uses a limited word list - use proper BIP39 library in production</li>
+              <li>{t("warnNeverShare")}</li>
+              <li>{t("warnStoreOffline")}</li>
+              <li>{t("warnAccessFunds")}</li>
+              <li>{t("warnDemoWordList")}</li>
             </ul>
           </div>
         </div>
@@ -105,7 +107,7 @@ export function MnemonicGeneratorTool() {
 
       {/* Mode Selection */}
       <div>
-        <Label className="mb-2 block text-sm">Mode</Label>
+        <Label className="mb-2 block text-sm">{t("mode")}</Label>
         <div className="flex gap-2">
           <Button
             onClick={() => {
@@ -115,7 +117,7 @@ export function MnemonicGeneratorTool() {
             variant={mode === "generate" ? "primary" : "secondary"}
             className="flex-1"
           >
-            Generate
+            {t("generate")}
           </Button>
           <Button
             onClick={() => {
@@ -125,7 +127,7 @@ export function MnemonicGeneratorTool() {
             variant={mode === "validate" ? "primary" : "secondary"}
             className="flex-1"
           >
-            Validate
+            {t("validate")}
           </Button>
         </div>
       </div>
@@ -134,32 +136,32 @@ export function MnemonicGeneratorTool() {
       {mode === "generate" && (
         <div className="space-y-4">
           <div>
-            <Label className="mb-2 block text-sm">Word Count</Label>
+            <Label className="mb-2 block text-sm">{t("wordCount")}</Label>
             <div className="flex gap-2">
               <Button
                 onClick={() => setWordCount(12)}
                 variant={wordCount === 12 ? "primary" : "secondary"}
                 className="flex-1"
               >
-                12 Words
+                {t("words12")}
               </Button>
               <Button
                 onClick={() => setWordCount(24)}
                 variant={wordCount === 24 ? "primary" : "secondary"}
                 className="flex-1"
               >
-                24 Words
+                {t("words24")}
               </Button>
             </div>
           </div>
 
           <Button onClick={handleGenerate} variant="primary" className="w-full">
-            Generate Mnemonic
+            {t("generateMnemonic")}
           </Button>
 
           {mnemonic && (
             <Textarea
-              label="Generated Mnemonic Phrase"
+              label={t("generatedPhrase")}
               value={mnemonic}
               readOnly
               showCopy
@@ -173,7 +175,7 @@ export function MnemonicGeneratorTool() {
       {mode === "validate" && (
         <div className="space-y-4">
           <Textarea
-            label="Mnemonic Phrase to Validate"
+            label={t("phraseToValidate")}
             value={mnemonic}
             onChange={(e) => {
               setMnemonic(e.target.value);
@@ -185,10 +187,10 @@ export function MnemonicGeneratorTool() {
 
           <div className="flex gap-2">
             <Button onClick={handleValidate} variant="primary" className="flex-1">
-              Validate Mnemonic
+              {t("validateMnemonic")}
             </Button>
             <Button onClick={handleReset}>
-              Reset
+              {t("reset")}
             </Button>
           </div>
         </div>
@@ -212,10 +214,7 @@ export function MnemonicGeneratorTool() {
       {/* Info Box */}
       <div className="p-4 rounded-[12px] border border-blue-500/30 bg-blue-500/5">
         <div className="text-sm text-blue-400">
-          <strong>About BIP39:</strong> BIP39 is a standard for generating mnemonic phrases
-          (seed phrases) that can be used to derive HD wallets. A 12-word phrase provides
-          128 bits of entropy, while 24 words provide 256 bits. This demo uses a limited
-          word list for demonstration purposes.
+          <strong>{t("aboutTitle")}</strong> {t("aboutBody")}
         </div>
       </div>
     </div>

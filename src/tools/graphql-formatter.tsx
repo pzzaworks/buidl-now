@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -8,6 +9,7 @@ import { ToolConfig } from "@/types/tool";
 import { MdClose } from "react-icons/md";
 
 export function GraphqlFormatterTool() {
+  const t = useTranslations("toolUI.graphql-formatter");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
@@ -76,7 +78,7 @@ export function GraphqlFormatterTool() {
       setOutput(formatGraphql(input));
       setError("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to format GraphQL");
+      setError(e instanceof Error ? e.message : t("failedToFormat"));
       setOutput("");
     }
   };
@@ -91,7 +93,7 @@ export function GraphqlFormatterTool() {
     <div className="space-y-6">
       {/* Input Section */}
       <div>
-        <Label className="mb-2 block text-sm">GraphQL Query / Schema</Label>
+        <Label className="mb-2 block text-sm">{t("inputLabel")}</Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -101,9 +103,9 @@ export function GraphqlFormatterTool() {
         />
         <div className="flex gap-2">
           <Button onClick={handleFormat} variant="primary" className="flex-1">
-            Format GraphQL
+            {t("formatGraphql")}
           </Button>
-          <Button onClick={handleReset}>Reset</Button>
+          <Button onClick={handleReset}>{t("reset")}</Button>
         </div>
       </div>
 
@@ -119,7 +121,7 @@ export function GraphqlFormatterTool() {
       {/* Output Section */}
       {output && !error && (
         <Textarea
-          label="Formatted GraphQL"
+          label={t("formattedGraphql")}
           value={output}
           readOnly
           showCopy

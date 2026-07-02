@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -8,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ToolConfig } from "@/types/tool";
 
 export function FaviconGeneratorTool() {
+  const t = useTranslations("toolUI.favicon-generator");
   const [text, setText] = useState("B");
   const [bgColor, setBgColor] = useState("#3b82f6");
   const [textColor, setTextColor] = useState("#ffffff");
@@ -123,33 +125,33 @@ export function FaviconGeneratorTool() {
   ];
 
   const emojiPresets = [
-    { emoji: "🚀", label: "Rocket" },
-    { emoji: "⚡", label: "Lightning" },
-    { emoji: "🔥", label: "Fire" },
-    { emoji: "💎", label: "Diamond" },
-    { emoji: "🎯", label: "Target" },
-    { emoji: "🛠️", label: "Tools" },
-    { emoji: "📦", label: "Package" },
-    { emoji: "🌟", label: "Star" },
-    { emoji: "🔮", label: "Crystal" },
-    { emoji: "🎨", label: "Art" },
-    { emoji: "💡", label: "Idea" },
-    { emoji: "🔐", label: "Lock" },
+    { emoji: "🚀", label: t("emojiRocket") },
+    { emoji: "⚡", label: t("emojiLightning") },
+    { emoji: "🔥", label: t("emojiFire") },
+    { emoji: "💎", label: t("emojiDiamond") },
+    { emoji: "🎯", label: t("emojiTarget") },
+    { emoji: "🛠️", label: t("emojiTools") },
+    { emoji: "📦", label: t("emojiPackage") },
+    { emoji: "🌟", label: t("emojiStar") },
+    { emoji: "🔮", label: t("emojiCrystal") },
+    { emoji: "🎨", label: t("emojiArt") },
+    { emoji: "💡", label: t("emojiIdea") },
+    { emoji: "🔐", label: t("emojiLock") },
   ];
 
   const colorPresets = [
-    { bg: "#3b82f6", text: "#ffffff", label: "Blue" },
-    { bg: "#10b981", text: "#ffffff", label: "Green" },
-    { bg: "#f59e0b", text: "#ffffff", label: "Amber" },
-    { bg: "#ef4444", text: "#ffffff", label: "Red" },
-    { bg: "#8b5cf6", text: "#ffffff", label: "Purple" },
-    { bg: "#ec4899", text: "#ffffff", label: "Pink" },
-    { bg: "#000000", text: "#ffffff", label: "Black" },
-    { bg: "#ffffff", text: "#000000", label: "White" },
-    { bg: "#1f2937", text: "#f3f4f6", label: "Slate" },
-    { bg: "#6366f1", text: "#ffffff", label: "Indigo" },
-    { bg: "#14b8a6", text: "#ffffff", label: "Teal" },
-    { bg: "#f97316", text: "#ffffff", label: "Orange" },
+    { bg: "#3b82f6", text: "#ffffff", label: t("colorBlue") },
+    { bg: "#10b981", text: "#ffffff", label: t("colorGreen") },
+    { bg: "#f59e0b", text: "#ffffff", label: t("colorAmber") },
+    { bg: "#ef4444", text: "#ffffff", label: t("colorRed") },
+    { bg: "#8b5cf6", text: "#ffffff", label: t("colorPurple") },
+    { bg: "#ec4899", text: "#ffffff", label: t("colorPink") },
+    { bg: "#000000", text: "#ffffff", label: t("colorBlack") },
+    { bg: "#ffffff", text: "#000000", label: t("colorWhite") },
+    { bg: "#1f2937", text: "#f3f4f6", label: t("colorSlate") },
+    { bg: "#6366f1", text: "#ffffff", label: t("colorIndigo") },
+    { bg: "#14b8a6", text: "#ffffff", label: t("colorTeal") },
+    { bg: "#f97316", text: "#ffffff", label: t("colorOrange") },
   ];
 
   return (
@@ -159,7 +161,7 @@ export function FaviconGeneratorTool() {
 
       {/* Text/Emoji Input */}
       <div>
-        <Label className="mb-2 block text-sm">Text or Emoji</Label>
+        <Label className="mb-2 block text-sm">{t("textOrEmoji")}</Label>
         <Input
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -171,7 +173,7 @@ export function FaviconGeneratorTool() {
 
       {/* Letter Presets */}
       <div>
-        <Label className="mb-2 block text-sm">Letter Presets</Label>
+        <Label className="mb-2 block text-sm">{t("letterPresets")}</Label>
         <div className="grid grid-cols-6 gap-2">
           {presets.map((preset) => (
             <Button
@@ -189,7 +191,7 @@ export function FaviconGeneratorTool() {
 
       {/* Emoji Presets */}
       <div>
-        <Label className="mb-2 block text-sm">Emoji Presets</Label>
+        <Label className="mb-2 block text-sm">{t("emojiPresets")}</Label>
         <div className="grid grid-cols-6 gap-2">
           {emojiPresets.map((preset) => (
             <Button
@@ -208,7 +210,7 @@ export function FaviconGeneratorTool() {
 
       {/* Color Presets */}
       <div>
-        <Label className="mb-2 block text-sm">Color Presets</Label>
+        <Label className="mb-2 block text-sm">{t("colorPresets")}</Label>
         <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
           {colorPresets.map((preset) => (
             <button
@@ -228,7 +230,7 @@ export function FaviconGeneratorTool() {
       {/* Custom Colors */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label className="mb-2 block text-sm">Background Color</Label>
+          <Label className="mb-2 block text-sm">{t("backgroundColor")}</Label>
           <div className="flex items-center gap-2">
             <input
               type="color"
@@ -244,7 +246,7 @@ export function FaviconGeneratorTool() {
           </div>
         </div>
         <div>
-          <Label className="mb-2 block text-sm">Text Color</Label>
+          <Label className="mb-2 block text-sm">{t("textColor")}</Label>
           <div className="flex items-center gap-2">
             <input
               type="color"
@@ -263,7 +265,7 @@ export function FaviconGeneratorTool() {
 
       {/* Font Family */}
       <div>
-        <Label className="mb-2 block text-sm">Font Family</Label>
+        <Label className="mb-2 block text-sm">{t("fontFamily")}</Label>
         <select
           value={fontFamily}
           onChange={(e) => setFontFamily(e.target.value)}
@@ -279,7 +281,7 @@ export function FaviconGeneratorTool() {
 
       {/* Font Size */}
       <div>
-        <Label className="mb-2 block text-sm">Font Size: {fontSize}px</Label>
+        <Label className="mb-2 block text-sm">{t("fontSize")}: {fontSize}px</Label>
         <input
           type="range"
           min="24"
@@ -292,7 +294,7 @@ export function FaviconGeneratorTool() {
 
       {/* Border Radius */}
       <div>
-        <Label className="mb-2 block text-sm">Border Radius: {borderRadius}%</Label>
+        <Label className="mb-2 block text-sm">{t("borderRadius")}: {borderRadius}%</Label>
         <input
           type="range"
           min="0"
@@ -305,27 +307,27 @@ export function FaviconGeneratorTool() {
 
       {/* Preview */}
       <div>
-        <Label className="mb-2 block text-sm">Preview</Label>
+        <Label className="mb-2 block text-sm">{t("preview")}</Label>
         <div className="flex items-center gap-4 p-4 bg-[var(--color-gray-50)] border border-[var(--color-gray-200)] rounded-[12px]">
           {dataUrl && (
             <>
               <div className="flex flex-col items-center gap-1">
-                <img src={dataUrl} alt="Favicon Preview" width={64} height={64} className="w-16 h-16" />
+                <img src={dataUrl} alt={t("faviconPreview")} width={64} height={64} className="w-16 h-16" />
                 <span className="text-xs text-[var(--color-gray-500)]">64x64</span>
               </div>
               <div className="flex flex-col items-center gap-1">
-                <img src={dataUrl} alt="Favicon Preview" width={32} height={32} className="w-8 h-8" />
+                <img src={dataUrl} alt={t("faviconPreview")} width={32} height={32} className="w-8 h-8" />
                 <span className="text-xs text-[var(--color-gray-500)]">32x32</span>
               </div>
               <div className="flex flex-col items-center gap-1">
-                <img src={dataUrl} alt="Favicon Preview" width={16} height={16} className="w-4 h-4" />
+                <img src={dataUrl} alt={t("faviconPreview")} width={16} height={16} className="w-4 h-4" />
                 <span className="text-xs text-[var(--color-gray-500)]">16x16</span>
               </div>
               <div className="flex items-center gap-2 ml-auto">
-                <span className="text-sm text-[var(--color-gray-500)]">Browser tab:</span>
+                <span className="text-sm text-[var(--color-gray-500)]">{t("browserTab")}</span>
                 <div className="flex items-center gap-2 px-3 py-1 bg-white rounded-t-[8px] border border-b-0 border-[var(--color-gray-200)]">
-                  <img src={dataUrl} alt="Tab" width={16} height={16} className="w-4 h-4" />
-                  <span className="text-xs text-[var(--color-gray-600)]">My Site</span>
+                  <img src={dataUrl} alt={t("tab")} width={16} height={16} className="w-4 h-4" />
+                  <span className="text-xs text-[var(--color-gray-600)]">{t("mySite")}</span>
                 </div>
               </div>
             </>
@@ -335,7 +337,7 @@ export function FaviconGeneratorTool() {
 
       {/* Download Buttons */}
       <div>
-        <Label className="mb-2 block text-sm">Download</Label>
+        <Label className="mb-2 block text-sm">{t("download")}</Label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {[16, 32, 48, 64, 128, 180, 192, 512].map((size) => (
             <Button
@@ -351,7 +353,7 @@ export function FaviconGeneratorTool() {
 
       {/* Data URL Output */}
       <Textarea
-        label="Base64 Data URL"
+        label={t("base64DataUrl")}
         value={dataUrl}
         readOnly
         showCopy
@@ -360,7 +362,7 @@ export function FaviconGeneratorTool() {
 
       {/* HTML Code */}
       <Input
-        label="HTML Link Tag"
+        label={t("htmlLinkTag")}
         value={`<link rel="icon" href="${dataUrl.substring(0, 50)}..." type="image/png">`}
         readOnly
         showCopy

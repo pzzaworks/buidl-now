@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { MdClose } from "react-icons/md";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ interface ProxyInfo {
 }
 
 export function ProxyImplementationCheckerTool() {
+  const t = useTranslations("toolUI.proxy-implementation-checker");
   const [proxyAddress, setProxyAddress] = useState("");
   const [rpcUrl, setRpcUrl] = useState("https://eth.llamarpc.com");
   const [proxyInfo, setProxyInfo] = useState<ProxyInfo | null>(null);
@@ -35,7 +37,7 @@ export function ProxyImplementationCheckerTool() {
 
   const checkProxy = async () => {
     if (!proxyAddress || !rpcUrl) {
-      setError("Please provide both proxy address and RPC URL");
+      setError(t("errorMissingInput"));
       return;
     }
 
@@ -157,7 +159,7 @@ export function ProxyImplementationCheckerTool() {
       }
 
       if (!implementationAddress || implementationAddress === "0x0000000000000000000000000000000000000000") {
-        throw new Error("No proxy implementation found. This may not be a proxy contract.");
+        throw new Error(t("errorNotProxy"));
       }
 
       setProxyInfo({
@@ -167,7 +169,7 @@ export function ProxyImplementationCheckerTool() {
         storageSlots,
       });
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to check proxy");
+      setError(e instanceof Error ? e.message : t("errorCheckFailed"));
       setProxyInfo(null);
     } finally {
       setLoading(false);
@@ -190,7 +192,7 @@ export function ProxyImplementationCheckerTool() {
     <div className="space-y-6">
       {/* Input Section */}
       <div>
-        <Label className="mb-2 block text-sm">Proxy Contract Address</Label>
+        <Label className="mb-2 block text-sm">{t("proxyAddressLabel")}</Label>
         <Input
           value={proxyAddress}
           onChange={(e) => setProxyAddress(e.target.value)}
@@ -208,10 +210,10 @@ export function ProxyImplementationCheckerTool() {
 
         <div className="flex gap-2">
           <Button onClick={checkProxy} variant="primary" className="flex-1" disabled={loading}>
-            {loading ? "Checking..." : "Check Proxy"}
+            {loading ? t("checking") : t("checkProxy")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -227,13 +229,13 @@ export function ProxyImplementationCheckerTool() {
         <>
           <div className="p-4 rounded-[12px] border border-green-500/30 bg-[var(--color-green-50)]">
             <Label className="mb-2 block text-sm font-semibold text-[var(--color-green-500)]">
-              Proxy Type Detected
+              {t("proxyTypeDetected")}
             </Label>
             <div className="text-sm font-mono">{proxyInfo.proxyType}</div>
           </div>
 
           <Input
-            label="Implementation Address"
+            label={t("implementationAddressLabel")}
             value={proxyInfo.implementationAddress}
             readOnly
             showCopy
@@ -242,7 +244,7 @@ export function ProxyImplementationCheckerTool() {
 
           {proxyInfo.adminAddress && (
             <Input
-              label="Admin Address"
+              label={t("adminAddressLabel")}
               value={proxyInfo.adminAddress}
               readOnly
               showCopy
@@ -251,21 +253,21 @@ export function ProxyImplementationCheckerTool() {
           )}
 
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <Label className="mb-3 block text-sm">Storage Slots</Label>
+            <Label className="mb-3 block text-sm">{t("storageSlotsLabel")}</Label>
             <div className="space-y-2 text-sm font-mono">
               <div>
-                <span className="text-muted-foreground">Implementation:</span>{" "}
+                <span className="text-muted-foreground">{t("implementationSlotLabel")}</span>{" "}
                 <span className="text-blue-400">{proxyInfo.storageSlots.implementation}</span>
               </div>
               {proxyInfo.storageSlots.admin && (
                 <div>
-                  <span className="text-muted-foreground">Admin:</span>{" "}
+                  <span className="text-muted-foreground">{t("adminSlotLabel")}</span>{" "}
                   <span className="text-blue-400">{proxyInfo.storageSlots.admin}</span>
                 </div>
               )}
               {proxyInfo.storageSlots.beacon && (
                 <div>
-                  <span className="text-muted-foreground">Beacon:</span>{" "}
+                  <span className="text-muted-foreground">{t("beaconSlotLabel")}</span>{" "}
                   <span className="text-blue-400">{proxyInfo.storageSlots.beacon}</span>
                 </div>
               )}
@@ -273,7 +275,7 @@ export function ProxyImplementationCheckerTool() {
           </div>
 
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <Label className="mb-3 block text-sm">Explorer Links</Label>
+            <Label className="mb-3 block text-sm">{t("explorerLinksLabel")}</Label>
             <div className="space-y-2">
               <a
                 href={getEtherscanLink(proxyAddress)}
@@ -281,7 +283,7 @@ export function ProxyImplementationCheckerTool() {
                 rel="nofollow noopener noreferrer"
                 className="block text-sm text-blue-400 hover:text-blue-300 underline"
               >
-                View Proxy on Etherscan →
+                {t("viewProxyLink")} →
               </a>
               <a
                 href={getEtherscanLink(proxyInfo.implementationAddress)}
@@ -289,7 +291,7 @@ export function ProxyImplementationCheckerTool() {
                 rel="nofollow noopener noreferrer"
                 className="block text-sm text-blue-400 hover:text-blue-300 underline"
               >
-                View Implementation on Etherscan →
+                {t("viewImplementationLink")} →
               </a>
               {proxyInfo.adminAddress && (
                 <a
@@ -298,14 +300,14 @@ export function ProxyImplementationCheckerTool() {
                   rel="nofollow noopener noreferrer"
                   className="block text-sm text-blue-400 hover:text-blue-300 underline"
                 >
-                  View Admin on Etherscan →
+                  {t("viewAdminLink")} →
                 </a>
               )}
             </div>
           </div>
 
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <Label className="mb-2 block text-sm">Read Implementation with viem</Label>
+            <Label className="mb-2 block text-sm">{t("readImplementationLabel")}</Label>
             <Code language="javascript">
 {`import { createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';

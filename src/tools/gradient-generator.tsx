@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ interface ColorStop {
 type GradientType = "linear" | "radial";
 
 export function GradientGeneratorTool() {
+  const t = useTranslations("toolUI.gradient-generator");
   const [gradientType, setGradientType] = useState<GradientType>("linear");
   const [angle, setAngle] = useState("90");
   const [colorStops, setColorStops] = useState<ColorStop[]>([
@@ -74,21 +76,21 @@ export function GradientGeneratorTool() {
     <div className="space-y-6">
       {/* Gradient Type Selection */}
       <div>
-        <Label className="mb-2 block text-sm">Gradient Type</Label>
+        <Label className="mb-2 block text-sm">{t("gradientType")}</Label>
         <div className="grid grid-cols-2 gap-2">
           <Button
             variant={gradientType === "linear" ? "primary" : "secondary"}
             onClick={() => setGradientType("linear")}
             className="w-full"
           >
-            Linear
+            {t("linear")}
           </Button>
           <Button
             variant={gradientType === "radial" ? "primary" : "secondary"}
             onClick={() => setGradientType("radial")}
             className="w-full"
           >
-            Radial
+            {t("radial")}
           </Button>
         </div>
       </div>
@@ -96,7 +98,7 @@ export function GradientGeneratorTool() {
       {/* Angle Control (Linear only) */}
       {gradientType === "linear" && (
         <div>
-          <Label className="mb-2 block text-sm">Angle: {angle}°</Label>
+          <Label className="mb-2 block text-sm">{t("angle", { angle })}</Label>
           <input
             type="range"
             min="0"
@@ -118,10 +120,10 @@ export function GradientGeneratorTool() {
       {/* Color Stops */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <Label className="text-sm">Color Stops</Label>
+          <Label className="text-sm">{t("colorStops")}</Label>
           {colorStops.length < 5 && (
             <Button onClick={addColorStop} size="sm">
-              Add Color Stop
+              {t("addColorStop")}
             </Button>
           )}
         </div>
@@ -169,7 +171,7 @@ export function GradientGeneratorTool() {
                  
                   size="sm"
                 >
-                  Remove
+                  {t("remove")}
                 </Button>
               )}
             </div>
@@ -179,12 +181,12 @@ export function GradientGeneratorTool() {
 
       {/* Random Gradient Button */}
       <Button onClick={generateRandomGradient} className="w-full" variant="primary">
-        Generate Random Gradient
+        {t("generateRandomGradient")}
       </Button>
 
       {/* Gradient Preview */}
       <div>
-        <Label className="mb-2 block text-sm">Gradient Preview</Label>
+        <Label className="mb-2 block text-sm">{t("gradientPreview")}</Label>
         <div
           className="h-48 w-full rounded-[12px] border border-[var(--color-gray-200)]"
           style={{ background: cssCode }}
@@ -193,7 +195,7 @@ export function GradientGeneratorTool() {
 
       {/* CSS Output */}
       <Input
-        label="CSS Code"
+        label={t("cssCode")}
         value={`background: ${cssCode};`}
         readOnly
         showCopy
@@ -203,14 +205,14 @@ export function GradientGeneratorTool() {
       {/* Additional CSS Formats */}
       <div className="grid grid-cols-1 gap-3">
         <Input
-          label="CSS Property Value"
+          label={t("cssPropertyValue")}
           value={cssCode}
           readOnly
           showCopy
           className="font-mono text-sm bg-[var(--color-gray-0)]"
         />
         <Input
-          label="Background Image"
+          label={t("backgroundImage")}
           value={`background-image: ${cssCode};`}
           readOnly
           showCopy

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -20,6 +21,7 @@ interface Permissions {
 }
 
 export function ChmodCalculatorTool() {
+  const t = useTranslations("toolUI.chmod-calculator");
   const [permissions, setPermissions] = useState<Permissions>({
     owner: { read: true, write: true, execute: true },
     group: { read: true, write: false, execute: true },
@@ -151,17 +153,17 @@ export function ChmodCalculatorTool() {
         <Checkbox
           checked={permissions[role].read}
           onChange={(e) => handleCheckboxChange(role, "read", e.target.checked)}
-          label="Read (r)"
+          label={`${t("read")} (r)`}
         />
         <Checkbox
           checked={permissions[role].write}
           onChange={(e) => handleCheckboxChange(role, "write", e.target.checked)}
-          label="Write (w)"
+          label={`${t("write")} (w)`}
         />
         <Checkbox
           checked={permissions[role].execute}
           onChange={(e) => handleCheckboxChange(role, "execute", e.target.checked)}
-          label="Execute (x)"
+          label={`${t("execute")} (x)`}
         />
       </div>
     </div>
@@ -171,15 +173,15 @@ export function ChmodCalculatorTool() {
     <div className="space-y-6">
       {/* Permission Checkboxes */}
       <div className="space-y-4 p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-        <PermissionCheckboxes role="owner" label="Owner (User)" />
-        <PermissionCheckboxes role="group" label="Group" />
-        <PermissionCheckboxes role="other" label="Other (World)" />
+        <PermissionCheckboxes role="owner" label={t("ownerLabel")} />
+        <PermissionCheckboxes role="group" label={t("groupLabel")} />
+        <PermissionCheckboxes role="other" label={t("otherLabel")} />
       </div>
 
       {/* Numeric Input */}
       <div>
         <Input
-          label="Numeric (Octal)"
+          label={t("numericLabel")}
           value={numericInput}
           onChange={(e) => handleNumericChange(e.target.value)}
           placeholder="755"
@@ -188,14 +190,14 @@ export function ChmodCalculatorTool() {
           className="font-mono text-lg"
         />
         <p className="text-xs text-muted-foreground mt-1">
-          Enter 3 digits (0-7), e.g., 755, 644, 777
+          {t("numericHelp")}
         </p>
       </div>
 
       {/* Symbolic Input */}
       <div>
         <Input
-          label="Symbolic"
+          label={t("symbolicLabel")}
           value={symbolicInput}
           onChange={(e) => handleSymbolicChange(e.target.value)}
           placeholder="rwxr-xr-x"
@@ -204,14 +206,14 @@ export function ChmodCalculatorTool() {
           className="font-mono text-lg"
         />
         <p className="text-xs text-muted-foreground mt-1">
-          Use r (read), w (write), x (execute), - (none)
+          {t("symbolicHelp")}
         </p>
       </div>
 
       {/* chmod Command */}
       <div>
         <Input
-          label="chmod Command"
+          label={`chmod ${t("command")}`}
           value={`chmod ${getNumericValue()} filename`}
           readOnly
           showCopy
@@ -221,7 +223,7 @@ export function ChmodCalculatorTool() {
 
       {/* Presets */}
       <div>
-        <Label className="mb-2 block text-sm">Common Presets</Label>
+        <Label className="mb-2 block text-sm">{t("commonPresets")}</Label>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {presets.map((preset) => (
             <Button
@@ -239,21 +241,21 @@ export function ChmodCalculatorTool() {
 
       {/* Reset Button */}
       <Button onClick={handleReset} className="w-full">
-        Reset to Default (755)
+        {t("resetDefault")} (755)
       </Button>
 
       {/* Permission Table */}
       <div className="overflow-x-auto">
-        <Label className="mb-2 block text-sm">Permission Breakdown</Label>
+        <Label className="mb-2 block text-sm">{t("permissionBreakdown")}</Label>
         <table className="w-full text-sm border border-border rounded-[12px] overflow-hidden">
           <thead>
             <tr className="bg-[var(--color-gray-0)]">
-              <th className="px-3 py-2 text-left border-b border-border">Role</th>
-              <th className="px-3 py-2 text-center border-b border-border">Read (4)</th>
-              <th className="px-3 py-2 text-center border-b border-border">Write (2)</th>
-              <th className="px-3 py-2 text-center border-b border-border">Execute (1)</th>
-              <th className="px-3 py-2 text-center border-b border-border">Value</th>
-              <th className="px-3 py-2 text-center border-b border-border">Symbolic</th>
+              <th className="px-3 py-2 text-left border-b border-border">{t("colRole")}</th>
+              <th className="px-3 py-2 text-center border-b border-border">{t("read")} (4)</th>
+              <th className="px-3 py-2 text-center border-b border-border">{t("write")} (2)</th>
+              <th className="px-3 py-2 text-center border-b border-border">{t("execute")} (1)</th>
+              <th className="px-3 py-2 text-center border-b border-border">{t("colValue")}</th>
+              <th className="px-3 py-2 text-center border-b border-border">{t("colSymbolic")}</th>
             </tr>
           </thead>
           <tbody>

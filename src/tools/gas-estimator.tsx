@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -17,6 +18,7 @@ const GAS_LIMITS: Record<TransactionType, number> = {
 };
 
 export function GasEstimatorTool() {
+  const t = useTranslations("toolUI.gas-estimator");
   const [txType, setTxType] = useState<TransactionType>("transfer");
   const [gasPrice, setGasPrice] = useState("20"); // Gwei
   const [ethPrice, setEthPrice] = useState("2500"); // USD
@@ -63,52 +65,52 @@ export function GasEstimatorTool() {
   };
 
   const presets = [
-    { label: "Low", gwei: "10" },
-    { label: "Medium", gwei: "20" },
-    { label: "High", gwei: "50" },
-    { label: "Very High", gwei: "100" },
+    { label: t("presetLow"), gwei: "10" },
+    { label: t("presetMedium"), gwei: "20" },
+    { label: t("presetHigh"), gwei: "50" },
+    { label: t("presetVeryHigh"), gwei: "100" },
   ];
 
   return (
     <div className="space-y-6">
       {/* Transaction Type */}
       <div>
-        <Label className="mb-2 block text-sm">Transaction Type</Label>
+        <Label className="mb-2 block text-sm">{t("transactionType")}</Label>
         <div className="grid grid-cols-2 gap-2">
           <Button
             onClick={() => setTxType("transfer")}
             variant={txType === "transfer" ? "primary" : "secondary"}
             className="text-sm"
           >
-            ETH Transfer
+            {t("typeEthTransfer")}
           </Button>
           <Button
             onClick={() => setTxType("erc20")}
             variant={txType === "erc20" ? "primary" : "secondary"}
             className="text-sm"
           >
-            ERC20 Transfer
+            {t("typeErc20Transfer")}
           </Button>
           <Button
             onClick={() => setTxType("swap")}
             variant={txType === "swap" ? "primary" : "secondary"}
             className="text-sm"
           >
-            DEX Swap
+            {t("typeDexSwap")}
           </Button>
           <Button
             onClick={() => setTxType("nft")}
             variant={txType === "nft" ? "primary" : "secondary"}
             className="text-sm"
           >
-            NFT Transfer
+            {t("typeNftTransfer")}
           </Button>
           <Button
             onClick={() => setTxType("contract")}
             variant={txType === "contract" ? "primary" : "secondary"}
             className="text-sm col-span-2"
           >
-            Contract Interaction
+            {t("typeContractInteraction")}
           </Button>
         </div>
       </div>
@@ -116,7 +118,7 @@ export function GasEstimatorTool() {
       {/* Gas Price */}
       <div>
         <Input
-          label="Gas Price (Gwei)"
+          label={t("gasPriceLabel")}
           value={gasPrice}
           onChange={(e) => setGasPrice(e.target.value)}
           placeholder="20"
@@ -126,7 +128,7 @@ export function GasEstimatorTool() {
         <div className="grid grid-cols-4 gap-2">
           {presets.map((preset) => (
             <Button
-              key={preset.label}
+              key={preset.gwei}
               onClick={() => setGasPrice(preset.gwei)}
              
               className="text-xs"
@@ -139,7 +141,7 @@ export function GasEstimatorTool() {
 
       {/* ETH Price */}
       <Input
-        label="ETH Price (USD)"
+        label={t("ethPriceLabel")}
         value={ethPrice}
         onChange={(e) => setEthPrice(e.target.value)}
         placeholder="2500"
@@ -149,10 +151,10 @@ export function GasEstimatorTool() {
 
       {/* Custom Gas Limit */}
       <Input
-        label="Custom Gas Limit (Optional)"
+        label={t("customGasLimitLabel")}
         value={customGasLimit}
         onChange={(e) => setCustomGasLimit(e.target.value)}
-        placeholder={`Default: ${GAS_LIMITS[txType].toLocaleString()}`}
+        placeholder={t("customGasLimitPlaceholder", { value: GAS_LIMITS[txType].toLocaleString() })}
         className="font-mono text-sm"
         type="number"
       />
@@ -160,37 +162,37 @@ export function GasEstimatorTool() {
       {/* Results */}
       <div className="space-y-4">
         <div className="text-sm font-medium text-blue-400 border-b border-blue-500/30 pb-2">
-          Gas Cost Estimation
+          {t("gasCostEstimation")}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <div className="text-xs text-muted-foreground mb-1">Gas Limit</div>
+            <div className="text-xs text-muted-foreground mb-1">{t("gasLimit")}</div>
             <div className="text-base font-mono">{results.gasLimit.toLocaleString()}</div>
           </div>
 
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <div className="text-xs text-muted-foreground mb-1">Total Gwei</div>
+            <div className="text-xs text-muted-foreground mb-1">{t("totalGwei")}</div>
             <div className="text-base font-mono">{results.gasCostGwei}</div>
           </div>
 
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <div className="text-xs text-muted-foreground mb-1">Total ETH</div>
+            <div className="text-xs text-muted-foreground mb-1">{t("totalEth")}</div>
             <div className="text-base font-mono text-blue-400">{results.gasCostEth}</div>
           </div>
 
           <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-            <div className="text-xs text-muted-foreground mb-1">Total USD</div>
+            <div className="text-xs text-muted-foreground mb-1">{t("totalUsd")}</div>
             <div className="text-base font-mono text-[var(--color-green-500)]">${results.gasCostUsd}</div>
           </div>
         </div>
 
         <div className="flex gap-2">
           <Button onClick={calculateGasCost} className="flex-1" variant="primary">
-            Recalculate
+            {t("recalculate")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -198,7 +200,7 @@ export function GasEstimatorTool() {
       {/* Formula Explanation */}
       <div className="p-4 rounded-[12px] border border-blue-500/30 bg-blue-500/5">
         <div className="text-sm text-blue-400">
-          <strong>Formula:</strong>
+          <strong>{t("formula")}</strong>
           <div className="font-mono text-xs mt-2 space-y-1">
             <div>Gas Cost (Gwei) = Gas Limit × Gas Price</div>
             <div>Gas Cost (ETH) = Gas Cost (Gwei) ÷ 10⁹</div>
@@ -209,7 +211,7 @@ export function GasEstimatorTool() {
 
       {/* Gas Limit Reference */}
       <div className="p-4 rounded-[12px] border border-border bg-[var(--color-gray-0)]">
-        <div className="text-sm font-medium mb-2">Typical Gas Limits</div>
+        <div className="text-sm font-medium mb-2">{t("typicalGasLimits")}</div>
         <div className="text-xs space-y-1 font-mono text-muted-foreground">
           <div>ETH Transfer: 21,000 gas</div>
           <div>ERC20 Transfer: ~65,000 gas</div>

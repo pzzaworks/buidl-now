@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ToolConfig } from "@/types/tool";
 
 export function HexTextTool() {
+  const t = useTranslations("toolUI.hex-text");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [mode, setMode] = useState<"encode" | "decode">("encode");
@@ -68,7 +70,7 @@ export function HexTextTool() {
           }}
           className="flex-1"
         >
-          Encode (Text → Hex)
+          {t("encodeMode")}
         </Button>
         <Button
           variant={mode === "decode" ? "primary" : "secondary"}
@@ -78,39 +80,39 @@ export function HexTextTool() {
           }}
           className="flex-1"
         >
-          Decode (Hex → Text)
+          {t("decodeMode")}
         </Button>
       </div>
 
       {/* Input Section */}
       <div>
         <Label className="mb-2 block text-sm">
-          {mode === "encode" ? "Text Input" : "Hex Input"}
+          {mode === "encode" ? t("textInputLabel") : t("hexInputLabel")}
         </Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={
             mode === "encode"
-              ? "Enter text to encode to hex..."
-              : "Enter hex string to decode (e.g., 48656c6c6f or 0x48656c6c6f)..."
+              ? t("encodePlaceholder")
+              : t("decodePlaceholder")
           }
           rows={8}
           className="text-sm mb-2"
         />
         <div className="flex gap-2">
           <Button onClick={handleConvert} className="flex-1" variant="primary">
-            {mode === "encode" ? "Encode to Hex" : "Decode to Text"}
+            {mode === "encode" ? t("encodeButton") : t("decodeButton")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
 
       {/* Output Section */}
       <Textarea
-        label={mode === "encode" ? "Hex Output" : "Text Output"}
+        label={mode === "encode" ? t("hexOutputLabel") : t("textOutputLabel")}
         value={output}
         readOnly
         showCopy

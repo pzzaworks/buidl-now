@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -23,6 +24,7 @@ function generateNanoid(size: number = 21): string {
 }
 
 export function NanoidGeneratorTool() {
+  const t = useTranslations("toolUI.nanoid-generator");
   const [nanoid, setNanoid] = useState("");
   const [length, setLength] = useState("21");
   const [count, setCount] = useState("1");
@@ -47,7 +49,7 @@ export function NanoidGeneratorTool() {
     <div className="space-y-6">
       {/* Length Input */}
       <div>
-        <Label className="mb-2 block text-sm">Length (1-128)</Label>
+        <Label className="mb-2 block text-sm">{t("length")}</Label>
         <Input
           type="number"
           min="1"
@@ -60,7 +62,7 @@ export function NanoidGeneratorTool() {
 
       {/* Count Input */}
       <div>
-        <Label className="mb-2 block text-sm">Number of IDs (1-100)</Label>
+        <Label className="mb-2 block text-sm">{t("numberOfIds")}</Label>
         <Input
           type="number"
           min="1"
@@ -73,13 +75,13 @@ export function NanoidGeneratorTool() {
 
       {/* Generate Button */}
       <Button onClick={handleGenerate} variant="primary" className="w-full">
-        Generate Nanoid{parseInt(count) > 1 ? "s" : ""}
+        {parseInt(count) > 1 ? t("generateNanoids") : t("generateNanoid")}
       </Button>
 
       {/* Single Nanoid Output */}
       {nanoid && (
         <Input
-          label="Generated Nanoid"
+          label={t("generatedNanoid")}
           value={nanoid}
           readOnly
           showCopy
@@ -90,7 +92,7 @@ export function NanoidGeneratorTool() {
       {/* Multiple Nanoids Output */}
       {nanoids.length > 0 && (
         <Textarea
-          label={`Generated Nanoids (${nanoids.length})`}
+          label={t("generatedNanoids", { count: nanoids.length })}
           value={nanoids.join("\n")}
           readOnly
           showCopy

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,6 +32,7 @@ interface WordCount {
 }
 
 export function WordFrequencyTool() {
+  const t = useTranslations("toolUI.word-frequency");
   const [input, setInput] = useState("");
   const [topN, setTopN] = useState("25");
   const [ignoreStopWords, setIgnoreStopWords] = useState(true);
@@ -90,10 +92,10 @@ export function WordFrequencyTool() {
     <div className="space-y-6">
       {/* Input */}
       <Textarea
-        label="Text Input"
+        label={t("textInputLabel")}
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Enter or paste text to analyze word frequency..."
+        placeholder={t("textInputPlaceholder")}
         className="min-h-[200px]"
       />
 
@@ -101,7 +103,7 @@ export function WordFrequencyTool() {
       <div className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
-            label="Show Top N Words"
+            label={t("topNLabel")}
             type="number"
             min="1"
             max="500"
@@ -110,7 +112,7 @@ export function WordFrequencyTool() {
             placeholder="25"
           />
           <Input
-            label="Minimum Word Length"
+            label={t("minLengthLabel")}
             type="number"
             min="1"
             max="50"
@@ -125,13 +127,13 @@ export function WordFrequencyTool() {
             id="ignoreStopWords"
             checked={ignoreStopWords}
             onChange={(e) => setIgnoreStopWords(e.target.checked)}
-            label="Ignore common words (the, and, is, etc.)"
+            label={t("ignoreStopWordsLabel")}
           />
           <Checkbox
             id="caseSensitive"
             checked={caseSensitive}
             onChange={(e) => setCaseSensitive(e.target.checked)}
-            label="Case sensitive"
+            label={t("caseSensitiveLabel")}
           />
         </div>
       </div>
@@ -140,11 +142,11 @@ export function WordFrequencyTool() {
       {input && (
         <div className="grid grid-cols-2 gap-4">
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <div className="text-sm text-muted-foreground mb-1">Total Words</div>
+            <div className="text-sm text-muted-foreground mb-1">{t("totalWords")}</div>
             <div className="text-lg font-mono">{totalWords.toLocaleString()}</div>
           </div>
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <div className="text-sm text-muted-foreground mb-1">Unique Words</div>
+            <div className="text-sm text-muted-foreground mb-1">{t("uniqueWords")}</div>
             <div className="text-lg font-mono">{uniqueWords.toLocaleString()}</div>
           </div>
         </div>
@@ -153,7 +155,7 @@ export function WordFrequencyTool() {
       {/* Results */}
       {wordCounts.length > 0 && (
         <div>
-          <Label className="text-sm mb-3 block">Word Frequency</Label>
+          <Label className="text-sm mb-3 block">{t("wordFrequencyLabel")}</Label>
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
             <div className="space-y-2">
               {wordCounts.map(({ word, count, percentage }, index) => (
@@ -193,8 +195,7 @@ export function WordFrequencyTool() {
       {ignoreStopWords && input && (
         <div className="p-3 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
           <div className="text-xs text-muted-foreground">
-            Stop words (common words like &quot;the&quot;, &quot;and&quot;, &quot;is&quot;) are excluded from the analysis.
-            Uncheck the option above to include them.
+            {t("stopWordsInfo")}
           </div>
         </div>
       )}

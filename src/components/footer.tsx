@@ -1,15 +1,17 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { FaGithub } from "react-icons/fa";
 import { MdApps } from "react-icons/md";
+import { Link, usePathname } from "@/i18n/navigation";
 import { externalLinkRel } from "@/lib/seo";
 
 export function Footer() {
+  const t = useTranslations("home");
+  const tNav = useTranslations("nav");
   const pathname = usePathname();
   const isToolsPage = pathname?.startsWith("/tools");
-  const copyrightLabel = "© 2026 Buidl Now. All rights reserved.";
+  const copyrightLabel = t("copyright");
 
   return (
     <>
@@ -25,7 +27,7 @@ export function Footer() {
                 className="flex items-center gap-1 text-foreground hover:opacity-50 transition-opacity"
               >
                 <MdApps className="w-4 h-4" />
-                <span>All Tools</span>
+                <span>{tNav("allTools")}</span>
               </Link>
             </>
           )}
@@ -38,7 +40,7 @@ export function Footer() {
             aria-label="GitHub Repository"
           >
             <FaGithub className="w-4 h-4" />
-            <span>GitHub</span>
+            <span>{tNav("github")}</span>
           </a>
         </div>
       </div>

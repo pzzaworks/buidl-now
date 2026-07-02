@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -176,13 +177,14 @@ function protoToJsonSchema(proto: string): object {
 }
 
 export function ProtobufJsonTool() {
+  const t = useTranslations("toolUI.protobuf-json");
   const [protoInput, setProtoInput] = useState("");
   const [jsonOutput, setJsonOutput] = useState("");
   const [error, setError] = useState("");
 
   const handleConvert = () => {
     if (!protoInput.trim()) {
-      setError("Please enter a protobuf schema");
+      setError(t("errorEmpty"));
       setJsonOutput("");
       return;
     }
@@ -192,7 +194,7 @@ export function ProtobufJsonTool() {
       setJsonOutput(JSON.stringify(schema, null, 2));
       setError("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Invalid protobuf schema");
+      setError(e instanceof Error ? e.message : t("invalidSchema"));
       setJsonOutput("");
     }
   };
@@ -230,7 +232,7 @@ enum Status {
     <div className="space-y-6">
       {/* Protobuf Input */}
       <div>
-        <Label className="mb-2 block text-sm">Protobuf Schema (.proto)</Label>
+        <Label className="mb-2 block text-sm">{t("protoSchemaLabel")}</Label>
         <Textarea
           value={protoInput}
           onChange={(e) => setProtoInput(e.target.value)}
@@ -245,16 +247,16 @@ enum Status {
         variant="secondary"
         size="sm"
       >
-        Load Example
+        {t("loadExample")}
       </Button>
 
       {/* Buttons */}
       <div className="flex gap-2">
         <Button onClick={handleConvert} variant="primary" className="flex-1">
-          Convert to JSON Schema
+          {t("convert")}
         </Button>
         <Button onClick={handleReset}>
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
@@ -268,7 +270,7 @@ enum Status {
       {/* JSON Schema Output */}
       {jsonOutput && (
         <Textarea
-          label="JSON Schema Output"
+          label={t("jsonSchemaOutput")}
           value={jsonOutput}
           readOnly
           showCopy
@@ -278,7 +280,7 @@ enum Status {
 
       {/* Type Mapping Reference */}
       <div className="p-4 bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] rounded-[var(--radius-12)]">
-        <div className="text-sm font-semibold mb-2">Protobuf to JSON Type Mapping</div>
+        <div className="text-sm font-semibold mb-2">{t("typeMappingTitle")}</div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs font-mono">
           <div>double, float &rarr; number</div>
           <div>int32, int64 &rarr; integer</div>

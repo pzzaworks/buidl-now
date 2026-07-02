@@ -1,6 +1,8 @@
 import { Tool } from "@/types/tools";
 import { buildToolSeoDescription, getToolCategoryLabel } from "@/lib/seo";
 import { type FaqItem } from "@/lib/homepage-faq";
+import { localeUrl } from "@/lib/site";
+import { defaultLocale } from "@/i18n/locales";
 
 // Single source of truth for the E-E-A-T author/creator identity used across
 // the JSON-LD graph. Modeled as a Person with sameAs links to the real X and
@@ -29,10 +31,31 @@ const organizationPublisher = {
 
 interface ToolStructuredDataProps {
   tool: Tool;
+  /** Active locale - URLs are emitted under this locale's prefix. */
+  locale?: string;
+  /** Localized tool name (falls back to the English source). */
+  name?: string;
+  /** Localized meta description (falls back to the English generator). */
+  description?: string;
+  /** Localized category label for the breadcrumb. */
+  categoryLabel?: string;
+  /** Localized "Home" breadcrumb label. */
+  homeLabel?: string;
 }
 
-export function ToolStructuredData({ tool }: ToolStructuredDataProps) {
-  const categoryLabel = getToolCategoryLabel(tool.category);
+export function ToolStructuredData({
+  tool,
+  locale = defaultLocale,
+  name,
+  description,
+  categoryLabel,
+  homeLabel = "Home",
+}: ToolStructuredDataProps) {
+  const toolName = name ?? tool.name;
+  const toolDescription = description ?? buildToolSeoDescription(tool);
+  const category = categoryLabel ?? getToolCategoryLabel(tool.category);
+  const toolUrl = localeUrl(locale, tool.path);
+
   const breadcrumbData = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -40,20 +63,20 @@ export function ToolStructuredData({ tool }: ToolStructuredDataProps) {
       {
         "@type": "ListItem",
         position: 1,
-        name: "Home",
-        item: "https://buidlnow.com",
+        name: homeLabel,
+        item: localeUrl(locale),
       },
       {
         "@type": "ListItem",
         position: 2,
-        name: categoryLabel,
-        item: `https://buidlnow.com/?category=${tool.category}`,
+        name: category,
+        item: localeUrl(locale, `/?category=${tool.category}`),
       },
       {
         "@type": "ListItem",
         position: 3,
-        name: tool.name,
-        item: `https://buidlnow.com${tool.path}`,
+        name: toolName,
+        item: toolUrl,
       },
     ],
   };
@@ -61,9 +84,10 @@ export function ToolStructuredData({ tool }: ToolStructuredDataProps) {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: tool.name,
-    description: buildToolSeoDescription(tool),
-    url: `https://buidlnow.com${tool.path}`,
+    name: toolName,
+    description: toolDescription,
+    url: toolUrl,
+    inLanguage: locale,
     applicationCategory: "DeveloperApplication",
     operatingSystem: "Any",
     offers: {
@@ -78,7 +102,9 @@ export function ToolStructuredData({ tool }: ToolStructuredDataProps) {
       "@type": "Audience",
       audienceType: "Developers",
     },
-    keywords: [tool.name, tool.category, "developer tool", "online utility", "free tool"].filter(Boolean).join(", "),
+    keywords: [toolName, category, "developer tool", "online utility", "free tool"]
+      .filter(Boolean)
+      .join(", "),
   };
 
   return (
@@ -95,18 +121,29 @@ export function ToolStructuredData({ tool }: ToolStructuredDataProps) {
   );
 }
 
-export function WebsiteStructuredData() {
+interface SiteStructuredDataProps {
+  /** Active locale. */
+  locale?: string;
+  /** Localized site description. */
+  description?: string;
+}
+
+export function WebsiteStructuredData({
+  locale = defaultLocale,
+  description = "Developer tools for builders who ship fast",
+}: SiteStructuredDataProps = {}) {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Buidl Now!",
-    description: "Developer tools for builders who ship fast",
-    url: "https://buidlnow.com",
+    description,
+    url: localeUrl(locale),
+    inLanguage: locale,
     potentialAction: {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: "https://buidlnow.com/?search={search_term_string}",
+        urlTemplate: `${localeUrl(locale)}/?search={search_term_string}`,
       },
       "query-input": "required name=search_term_string",
     },
@@ -149,14 +186,18 @@ export function FaqStructuredData({ items }: FaqStructuredDataProps) {
   );
 }
 
-export function OrganizationStructuredData() {
+export function OrganizationStructuredData({
+  description = "Free online developer tools for builders who ship fast",
+}: {
+  description?: string;
+} = {}) {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Buidl Now!",
     url: "https://buidlnow.com",
     logo: "https://buidlnow.com/buildnow.svg",
-    description: "Free online developer tools for builders who ship fast",
+    description,
     founder: personAuthor,
     sameAs: [
       "https://x.com/pzzaworks",

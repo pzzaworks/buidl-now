@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { ToolConfig } from "@/types/tool";
 type HashAlgorithm = "MD5" | "SHA-1" | "SHA-256" | "SHA-512";
 
 export function HashGeneratorTool() {
+  const t = useTranslations("toolUI.hash-generator");
   const [input, setInput] = useState("");
   const [hashes, setHashes] = useState<Record<HashAlgorithm, string>>({
     "MD5": "",
@@ -58,27 +60,27 @@ export function HashGeneratorTool() {
     <div className="space-y-6">
       {/* Input Section */}
       <div>
-        <Label className="mb-2 block text-sm">Input Text</Label>
+        <Label className="mb-2 block text-sm">{t("inputLabel")}</Label>
         <Textarea
           value={input}
           onChange={handleInputChange}
-          placeholder="Enter text to hash..."
+          placeholder={t("inputPlaceholder")}
           rows={8}
           className="text-sm mb-2"
         />
         <div className="flex gap-2">
           <Button onClick={() => generateHashes(input)} className="flex-1" variant="primary">
-            Generate
+            {t("generate")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
 
       {/* Output Section */}
       <div>
-        <Label className="mb-2 block text-sm">Hashes</Label>
+        <Label className="mb-2 block text-sm">{t("hashes")}</Label>
         <div className="space-y-3">
           {(Object.keys(hashes) as HashAlgorithm[]).map((algorithm) => (
             <Input

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -8,6 +9,7 @@ import { ToolConfig } from "@/types/tool";
 import { MdClose } from "react-icons/md";
 
 export function XmlFormatterTool() {
+  const t = useTranslations("toolUI.xml-formatter");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
@@ -62,14 +64,14 @@ export function XmlFormatterTool() {
       // Check for parser errors
       const parserError = xmlDoc.querySelector("parsererror");
       if (parserError) {
-        const errorText = parserError.textContent || "Unknown XML parsing error";
+        const errorText = parserError.textContent || t("unknownParsingError");
         setError(errorText);
         return false;
       }
 
       return true;
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Invalid XML");
+      setError(e instanceof Error ? e.message : t("invalidXml"));
       return false;
     }
   };
@@ -91,7 +93,7 @@ export function XmlFormatterTool() {
       const formatted = formatXml(input);
       setOutput(formatted);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Formatting failed");
+      setError(e instanceof Error ? e.message : t("formattingFailed"));
       setOutput("");
     }
   };
@@ -106,20 +108,20 @@ export function XmlFormatterTool() {
     <div className="space-y-6">
       {/* Input Section */}
       <div>
-        <Label className="mb-2 block text-sm">XML Input</Label>
+        <Label className="mb-2 block text-sm">{t("xmlInputLabel")}</Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Enter XML to format..."
+          placeholder={t("placeholder")}
           rows={10}
           className="font-mono text-sm mb-2"
         />
         <div className="flex gap-2">
           <Button onClick={handleFormat} variant="primary" className="flex-1">
-            Format XML
+            {t("formatXml")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -134,7 +136,7 @@ export function XmlFormatterTool() {
       {/* Output Section */}
       {output && (
         <Textarea
-          label="Formatted XML"
+          label={t("formattedLabel")}
           value={output}
           readOnly
           showCopy

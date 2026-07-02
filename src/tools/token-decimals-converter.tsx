@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ToolConfig } from "@/types/tool";
 
 export function TokenDecimalsConverterTool() {
+  const t = useTranslations("toolUI.token-decimals-converter");
   const [amount, setAmount] = useState("");
   const [decimals, setDecimals] = useState("18");
   const [rawAmount, setRawAmount] = useState("");
@@ -20,7 +22,7 @@ export function TokenDecimalsConverterTool() {
     try {
       const dec = parseInt(decimals);
       if (isNaN(dec) || dec < 0 || dec > 77) {
-        setRawAmount("Invalid decimals (0-77)");
+        setRawAmount(t("invalidDecimals"));
         return;
       }
 
@@ -36,7 +38,7 @@ export function TokenDecimalsConverterTool() {
       const result = raw.replace(/^0+/, "") || "0";
       setRawAmount(result);
     } catch (e) {
-      setRawAmount("Invalid input");
+      setRawAmount(t("invalidInput"));
     }
   };
 
@@ -49,7 +51,7 @@ export function TokenDecimalsConverterTool() {
     try {
       const dec = parseInt(decimals);
       if (isNaN(dec) || dec < 0 || dec > 77) {
-        setHumanAmount("Invalid decimals (0-77)");
+        setHumanAmount(t("invalidDecimals"));
         return;
       }
 
@@ -73,7 +75,7 @@ export function TokenDecimalsConverterTool() {
         setHumanAmount(wholePart);
       }
     } catch (e) {
-      setHumanAmount("Invalid input");
+      setHumanAmount(t("invalidInput"));
     }
   };
 
@@ -89,7 +91,7 @@ export function TokenDecimalsConverterTool() {
       {/* Decimals */}
       <div>
         <Input
-          label="Decimals"
+          label={t("decimalsLabel")}
           value={decimals}
           onChange={(e) => setDecimals(e.target.value)}
           placeholder="18"
@@ -97,25 +99,25 @@ export function TokenDecimalsConverterTool() {
           className="font-mono text-sm"
         />
         <div className="text-xs text-muted-foreground mt-1">
-          Number of decimal places (0-77). Common: 18 for ETH, 6 for USDC
+          {t("decimalsHelp")}
         </div>
       </div>
 
       {/* Human Readable to Raw */}
       <div className="space-y-3">
-        <div className="text-sm font-medium">Human Readable → Raw</div>
+        <div className="text-sm font-medium">{t("humanToRaw")}</div>
         <Input
-          label="Amount (Human Readable)"
+          label={t("amountHumanLabel")}
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           placeholder="1.0"
           className="font-mono text-sm"
         />
         <Button onClick={toRaw} variant="primary" className="w-full">
-          Convert to Raw
+          {t("convertToRaw")}
         </Button>
         <Input
-          label="Raw Amount (Wei-like)"
+          label={t("rawAmountLabel")}
           value={rawAmount}
           onChange={(e) => setRawAmount(e.target.value)}
           placeholder="1000000000000000000"
@@ -126,12 +128,12 @@ export function TokenDecimalsConverterTool() {
 
       {/* Raw to Human Readable */}
       <div className="space-y-3">
-        <div className="text-sm font-medium">Raw → Human Readable</div>
+        <div className="text-sm font-medium">{t("rawToHuman")}</div>
         <Button onClick={toHuman} variant="primary" className="w-full">
-          Convert to Human Readable
+          {t("convertToHuman")}
         </Button>
         <Input
-          label="Human Readable Amount"
+          label={t("humanAmountLabel")}
           value={humanAmount}
           onChange={(e) => setHumanAmount(e.target.value)}
           placeholder="1.0"
@@ -142,7 +144,7 @@ export function TokenDecimalsConverterTool() {
 
       {/* Reset */}
       <Button onClick={handleReset} className="w-full">
-        Reset
+        {t("reset")}
       </Button>
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { MdClose } from "react-icons/md";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { encodeAbiParameters, decodeAbiParameters, parseAbiParameters } from "vi
 import { ToolConfig } from "@/types/tool";
 
 export function AbiEncoderTool() {
+  const t = useTranslations("toolUI.abi-encoder");
   const [types, setTypes] = useState("");
   const [values, setValues] = useState("");
   const [encoded, setEncoded] = useState("");
@@ -33,7 +35,7 @@ export function AbiEncoderTool() {
       setEncoded(result);
       setError("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Encoding failed");
+      setError(e instanceof Error ? e.message : t("encodingFailed"));
       setEncoded("");
     }
   };
@@ -51,7 +53,7 @@ export function AbiEncoderTool() {
       setDecoded(JSON.stringify(result, null, 2));
       setDecodeError("");
     } catch (e) {
-      setDecodeError(e instanceof Error ? e.message : "Decoding failed");
+      setDecodeError(e instanceof Error ? e.message : t("decodingFailed"));
       setDecoded("");
     }
   };
@@ -74,10 +76,10 @@ export function AbiEncoderTool() {
     <div className="space-y-8">
       {/* Encode Section */}
       <div>
-        <div className="text-sm font-semibold mb-4">Encode ABI Parameters</div>
+        <div className="text-sm font-semibold mb-4">{t("encodeHeading")}</div>
         <div className="space-y-4">
           <div>
-            <Label className="mb-2 block text-sm">Types (comma-separated)</Label>
+            <Label className="mb-2 block text-sm">{t("typesLabel")}</Label>
             <Textarea
               value={types}
               onChange={(e) => setTypes(e.target.value)}
@@ -87,7 +89,7 @@ export function AbiEncoderTool() {
           </div>
 
           <div>
-            <Label className="mb-2 block text-sm">Values (JSON array format)</Label>
+            <Label className="mb-2 block text-sm">{t("valuesLabel")}</Label>
             <Textarea
               value={values}
               onChange={(e) => setValues(e.target.value)}
@@ -98,10 +100,10 @@ export function AbiEncoderTool() {
 
           <div className="flex gap-2">
             <Button onClick={handleEncode} variant="primary" className="flex-1">
-              Encode
+              {t("encode")}
             </Button>
             <Button onClick={handleResetEncode}>
-              Reset
+              {t("reset")}
             </Button>
           </div>
 
@@ -113,7 +115,7 @@ export function AbiEncoderTool() {
 
           {encoded && (
             <Textarea
-              label="Encoded Data"
+              label={t("encodedDataLabel")}
               value={encoded}
               readOnly
               showCopy
@@ -127,10 +129,10 @@ export function AbiEncoderTool() {
 
       {/* Decode Section */}
       <div>
-        <div className="text-sm font-semibold mb-4">Decode ABI Parameters</div>
+        <div className="text-sm font-semibold mb-4">{t("decodeHeading")}</div>
         <div className="space-y-4">
           <div>
-            <Label className="mb-2 block text-sm">Types (comma-separated)</Label>
+            <Label className="mb-2 block text-sm">{t("typesLabel")}</Label>
             <Textarea
               value={decodeTypes}
               onChange={(e) => setDecodeTypes(e.target.value)}
@@ -140,7 +142,7 @@ export function AbiEncoderTool() {
           </div>
 
           <div>
-            <Label className="mb-2 block text-sm">Encoded Data (hex)</Label>
+            <Label className="mb-2 block text-sm">{t("encodedDataInputLabel")}</Label>
             <Textarea
               value={decodeData}
               onChange={(e) => setDecodeData(e.target.value)}
@@ -151,10 +153,10 @@ export function AbiEncoderTool() {
 
           <div className="flex gap-2">
             <Button onClick={handleDecode} variant="primary" className="flex-1">
-              Decode
+              {t("decode")}
             </Button>
             <Button onClick={handleResetDecode}>
-              Reset
+              {t("reset")}
             </Button>
           </div>
 
@@ -166,7 +168,7 @@ export function AbiEncoderTool() {
 
           {decoded && (
             <Textarea
-              label="Decoded Values"
+              label={t("decodedValuesLabel")}
               value={decoded}
               readOnly
               showCopy

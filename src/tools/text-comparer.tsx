@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -12,6 +13,7 @@ interface DiffPart {
 }
 
 export function TextComparerTool() {
+  const t = useTranslations("toolUI.text-comparer");
   const [text1, setText1] = useState("");
   const [text2, setText2] = useState("");
   const [diffMode, setDiffMode] = useState<"character" | "word">("word");
@@ -122,10 +124,10 @@ export function TextComparerTool() {
       {/* Input Text 1 */}
       <div>
         <Textarea
-          label="Original Text"
+          label={t("originalText")}
           value={text1}
           onChange={(e) => setText1(e.target.value)}
-          placeholder="Enter original text..."
+          placeholder={t("originalPlaceholder")}
           className="min-h-[150px]"
         />
       </div>
@@ -133,17 +135,17 @@ export function TextComparerTool() {
       {/* Input Text 2 */}
       <div>
         <Textarea
-          label="Modified Text"
+          label={t("modifiedText")}
           value={text2}
           onChange={(e) => setText2(e.target.value)}
-          placeholder="Enter modified text..."
+          placeholder={t("modifiedPlaceholder")}
           className="min-h-[150px]"
         />
       </div>
 
       {/* Diff Mode */}
       <div>
-        <Label className="mb-2 block text-sm">Diff Mode</Label>
+        <Label className="mb-2 block text-sm">{t("diffMode")}</Label>
         <div className="flex gap-2">
           <Button
             variant={diffMode === "word" ? "primary" : "secondary"}
@@ -151,7 +153,7 @@ export function TextComparerTool() {
             className="flex-1"
             size="sm"
           >
-            Word Level
+            {t("wordLevel")}
           </Button>
           <Button
             variant={diffMode === "character" ? "primary" : "secondary"}
@@ -159,14 +161,14 @@ export function TextComparerTool() {
             className="flex-1"
             size="sm"
           >
-            Character Level
+            {t("charLevel")}
           </Button>
         </div>
       </div>
 
       {/* Compare Button */}
       <Button onClick={handleCompare} variant="primary" className="w-full">
-        Compare Texts
+        {t("compare")}
       </Button>
 
       {/* Results */}
@@ -174,18 +176,18 @@ export function TextComparerTool() {
         <div className="space-y-4">
           {/* Statistics */}
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <Label className="text-sm mb-2 block">Statistics</Label>
+            <Label className="text-sm mb-2 block">{t("statistics")}</Label>
             <div className="grid grid-cols-3 gap-4 text-sm">
               <div>
-                <span className="text-[var(--color-green-500)]">Additions:</span>{" "}
+                <span className="text-[var(--color-green-500)]">{t("additions")}</span>{" "}
                 <span className="font-mono">{stats.additions}</span>
               </div>
               <div>
-                <span className="text-[var(--color-red-500)]">Deletions:</span>{" "}
+                <span className="text-[var(--color-red-500)]">{t("deletions")}</span>{" "}
                 <span className="font-mono">{stats.deletions}</span>
               </div>
               <div>
-                <span className="text-muted-foreground">Unchanged:</span>{" "}
+                <span className="text-muted-foreground">{t("unchanged")}</span>{" "}
                 <span className="font-mono">{stats.unchanged}</span>
               </div>
             </div>
@@ -193,7 +195,7 @@ export function TextComparerTool() {
 
           {/* Diff Display */}
           <div>
-            <Label className="text-sm mb-2 block">Differences</Label>
+            <Label className="text-sm mb-2 block">{t("differences")}</Label>
             <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px] min-h-[150px] font-mono text-sm whitespace-pre-wrap break-words">
               {diff.map((part, index) => (
                 <span

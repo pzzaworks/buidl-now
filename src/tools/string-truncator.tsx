@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { ToolConfig } from "@/types/tool";
 type EllipsisPosition = "end" | "middle" | "start";
 
 export function StringTruncatorTool() {
+  const t = useTranslations("toolUI.string-truncator");
   const [input, setInput] = useState("");
   const [maxLength, setMaxLength] = useState("50");
   const [ellipsisPosition, setEllipsisPosition] = useState<EllipsisPosition>("end");
@@ -97,10 +99,10 @@ export function StringTruncatorTool() {
     <div className="space-y-6">
       {/* Input */}
       <Textarea
-        label="Text Input"
+        label={t("inputLabel")}
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Enter text to truncate..."
+        placeholder={t("inputPlaceholder")}
         className="min-h-[150px]"
       />
 
@@ -108,11 +110,11 @@ export function StringTruncatorTool() {
       {input && (
         <div className="p-3 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
           <div className="text-sm text-muted-foreground">
-            Input length: <span className="font-mono font-medium text-foreground">{input.length}</span> characters
+            {t("inputLength")} <span className="font-mono font-medium text-foreground">{input.length}</span> {t("charactersUnit")}
             {output && (
               <>
                 {" | "}
-                Output length: <span className="font-mono font-medium text-foreground">{output.length}</span> characters
+                {t("outputLength")} <span className="font-mono font-medium text-foreground">{output.length}</span> {t("charactersUnit")}
               </>
             )}
           </div>
@@ -123,7 +125,7 @@ export function StringTruncatorTool() {
       <div className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
-            label="Max Length"
+            label={t("maxLength")}
             type="number"
             min="1"
             max="10000"
@@ -132,7 +134,7 @@ export function StringTruncatorTool() {
             placeholder="50"
           />
           <Input
-            label="Ellipsis Character(s)"
+            label={t("ellipsisChars")}
             value={customEllipsis}
             onChange={(e) => setCustomEllipsis(e.target.value)}
             placeholder="..."
@@ -140,7 +142,7 @@ export function StringTruncatorTool() {
         </div>
 
         <div>
-          <Label className="mb-2 block text-sm">Ellipsis Position</Label>
+          <Label className="mb-2 block text-sm">{t("ellipsisPosition")}</Label>
           <div className="flex gap-2">
             <Button
               variant={ellipsisPosition === "end" ? "primary" : "secondary"}
@@ -148,7 +150,7 @@ export function StringTruncatorTool() {
               className="flex-1"
               size="sm"
             >
-              End
+              {t("end")}
             </Button>
             <Button
               variant={ellipsisPosition === "middle" ? "primary" : "secondary"}
@@ -156,7 +158,7 @@ export function StringTruncatorTool() {
               className="flex-1"
               size="sm"
             >
-              Middle
+              {t("middle")}
             </Button>
             <Button
               variant={ellipsisPosition === "start" ? "primary" : "secondary"}
@@ -164,7 +166,7 @@ export function StringTruncatorTool() {
               className="flex-1"
               size="sm"
             >
-              Start
+              {t("start")}
             </Button>
           </div>
         </div>
@@ -173,19 +175,19 @@ export function StringTruncatorTool() {
           id="wordBoundary"
           checked={wordBoundary}
           onChange={(e) => setWordBoundary(e.target.checked)}
-          label="Respect word boundaries (avoid cutting words)"
+          label={t("wordBoundary")}
         />
       </div>
 
       {/* Reset Button */}
       <Button onClick={handleReset} className="w-full sm:w-auto">
-        Reset
+        {t("reset")}
       </Button>
 
       {/* Output */}
       {output && (
         <Textarea
-          label="Truncated Text"
+          label={t("truncatedLabel")}
           value={output}
           readOnly
           showCopy

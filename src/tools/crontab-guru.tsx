@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -301,6 +302,7 @@ const COMMON_EXAMPLES = [
 ];
 
 export function CrontabGuruTool() {
+  const t = useTranslations("toolUI.crontab-guru");
   const [input, setInput] = useState("");
   const [parsed, setParsed] = useState<ParsedCron | null>(null);
 
@@ -327,7 +329,7 @@ export function CrontabGuruTool() {
       {/* Input */}
       <div>
         <Input
-          label="Cron Expression"
+          label={t("cronLabel")}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyUp={(e) => e.key === "Enter" && handleParse()}
@@ -335,16 +337,16 @@ export function CrontabGuruTool() {
           className="font-mono text-sm"
         />
         <div className="text-xs text-muted-foreground mt-1">
-          Format: minute hour day-of-month month day-of-week
+          {t("formatHelp")}
         </div>
       </div>
 
       {/* Buttons */}
       <div className="flex gap-2">
         <Button onClick={handleParse} variant="primary" className="flex-1">
-          Parse Expression
+          {t("parse")}
         </Button>
-        <Button onClick={handleReset}>Reset</Button>
+        <Button onClick={handleReset}>{t("reset")}</Button>
       </div>
 
       {/* Error */}
@@ -364,34 +366,34 @@ export function CrontabGuruTool() {
 
           {/* Fields Breakdown */}
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <div className="text-sm font-semibold mb-3">Field Breakdown</div>
+            <div className="text-sm font-semibold mb-3">{t("fieldBreakdown")}</div>
             <div className="grid grid-cols-5 gap-2 text-center text-xs">
               <div>
                 <div className="font-mono text-lg">{parsed.fields.minute}</div>
-                <div className="text-muted-foreground">minute</div>
+                <div className="text-muted-foreground">{t("minute")}</div>
               </div>
               <div>
                 <div className="font-mono text-lg">{parsed.fields.hour}</div>
-                <div className="text-muted-foreground">hour</div>
+                <div className="text-muted-foreground">{t("hour")}</div>
               </div>
               <div>
                 <div className="font-mono text-lg">{parsed.fields.dayOfMonth}</div>
-                <div className="text-muted-foreground">day (month)</div>
+                <div className="text-muted-foreground">{t("dayMonth")}</div>
               </div>
               <div>
                 <div className="font-mono text-lg">{parsed.fields.month}</div>
-                <div className="text-muted-foreground">month</div>
+                <div className="text-muted-foreground">{t("month")}</div>
               </div>
               <div>
                 <div className="font-mono text-lg">{parsed.fields.dayOfWeek}</div>
-                <div className="text-muted-foreground">day (week)</div>
+                <div className="text-muted-foreground">{t("dayWeek")}</div>
               </div>
             </div>
           </div>
 
           {/* Next 5 Runs */}
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-            <div className="text-sm font-semibold mb-3">Next 5 Execution Times</div>
+            <div className="text-sm font-semibold mb-3">{t("nextRuns")}</div>
             <div className="space-y-2">
               {parsed.nextRuns.map((date, index) => (
                 <div key={index} className="flex justify-between text-sm font-mono">
@@ -406,7 +408,7 @@ export function CrontabGuruTool() {
 
       {/* Common Examples */}
       <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-        <div className="text-sm font-semibold mb-3">Common Cron Expressions</div>
+        <div className="text-sm font-semibold mb-3">{t("commonExpressions")}</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {COMMON_EXAMPLES.map((example, index) => (
             <button
@@ -423,16 +425,16 @@ export function CrontabGuruTool() {
 
       {/* Quick Reference */}
       <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-        <div className="text-sm font-semibold mb-3">Quick Reference</div>
+        <div className="text-sm font-semibold mb-3">{t("quickReference")}</div>
         <div className="text-xs space-y-2">
           <div className="grid grid-cols-2 gap-2">
-            <div><code className="font-mono">*</code> any value</div>
-            <div><code className="font-mono">,</code> value list separator</div>
-            <div><code className="font-mono">-</code> range of values</div>
-            <div><code className="font-mono">/</code> step values</div>
+            <div><code className="font-mono">*</code> {t("anyValue")}</div>
+            <div><code className="font-mono">,</code> {t("listSeparator")}</div>
+            <div><code className="font-mono">-</code> {t("rangeOfValues")}</div>
+            <div><code className="font-mono">/</code> {t("stepValues")}</div>
           </div>
           <div className="mt-2 text-muted-foreground">
-            Day of week: 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+            {t("dayOfWeekNote")}
           </div>
         </div>
       </div>

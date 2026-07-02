@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -8,6 +9,7 @@ import { ToolConfig } from "@/types/tool";
 import { MdCheck, MdClose } from "react-icons/md";
 
 export function JsFormatterTool() {
+  const t = useTranslations("toolUI.js-formatter");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
@@ -101,7 +103,7 @@ export function JsFormatterTool() {
       }
       setError("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to process code");
+      setError(e instanceof Error ? e.message : t("failedToProcess"));
       setOutput("");
     }
   };
@@ -124,7 +126,7 @@ export function JsFormatterTool() {
           }}
           className="flex-1"
         >
-          Format
+          {t("format")}
         </Button>
         <Button
           variant={mode === "minify" ? "primary" : "secondary"}
@@ -134,29 +136,29 @@ export function JsFormatterTool() {
           }}
           className="flex-1"
         >
-          Minify
+          {t("minify")}
         </Button>
       </div>
 
       {/* Input Section */}
       <div>
-        <Label className="mb-2 block text-sm">JavaScript / TypeScript Input</Label>
+        <Label className="mb-2 block text-sm">{t("inputLabel")}</Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={
             mode === "format"
               ? "const greeting = 'Hello'; function sayHello() { console.log(greeting); }"
-              : "Enter code to minify..."
+              : t("minifyPlaceholder")
           }
           rows={10}
           className="font-mono text-sm mb-2"
         />
         <div className="flex gap-2">
           <Button onClick={handleConvert} variant="primary" className="flex-1">
-            {mode === "format" ? "Format Code" : "Minify Code"}
+            {mode === "format" ? t("formatCode") : t("minifyCode")}
           </Button>
-          <Button onClick={handleReset}>Reset</Button>
+          <Button onClick={handleReset}>{t("reset")}</Button>
         </div>
       </div>
 
@@ -172,7 +174,7 @@ export function JsFormatterTool() {
       {/* Output Section */}
       {output && !error && (
         <Textarea
-          label={mode === "format" ? "Formatted Code" : "Minified Code"}
+          label={mode === "format" ? t("formattedCode") : t("minifiedCode")}
           value={output}
           readOnly
           showCopy

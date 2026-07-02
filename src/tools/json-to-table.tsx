@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -8,6 +9,7 @@ import { ToolConfig } from "@/types/tool";
 import { MdClose } from "react-icons/md";
 
 export function JsonToTableTool() {
+  const t = useTranslations("toolUI.json-to-table");
   const [jsonInput, setJsonInput] = useState("");
   const [csvOutput, setCsvOutput] = useState("");
   const [error, setError] = useState("");
@@ -23,13 +25,13 @@ export function JsonToTableTool() {
       const data = JSON.parse(jsonInput);
 
       if (!Array.isArray(data)) {
-        setError("Input must be a JSON array");
+        setError(t("errorNotArray"));
         setCsvOutput("");
         return;
       }
 
       if (data.length === 0) {
-        setError("Array is empty");
+        setError(t("errorEmptyArray"));
         setCsvOutput("");
         return;
       }
@@ -60,7 +62,7 @@ export function JsonToTableTool() {
       setCsvOutput(csv);
       setError("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Invalid JSON");
+      setError(e instanceof Error ? e.message : t("errorInvalidJson"));
       setCsvOutput("");
     }
   };
@@ -75,7 +77,7 @@ export function JsonToTableTool() {
     <div className="space-y-6">
       {/* JSON Input */}
       <div>
-        <Label className="mb-2 block text-sm">JSON Array</Label>
+        <Label className="mb-2 block text-sm">{t("jsonArrayLabel")}</Label>
         <Textarea
           value={jsonInput}
           onChange={(e) => setJsonInput(e.target.value)}
@@ -87,10 +89,10 @@ export function JsonToTableTool() {
       {/* Buttons */}
       <div className="flex gap-2">
         <Button onClick={handleConvert} variant="primary" className="flex-1">
-          Convert to CSV
+          {t("convertToCsv")}
         </Button>
         <Button onClick={handleReset}>
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
@@ -104,7 +106,7 @@ export function JsonToTableTool() {
       {/* CSV Output */}
       {csvOutput && (
         <Textarea
-          label="CSV Output"
+          label={t("csvOutputLabel")}
           value={csvOutput}
           readOnly
           showCopy

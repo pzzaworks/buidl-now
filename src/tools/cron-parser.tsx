@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -8,102 +9,93 @@ import { Input } from "@/components/ui/input";
 import { ToolConfig } from "@/types/tool";
 import { CronExpressionParser } from "cron-parser";
 
-// Human-readable descriptions for cron fields
-function describeCronField(value: string, field: string): string {
-  if (value === "*") return `every ${field}`;
-  if (value.includes("/")) {
-    const [, step] = value.split("/");
-    return `every ${step} ${field}s`;
-  }
-  if (value.includes(",")) {
-    return `${field}s ${value}`;
-  }
-  if (value.includes("-")) {
-    const [start, end] = value.split("-");
-    return `${field}s ${start} through ${end}`;
-  }
-  return `${field} ${value}`;
-}
-
-// Generate human-readable description
-function describeCron(expression: string): string {
-  const parts = expression.trim().split(/\s+/);
-  if (parts.length < 5 || parts.length > 6) {
-    return "Invalid cron expression";
-  }
-
-  const [minute, hour, dayOfMonth, month, dayOfWeek] = parts;
-
-  const descriptions: string[] = [];
-
-  // Common patterns
-  if (minute === "0" && hour === "0" && dayOfMonth === "*" && month === "*" && dayOfWeek === "*") {
-    return "At midnight every day";
-  }
-  if (minute === "0" && hour === "*" && dayOfMonth === "*" && month === "*" && dayOfWeek === "*") {
-    return "At the start of every hour";
-  }
-  if (minute === "*" && hour === "*" && dayOfMonth === "*" && month === "*" && dayOfWeek === "*") {
-    return "Every minute";
-  }
-  if (minute.includes("/") && hour === "*" && dayOfMonth === "*" && month === "*" && dayOfWeek === "*") {
-    const step = minute.split("/")[1];
-    return `Every ${step} minutes`;
-  }
-
-  // Build description
-  if (minute !== "*") {
-    if (minute.includes("/")) {
-      descriptions.push(`every ${minute.split("/")[1]} minutes`);
-    } else {
-      descriptions.push(`at minute ${minute}`);
-    }
-  }
-
-  if (hour !== "*") {
-    if (hour.includes("/")) {
-      descriptions.push(`every ${hour.split("/")[1]} hours`);
-    } else {
-      descriptions.push(`at hour ${hour}`);
-    }
-  }
-
-  if (dayOfMonth !== "*") {
-    descriptions.push(`on day ${dayOfMonth} of the month`);
-  }
-
-  if (month !== "*") {
-    const monthNames = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    if (!month.includes(",") && !month.includes("-") && !month.includes("/")) {
-      const monthNum = parseInt(month);
-      if (monthNum >= 1 && monthNum <= 12) {
-        descriptions.push(`in ${monthNames[monthNum]}`);
-      } else {
-        descriptions.push(`in month ${month}`);
-      }
-    } else {
-      descriptions.push(`in months ${month}`);
-    }
-  }
-
-  if (dayOfWeek !== "*") {
-    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    if (!dayOfWeek.includes(",") && !dayOfWeek.includes("-") && !dayOfWeek.includes("/")) {
-      const dayNum = parseInt(dayOfWeek);
-      if (dayNum >= 0 && dayNum <= 6) {
-        descriptions.push(`on ${dayNames[dayNum]}`);
-      } else {
-        descriptions.push(`on day ${dayOfWeek} of the week`);
-      }
-    } else {
-      descriptions.push(`on weekdays ${dayOfWeek}`);
-    }
-  }
-
-  return descriptions.length > 0 ? descriptions.join(", ") : "Runs according to schedule";
-}
-
 export function CronParserTool() {
+  const t = useTranslations("toolUI.cron-parser");
+  const locale = useLocale();
+
+  // Generate a locale-aware human-readable description of a cron expression
+  const describeCron = (expression: string): string => {
+    const parts = expression.trim().split(/\s+/);
+    if (parts.length < 5 || parts.length > 6) {
+      return t("invalidCronExpression");
+    }
+
+    const [minute, hour, dayOfMonth, month, dayOfWeek] = parts;
+
+    const descriptions: string[] = [];
+
+    // Common patterns
+    if (minute === "0" && hour === "0" && dayOfMonth === "*" && month === "*" && dayOfWeek === "*") {
+      return t("descMidnightDaily");
+    }
+    if (minute === "0" && hour === "*" && dayOfMonth === "*" && month === "*" && dayOfWeek === "*") {
+      return t("descHourlyStart");
+    }
+    if (minute === "*" && hour === "*" && dayOfMonth === "*" && month === "*" && dayOfWeek === "*") {
+      return t("descEveryMinute");
+    }
+    if (minute.includes("/") && hour === "*" && dayOfMonth === "*" && month === "*" && dayOfWeek === "*") {
+      const step = minute.split("/")[1];
+      return t("descEveryNMinutes", { step });
+    }
+
+    // Build description
+    if (minute !== "*") {
+      if (minute.includes("/")) {
+        descriptions.push(t("partEveryNMinutes", { step: minute.split("/")[1] }));
+      } else {
+        descriptions.push(t("partAtMinute", { minute }));
+      }
+    }
+
+    if (hour !== "*") {
+      if (hour.includes("/")) {
+        descriptions.push(t("partEveryNHours", { step: hour.split("/")[1] }));
+      } else {
+        descriptions.push(t("partAtHour", { hour }));
+      }
+    }
+
+    if (dayOfMonth !== "*") {
+      descriptions.push(t("partOnDayOfMonth", { day: dayOfMonth }));
+    }
+
+    if (month !== "*") {
+      if (!month.includes(",") && !month.includes("-") && !month.includes("/")) {
+        const monthNum = parseInt(month);
+        if (monthNum >= 1 && monthNum <= 12) {
+          const monthName = new Intl.DateTimeFormat(locale, { month: "long", timeZone: "UTC" }).format(
+            new Date(Date.UTC(2000, monthNum - 1, 1)),
+          );
+          descriptions.push(t("partInMonth", { month: monthName }));
+        } else {
+          descriptions.push(t("partInMonthNum", { month }));
+        }
+      } else {
+        descriptions.push(t("partInMonths", { months: month }));
+      }
+    }
+
+    if (dayOfWeek !== "*") {
+      if (!dayOfWeek.includes(",") && !dayOfWeek.includes("-") && !dayOfWeek.includes("/")) {
+        const dayNum = parseInt(dayOfWeek);
+        if (dayNum >= 0 && dayNum <= 6) {
+          // 2000-01-02 is a Sunday, so adding dayNum maps 0..6 to Sun..Sat
+          const dayName = new Intl.DateTimeFormat(locale, { weekday: "long", timeZone: "UTC" }).format(
+            new Date(Date.UTC(2000, 0, 2 + dayNum)),
+          );
+          descriptions.push(t("partOnDay", { day: dayName }));
+        } else {
+          descriptions.push(t("partOnDayOfWeek", { day: dayOfWeek }));
+        }
+      } else {
+        descriptions.push(t("partOnWeekdays", { days: dayOfWeek }));
+      }
+    }
+
+    return descriptions.length > 0 ? descriptions.join(", ") : t("descFallback");
+  };
+
   const [expression, setExpression] = useState("");
   const [numExecutions, setNumExecutions] = useState("5");
   const [nextExecutions, setNextExecutions] = useState<string[]>([]);
@@ -112,7 +104,7 @@ export function CronParserTool() {
 
   const handleParse = () => {
     if (!expression.trim()) {
-      setError("Please enter a cron expression");
+      setError(t("errorEmpty"));
       setNextExecutions([]);
       setDescription("");
       return;
@@ -132,7 +124,7 @@ export function CronParserTool() {
       setDescription(describeCron(expression.trim()));
       setError("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Invalid cron expression");
+      setError(e instanceof Error ? e.message : t("invalidCronExpression"));
       setNextExecutions([]);
       setDescription("");
     }
@@ -147,19 +139,19 @@ export function CronParserTool() {
   };
 
   const presets = [
-    { label: "Every minute", value: "* * * * *" },
-    { label: "Every 5 minutes", value: "*/5 * * * *" },
-    { label: "Every hour", value: "0 * * * *" },
-    { label: "Every day at midnight", value: "0 0 * * *" },
-    { label: "Every Monday at 9am", value: "0 9 * * 1" },
-    { label: "Every month on 1st", value: "0 0 1 * *" },
+    { label: t("presetEveryMinute"), value: "* * * * *" },
+    { label: t("presetEvery5Minutes"), value: "*/5 * * * *" },
+    { label: t("presetEveryHour"), value: "0 * * * *" },
+    { label: t("presetEveryDayMidnight"), value: "0 0 * * *" },
+    { label: t("presetEveryMonday9am"), value: "0 9 * * 1" },
+    { label: t("presetEveryMonth1st"), value: "0 0 1 * *" },
   ];
 
   return (
     <div className="space-y-6">
       {/* Cron Expression Input */}
       <div>
-        <Label className="mb-2 block text-sm">Cron Expression</Label>
+        <Label className="mb-2 block text-sm">{t("cronExpressionLabel")}</Label>
         <Input
           value={expression}
           onChange={(e) => setExpression(e.target.value)}
@@ -167,13 +159,13 @@ export function CronParserTool() {
           className="font-mono text-sm"
         />
         <div className="text-xs text-muted-foreground mt-2">
-          Format: minute hour day-of-month month day-of-week
+          {t("formatHelp")}
         </div>
       </div>
 
       {/* Presets */}
       <div>
-        <Label className="mb-2 block text-sm">Common Presets</Label>
+        <Label className="mb-2 block text-sm">{t("commonPresets")}</Label>
         <div className="flex flex-wrap gap-2">
           {presets.map((preset) => (
             <Button
@@ -190,7 +182,7 @@ export function CronParserTool() {
 
       {/* Number of executions */}
       <div>
-        <Label className="mb-2 block text-sm">Number of executions to show</Label>
+        <Label className="mb-2 block text-sm">{t("numExecutionsLabel")}</Label>
         <Input
           type="number"
           min="1"
@@ -204,10 +196,10 @@ export function CronParserTool() {
       {/* Buttons */}
       <div className="flex gap-2">
         <Button onClick={handleParse} variant="primary" className="flex-1">
-          Parse Expression
+          {t("parse")}
         </Button>
         <Button onClick={handleReset}>
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
@@ -221,7 +213,7 @@ export function CronParserTool() {
       {/* Description */}
       {description && (
         <div className="p-4 bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] rounded-[var(--radius-12)]">
-          <div className="text-sm text-muted-foreground mb-1">Human-readable description</div>
+          <div className="text-sm text-muted-foreground mb-1">{t("humanReadable")}</div>
           <div className="font-medium">{description}</div>
         </div>
       )}
@@ -229,7 +221,7 @@ export function CronParserTool() {
       {/* Next Executions */}
       {nextExecutions.length > 0 && (
         <Textarea
-          label="Next Execution Times (UTC)"
+          label={t("nextExecutionTimes")}
           value={nextExecutions.join("\n")}
           readOnly
           showCopy
@@ -239,26 +231,26 @@ export function CronParserTool() {
 
       {/* Cron Field Reference */}
       <div className="p-4 bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] rounded-[var(--radius-12)]">
-        <div className="text-sm font-semibold mb-2">Field Reference</div>
+        <div className="text-sm font-semibold mb-2">{t("fieldReference")}</div>
         <div className="grid grid-cols-5 gap-2 text-xs font-mono">
           <div className="text-center">
-            <div className="font-semibold">Minute</div>
+            <div className="font-semibold">{t("fieldMinute")}</div>
             <div className="text-muted-foreground">0-59</div>
           </div>
           <div className="text-center">
-            <div className="font-semibold">Hour</div>
+            <div className="font-semibold">{t("fieldHour")}</div>
             <div className="text-muted-foreground">0-23</div>
           </div>
           <div className="text-center">
-            <div className="font-semibold">Day</div>
+            <div className="font-semibold">{t("fieldDay")}</div>
             <div className="text-muted-foreground">1-31</div>
           </div>
           <div className="text-center">
-            <div className="font-semibold">Month</div>
+            <div className="font-semibold">{t("fieldMonth")}</div>
             <div className="text-muted-foreground">1-12</div>
           </div>
           <div className="text-center">
-            <div className="font-semibold">Weekday</div>
+            <div className="font-semibold">{t("fieldWeekday")}</div>
             <div className="text-muted-foreground">0-6</div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -151,6 +152,7 @@ function parseValue(value: string): any {
 }
 
 export function YamlValidatorTool() {
+  const t = useTranslations("toolUI.yaml-validator");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [isValid, setIsValid] = useState<boolean | null>(null);
@@ -171,7 +173,7 @@ export function YamlValidatorTool() {
       setIsValid(true);
       setError("");
     } catch (e) {
-      const errorMsg = e instanceof Error ? e.message : "Invalid YAML syntax";
+      const errorMsg = e instanceof Error ? e.message : t("invalidSyntax");
       setError(errorMsg);
       setOutput("");
       setIsValid(false);
@@ -189,7 +191,7 @@ export function YamlValidatorTool() {
     <div className="space-y-6">
       {/* Input Section */}
       <div>
-        <Label className="mb-2 block text-sm">YAML Input</Label>
+        <Label className="mb-2 block text-sm">{t("yamlInputLabel")}</Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -202,10 +204,10 @@ export function YamlValidatorTool() {
       {/* Buttons */}
       <div className="flex gap-2">
         <Button onClick={handleValidate} variant="primary" className="flex-1">
-          Validate YAML
+          {t("validate")}
         </Button>
         <Button onClick={handleReset}>
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
@@ -220,7 +222,7 @@ export function YamlValidatorTool() {
         >
           <div className="flex items-center gap-2 text-sm font-medium">
             {isValid ? <MdCheck className="w-4 h-4" /> : <MdClose className="w-4 h-4" />}
-            <span>{isValid ? "Valid YAML" : "Invalid YAML"}</span>
+            <span>{isValid ? t("valid") : t("invalid")}</span>
           </div>
           {error && <div className="mt-2 text-sm">{error}</div>}
         </div>
@@ -229,7 +231,7 @@ export function YamlValidatorTool() {
       {/* Output Section */}
       {output && (
         <div>
-          <Label className="mb-2 block text-sm">Parsed as JSON</Label>
+          <Label className="mb-2 block text-sm">{t("parsedAsJsonLabel")}</Label>
           <Textarea
             value={output}
             readOnly
@@ -242,11 +244,7 @@ export function YamlValidatorTool() {
 
       {/* Info */}
       <div className="p-4 rounded-[12px] border border-border bg-card text-sm text-muted-foreground">
-        <p>
-          This validator parses YAML and displays the result as JSON. It
-          supports basic YAML features including nested objects, arrays,
-          strings, numbers, booleans, and null values.
-        </p>
+        <p>{t("infoText")}</p>
       </div>
     </div>
   );

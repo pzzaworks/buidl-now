@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ToolConfig } from "@/types/tool";
 
 export function ReverseStringTool() {
+  const t = useTranslations("toolUI.reverse-string");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
 
@@ -34,10 +36,10 @@ export function ReverseStringTool() {
       {/* Input */}
       <div>
         <Textarea
-          label="Input Text"
+          label={t("inputLabel")}
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Enter text to reverse..."
+          placeholder={t("inputPlaceholder")}
           className="min-h-[150px]"
         />
       </div>
@@ -45,17 +47,17 @@ export function ReverseStringTool() {
       {/* Buttons */}
       <div className="flex gap-2">
         <Button onClick={handleSwap} variant="primary" className="flex-1" disabled={!output}>
-          Swap Input/Output
+          {t("swap")}
         </Button>
         <Button onClick={handleReset}>
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
       {/* Output */}
       <div>
         <Textarea
-          label="Reversed Text"
+          label={t("reversedLabel")}
           value={output}
           readOnly
           showCopy
@@ -68,14 +70,14 @@ export function ReverseStringTool() {
         <div className="grid grid-cols-2 gap-4">
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
             <div className="text-lg font-bold">{input.length}</div>
-            <div className="text-sm text-muted-foreground">Characters</div>
+            <div className="text-sm text-muted-foreground">{t("characters")}</div>
           </div>
 
           <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
             <div className="text-lg font-bold">
               {input.split(/\s+/).filter((w) => w.length > 0).length}
             </div>
-            <div className="text-sm text-muted-foreground">Words</div>
+            <div className="text-sm text-muted-foreground">{t("words")}</div>
           </div>
         </div>
       )}

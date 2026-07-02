@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,6 +18,7 @@ interface PermitSignature {
 }
 
 export function Erc20PermitGeneratorTool() {
+  const t = useTranslations("toolUI.erc20-permit-generator");
   const [ownerAddress, setOwnerAddress] = useState("");
   const [spenderAddress, setSpenderAddress] = useState("");
   const [tokenAmount, setTokenAmount] = useState("");
@@ -40,22 +42,22 @@ export function Erc20PermitGeneratorTool() {
     try {
       // Validate inputs
       if (!ownerAddress || !spenderAddress || !tokenAmount || !tokenAddress) {
-        setError("Please fill in all required fields");
+        setError(t("errorRequiredFields"));
         return;
       }
 
       if (ownerAddress.length !== 42 || !ownerAddress.startsWith("0x")) {
-        setError("Invalid owner address format");
+        setError(t("errorInvalidOwner"));
         return;
       }
 
       if (spenderAddress.length !== 42 || !spenderAddress.startsWith("0x")) {
-        setError("Invalid spender address format");
+        setError(t("errorInvalidSpender"));
         return;
       }
 
       if (tokenAddress.length !== 42 || !tokenAddress.startsWith("0x")) {
-        setError("Invalid token address format");
+        setError(t("errorInvalidToken"));
         return;
       }
 
@@ -84,7 +86,7 @@ export function Erc20PermitGeneratorTool() {
       if (privateKey) {
         // If private key is provided, generate actual signature
         // Note: This is for demo purposes. In production, signing should happen client-side
-        setError("Signature generation with private key requires a wallet connection. Use this tool to understand the permit structure.");
+        setError(t("errorPrivateKeySigning"));
       } else {
         // Generate example signature structure
         setSignature({
@@ -96,7 +98,7 @@ export function Erc20PermitGeneratorTool() {
         });
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to generate permit");
+      setError(e instanceof Error ? e.message : t("errorGenerateFailed"));
     }
   };
 
@@ -123,14 +125,14 @@ export function Erc20PermitGeneratorTool() {
         <div className="flex items-start gap-2">
           <MdWarning className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
           <div className="text-sm text-yellow-500/90">
-            <strong>Security Warning:</strong> Never share your private key. This tool demonstrates the EIP-2612 permit structure. For production use, integrate with a wallet (MetaMask, WalletConnect) to sign permits client-side.
+            <strong>{t("securityWarningLabel")}</strong> {t("securityWarningText")}
           </div>
         </div>
       </div>
 
       {/* Owner Address */}
       <Input
-        label="Owner Address"
+        label={t("ownerAddressLabel")}
         value={ownerAddress}
         onChange={(e) => setOwnerAddress(e.target.value)}
         placeholder="0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
@@ -139,7 +141,7 @@ export function Erc20PermitGeneratorTool() {
 
       {/* Spender Address */}
       <Input
-        label="Spender Address"
+        label={t("spenderAddressLabel")}
         value={spenderAddress}
         onChange={(e) => setSpenderAddress(e.target.value)}
         placeholder="0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
@@ -148,7 +150,7 @@ export function Erc20PermitGeneratorTool() {
 
       {/* Token Amount */}
       <Input
-        label="Token Amount (in wei/raw units)"
+        label={t("tokenAmountLabel")}
         value={tokenAmount}
         onChange={(e) => setTokenAmount(e.target.value)}
         placeholder="1000000000000000000"
@@ -157,7 +159,7 @@ export function Erc20PermitGeneratorTool() {
 
       {/* Token Address */}
       <Input
-        label="Token Contract Address"
+        label={t("tokenAddressLabel")}
         value={tokenAddress}
         onChange={(e) => setTokenAddress(e.target.value)}
         placeholder="0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
@@ -166,7 +168,7 @@ export function Erc20PermitGeneratorTool() {
 
       {/* Chain ID */}
       <Input
-        label="Chain ID"
+        label={t("chainIdLabel")}
         value={chainId}
         onChange={(e) => setChainId(e.target.value)}
         placeholder="1"
@@ -174,12 +176,12 @@ export function Erc20PermitGeneratorTool() {
         className="font-mono text-sm"
       />
       <div className="text-xs text-muted-foreground -mt-4">
-        1 = Ethereum, 137 = Polygon, 42161 = Arbitrum, 10 = Optimism
+        {t("chainIdHelp")}
       </div>
 
       {/* Deadline */}
       <Input
-        label="Deadline (optional - defaults to 24h from now)"
+        label={t("deadlineLabel")}
         value={deadline}
         onChange={(e) => setDeadline(e.target.value)}
         type="datetime-local"
@@ -188,7 +190,7 @@ export function Erc20PermitGeneratorTool() {
 
       {/* Nonce */}
       <Input
-        label="Nonce"
+        label={t("nonceLabel")}
         value={nonce}
         onChange={(e) => setNonce(e.target.value)}
         placeholder="0"
@@ -196,15 +198,15 @@ export function Erc20PermitGeneratorTool() {
         className="font-mono text-sm"
       />
       <div className="text-xs text-muted-foreground -mt-4">
-        Usually 0 for the first permit. Query the contract for the current nonce.
+        {t("nonceHelp")}
       </div>
 
       {/* Private Key (Optional) */}
       <Input
-        label="Private Key (Optional - Not Recommended)"
+        label={t("privateKeyLabel")}
         value={privateKey}
         onChange={(e) => setPrivateKey(e.target.value)}
-        placeholder="Leave empty for demo mode"
+        placeholder={t("privateKeyPlaceholder")}
         type="password"
         className="font-mono text-sm"
       />
@@ -212,10 +214,10 @@ export function Erc20PermitGeneratorTool() {
       {/* Actions */}
       <div className="flex gap-3">
         <Button onClick={generatePermit} className="flex-1" variant="primary">
-          Generate Permit Structure
+          {t("generateButton")}
         </Button>
         <Button onClick={handleReset}>
-          Reset
+          {t("resetButton")}
         </Button>
       </div>
 
@@ -229,7 +231,7 @@ export function Erc20PermitGeneratorTool() {
       {/* EIP-712 Domain */}
       {domainData && (
         <Textarea
-          label="EIP-712 Domain"
+          label={t("domainLabel")}
           value={domainData}
           readOnly
           showCopy
@@ -241,7 +243,7 @@ export function Erc20PermitGeneratorTool() {
       {/* EIP-712 Message */}
       {messageData && (
         <Textarea
-          label="EIP-712 Message"
+          label={t("messageLabel")}
           value={messageData}
           readOnly
           showCopy
@@ -253,7 +255,7 @@ export function Erc20PermitGeneratorTool() {
       {/* Signature Output */}
       {signature && (
         <div className="space-y-3">
-          <div className="text-sm font-medium">Permit Signature (Example)</div>
+          <div className="text-sm font-medium">{t("signatureHeading")}</div>
 
           <Input
             label="v"
@@ -280,7 +282,7 @@ export function Erc20PermitGeneratorTool() {
           />
 
           <Input
-            label="Nonce"
+            label={t("nonceLabel")}
             value={signature.nonce}
             readOnly
             showCopy
@@ -288,7 +290,7 @@ export function Erc20PermitGeneratorTool() {
           />
 
           <Input
-            label="Deadline"
+            label={t("signatureDeadlineLabel")}
             value={signature.deadline}
             readOnly
             showCopy
@@ -296,7 +298,7 @@ export function Erc20PermitGeneratorTool() {
           />
 
           <div className="p-3 rounded-[12px] border border-blue-500/30 bg-blue-500/5 text-blue-400 text-xs">
-            These values can be used to call the permit() function on the ERC-20 contract:
+            {t("permitCallInfo")}
             <br />
             <code className="block mt-2">
               token.permit(owner, spender, value, deadline, v, r, s)
@@ -307,7 +309,7 @@ export function Erc20PermitGeneratorTool() {
 
       {/* Reset */}
       <Button onClick={handleReset} className="w-full">
-        Reset
+        {t("resetButton")}
       </Button>
     </div>
   );

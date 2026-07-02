@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -92,6 +93,7 @@ function morseToText(morse: string): string {
 }
 
 export function MorseCodeTool() {
+  const t = useTranslations("toolUI.morse-code");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [mode, setMode] = useState<"encode" | "decode">("encode");
@@ -216,7 +218,7 @@ export function MorseCodeTool() {
           }}
           className="flex-1"
         >
-          Text to Morse
+          {t("textToMorseTab")}
         </Button>
         <Button
           variant={mode === "decode" ? "primary" : "secondary"}
@@ -226,31 +228,31 @@ export function MorseCodeTool() {
           }}
           className="flex-1"
         >
-          Morse to Text
+          {t("morseToTextTab")}
         </Button>
       </div>
 
       {/* Input Section */}
       <div>
         <Label className="mb-2 block text-sm">
-          {mode === "encode" ? "Text Input" : "Morse Code Input"}
+          {mode === "encode" ? t("textInputLabel") : t("morseInputLabel")}
         </Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={
             mode === "encode"
-              ? "Enter text to convert to Morse code..."
-              : "Enter Morse code (use . for dot, - for dash, space between letters, / between words)"
+              ? t("textPlaceholder")
+              : t("morsePlaceholder")
           }
           rows={6}
           className={`text-sm mb-2 ${mode === "decode" ? "font-mono" : ""}`}
         />
         <div className="flex gap-2">
           <Button onClick={handleConvert} variant="primary" className="flex-1">
-            {mode === "encode" ? "Convert to Morse" : "Convert to Text"}
+            {mode === "encode" ? t("convertToMorse") : t("convertToText")}
           </Button>
-          <Button onClick={handleReset}>Reset</Button>
+          <Button onClick={handleReset}>{t("reset")}</Button>
         </div>
       </div>
 
@@ -258,7 +260,7 @@ export function MorseCodeTool() {
       {output && (
         <div className="space-y-2">
           <Textarea
-            label={mode === "encode" ? "Morse Code Output" : "Text Output"}
+            label={mode === "encode" ? t("morseOutputLabel") : t("textOutputLabel")}
             value={output}
             readOnly
             showCopy
@@ -274,7 +276,7 @@ export function MorseCodeTool() {
                 variant={isPlaying ? "secondary" : "primary"}
                 className="flex-1"
               >
-                {isPlaying ? "Stop Audio" : "Play Audio"}
+                {isPlaying ? t("stopAudio") : t("playAudio")}
               </Button>
             </div>
           )}
@@ -283,7 +285,7 @@ export function MorseCodeTool() {
 
       {/* Morse Code Reference */}
       <div className="p-4 rounded-[12px] border border-[var(--color-gray-200)] bg-[var(--color-gray-50)]">
-        <div className="text-sm font-semibold mb-3">Morse Code Reference</div>
+        <div className="text-sm font-semibold mb-3">{t("referenceHeading")}</div>
         <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-9 gap-2 text-xs font-mono">
           {Object.entries(MORSE_CODE).slice(0, 36).map(([char, code]) => (
             <div

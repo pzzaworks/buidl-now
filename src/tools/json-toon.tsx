@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { ToolConfig } from "@/types/tool";
 import { MdSwapVert, MdInfo } from "react-icons/md";
@@ -248,6 +249,7 @@ function parseValue(value: string): any {
 }
 
 export function JsonToonTool() {
+  const t = useTranslations("toolUI.json-toon");
   const [jsonInput, setJsonInput] = useState("");
   const [toonInput, setToonInput] = useState("");
   const [error, setError] = useState("");
@@ -261,7 +263,7 @@ export function JsonToonTool() {
         setToonInput(toon);
         setError("");
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Invalid JSON");
+        setError(e instanceof Error ? e.message : t("errorInvalidJson"));
       }
     }
   }, [jsonInput, lastEdited]);
@@ -274,7 +276,7 @@ export function JsonToonTool() {
         setJsonInput(json);
         setError("");
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Invalid TOON");
+        setError(e instanceof Error ? e.message : t("errorInvalidToon"));
       }
     }
   }, [toonInput, lastEdited]);
@@ -307,7 +309,7 @@ export function JsonToonTool() {
         <button
           onClick={handleSwap}
           className="w-10 h-10 rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] flex items-center justify-center transition-colors cursor-pointer"
-          title="Swap"
+          title={t("swap")}
         >
           <MdSwapVert className="w-5 h-5" />
         </button>
@@ -335,12 +337,12 @@ export function JsonToonTool() {
 
       {/* Info Box */}
       <div className="p-4 rounded-[12px] border bg-[var(--color-blue-50)] border-[var(--color-blue-500)]/30">
-        <div className="font-semibold text-sm mb-2 flex items-center gap-2"><MdInfo className="w-5 h-5" /> About TOON Format</div>
+        <div className="font-semibold text-sm mb-2 flex items-center gap-2"><MdInfo className="w-5 h-5" /> {t("aboutTitle")}</div>
         <ul className="text-sm space-y-1 text-muted-foreground">
-          <li>30-60% fewer tokens on large uniform arrays vs JSON</li>
-          <li>Tabular arrays: Declare keys once, stream data as rows</li>
-          <li>Indentation-based: Like YAML, uses whitespace instead of braces</li>
-          <li>Minimal syntax: Removes redundant punctuation</li>
+          <li>{t("aboutTokens")}</li>
+          <li>{t("aboutTabular")}</li>
+          <li>{t("aboutIndentation")}</li>
+          <li>{t("aboutMinimal")}</li>
         </ul>
       </div>
     </div>

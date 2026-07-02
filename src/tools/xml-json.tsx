@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { ToolConfig } from "@/types/tool";
 import { MdSwapVert } from "react-icons/md";
@@ -130,6 +131,7 @@ function jsonToXml(json: string, indent = 0): string {
 }
 
 export function XmlJsonTool() {
+  const t = useTranslations("toolUI.xml-json");
   const [xmlInput, setXmlInput] = useState("");
   const [jsonInput, setJsonInput] = useState("");
   const [error, setError] = useState("");
@@ -143,7 +145,7 @@ export function XmlJsonTool() {
         setJsonInput(json);
         setError("");
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Invalid XML");
+        setError(e instanceof Error ? e.message : t("errorInvalidXml"));
       }
     }
   }, [xmlInput, lastEdited]);
@@ -156,7 +158,7 @@ export function XmlJsonTool() {
         setXmlInput(xml);
         setError("");
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Invalid JSON");
+        setError(e instanceof Error ? e.message : t("errorInvalidJson"));
       }
     }
   }, [jsonInput, lastEdited]);
@@ -189,7 +191,7 @@ export function XmlJsonTool() {
         <button
           onClick={handleSwap}
           className="w-10 h-10 rounded-full bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] hover:bg-[var(--color-gray-50)] flex items-center justify-center transition-colors cursor-pointer"
-          title="Swap"
+          title={t("swap")}
         >
           <MdSwapVert className="w-5 h-5" />
         </button>

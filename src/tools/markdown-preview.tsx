@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { ToolConfig } from "@/types/tool";
@@ -15,6 +16,7 @@ const md = new MarkdownIt({
 });
 
 export function MarkdownPreviewTool() {
+  const t = useTranslations("toolUI.markdown-preview");
   const [input, setInput] = useState("");
   const [html, setHtml] = useState("");
 
@@ -28,15 +30,15 @@ export function MarkdownPreviewTool() {
       const rendered = md.render(input);
       setHtml(rendered);
     } catch {
-      setHtml("<p>Error rendering markdown</p>");
+      setHtml(`<p>${t("errorRendering")}</p>`);
     }
-  }, [input]);
+  }, [input, t]);
 
   return (
     <div className="space-y-6">
       {/* Input Section */}
       <div>
-        <Label className="mb-2 block text-sm">Markdown Input</Label>
+        <Label className="mb-2 block text-sm">{t("inputLabel")}</Label>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -62,7 +64,7 @@ console.log(greeting);
 
       {/* Preview Section */}
       <div>
-        <Label className="mb-2 block text-sm">Live Preview</Label>
+        <Label className="mb-2 block text-sm">{t("livePreview")}</Label>
         <div
           className="min-h-[200px] p-4 rounded-[12px] border border-[var(--stroke-soft)] bg-[var(--color-gray-0)] prose prose-sm max-w-none dark:prose-invert"
           style={{
@@ -81,7 +83,7 @@ console.log(greeting);
             />
           ) : (
             <p className="text-[var(--text-soft)] italic">
-              Start typing markdown to see the preview...
+              {t("emptyPreview")}
             </p>
           )}
         </div>
@@ -90,7 +92,7 @@ console.log(greeting);
       {/* Raw HTML Output */}
       {html && (
         <Textarea
-          label="Generated HTML"
+          label={t("generatedHtml")}
           value={html}
           readOnly
           showCopy

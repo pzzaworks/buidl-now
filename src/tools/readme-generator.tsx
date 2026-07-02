@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -9,10 +10,10 @@ import { ToolConfig } from "@/types/tool";
 
 type TemplateStyle = "minimal" | "standard" | "detailed";
 
-const TEMPLATE_STYLES: { value: TemplateStyle; label: string; description: string }[] = [
-  { value: "minimal", label: "Minimal", description: "Simple and concise" },
-  { value: "standard", label: "Standard", description: "Balanced with key sections" },
-  { value: "detailed", label: "Detailed", description: "Comprehensive with all sections" },
+const TEMPLATE_STYLES: { value: TemplateStyle; labelKey: string; descKey: string }[] = [
+  { value: "minimal", labelKey: "styleMinimal", descKey: "styleMinimalDesc" },
+  { value: "standard", labelKey: "styleStandard", descKey: "styleStandardDesc" },
+  { value: "detailed", labelKey: "styleDetailed", descKey: "styleDetailedDesc" },
 ];
 
 function generateReadme(
@@ -204,6 +205,7 @@ If you found this project helpful, please give it a star!
 }
 
 export function ReadmeGeneratorTool() {
+  const t = useTranslations("toolUI.readme-generator");
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
   const [features, setFeatures] = useState("");
@@ -248,70 +250,73 @@ export function ReadmeGeneratorTool() {
     <div className="space-y-6">
       {/* Template Style */}
       <div>
-        <Label className="mb-2 block text-sm">Template Style</Label>
+        <Label className="mb-2 block text-sm">{t("templateStyle")}</Label>
         <div className="flex gap-2">
-          {TEMPLATE_STYLES.map((t) => (
+          {TEMPLATE_STYLES.map((s) => (
             <Button
-              key={t.value}
-              variant={style === t.value ? "primary" : "secondary"}
-              onClick={() => setStyle(t.value)}
+              key={s.value}
+              variant={style === s.value ? "primary" : "secondary"}
+              onClick={() => setStyle(s.value)}
               className="flex-1"
               size="sm"
             >
-              {t.label}
+              {t(s.labelKey)}
             </Button>
           ))}
         </div>
         <p className="text-xs text-[var(--color-gray-500)] mt-1">
-          {TEMPLATE_STYLES.find((t) => t.value === style)?.description}
+          {t(
+            TEMPLATE_STYLES.find((s) => s.value === style)?.descKey ??
+              "styleStandardDesc"
+          )}
         </p>
       </div>
 
       {/* Basic Info */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input
-          label="Project Name *"
+          label={t("projectNameLabel")}
           value={projectName}
           onChange={(e) => setProjectName(e.target.value)}
-          placeholder="My Awesome Project"
+          placeholder={t("projectNamePlaceholder")}
         />
         <Input
-          label="Author"
+          label={t("authorLabel")}
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
-          placeholder="John Doe"
+          placeholder={t("authorPlaceholder")}
         />
       </div>
 
       {/* Description */}
       <Textarea
-        label="Description"
+        label={t("descriptionLabel")}
         value={description}
         onChange={(e) => setDescription(e.target.value)}
-        placeholder="A brief description of what your project does..."
+        placeholder={t("descriptionPlaceholder")}
         className="min-h-[80px]"
       />
 
       {/* Features */}
       <Textarea
-        label="Features (one per line)"
+        label={t("featuresLabel")}
         value={features}
         onChange={(e) => setFeatures(e.target.value)}
-        placeholder="Fast and lightweight&#10;Easy to use&#10;Well documented"
+        placeholder={t("featuresPlaceholder")}
         className="min-h-[100px]"
       />
 
       {/* Installation & Usage */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input
-          label="Installation Command"
+          label={t("installationLabel")}
           value={installation}
           onChange={(e) => setInstallation(e.target.value)}
           placeholder="npm install"
           className="font-mono"
         />
         <Input
-          label="Usage Command"
+          label={t("usageLabel")}
           value={usage}
           onChange={(e) => setUsage(e.target.value)}
           placeholder="npm start"
@@ -321,7 +326,7 @@ export function ReadmeGeneratorTool() {
 
       {/* License */}
       <div>
-        <Label className="mb-2 block text-sm">License</Label>
+        <Label className="mb-2 block text-sm">{t("licenseLabel")}</Label>
         <select
           value={license}
           onChange={(e) => setLicense(e.target.value)}
@@ -339,17 +344,17 @@ export function ReadmeGeneratorTool() {
       {/* Buttons */}
       <div className="flex gap-2">
         <Button onClick={handleGenerate} variant="primary" className="flex-1">
-          Generate README
+          {t("generate")}
         </Button>
         <Button onClick={handleReset} variant="secondary">
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
       {/* Output */}
       {output && (
         <Textarea
-          label="Generated README.md"
+          label={t("outputLabel")}
           value={output}
           readOnly
           showCopy

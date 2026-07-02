@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -16,6 +17,7 @@ function generateUUIDv4(): string {
 }
 
 export function UuidGeneratorTool() {
+  const t = useTranslations("toolUI.uuid-generator");
   const [uuid, setUuid] = useState("");
   const [count, setCount] = useState("1");
   const [uuids, setUuids] = useState<string[]>([]);
@@ -39,7 +41,7 @@ export function UuidGeneratorTool() {
     <div className="space-y-6">
       {/* Count Input */}
       <div>
-        <Label className="mb-2 block text-sm">Number of UUIDs (1-100)</Label>
+        <Label className="mb-2 block text-sm">{t("numberOfUuids")}</Label>
         <Input
           type="number"
           min="1"
@@ -50,14 +52,14 @@ export function UuidGeneratorTool() {
           className="mb-2"
         />
         <Button onClick={handleGenerate} variant="primary" className="w-full">
-          Generate UUID{parseInt(count) > 1 ? "s" : ""}
+          {parseInt(count) > 1 ? t("generateUuids") : t("generateUuid")}
         </Button>
       </div>
 
       {/* Single UUID Output */}
       {uuid && (
         <Input
-          label="Generated UUID (v4)"
+          label={t("generatedUuid")}
           value={uuid}
           readOnly
           showCopy
@@ -68,7 +70,7 @@ export function UuidGeneratorTool() {
       {/* Multiple UUIDs Output */}
       {uuids.length > 0 && (
         <Textarea
-          label={`Generated UUIDs (${uuids.length})`}
+          label={t("generatedUuids", { count: uuids.length })}
           value={uuids.join("\n")}
           readOnly
           showCopy

@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 import { tools } from "@/lib/tools-list";
-
-const baseUrl = "https://buidlnow.com";
+import { locales } from "@/i18n/locales";
+import { languageAlternates, localeUrl } from "@/lib/site";
 
 // Stable per-content release dates so the sitemap reports a real, fixed
 // lastModified for each URL instead of stamping every entry with the
@@ -14,20 +14,29 @@ const baseUrl = "https://buidlnow.com";
 const homepageReleaseDate = new Date("2026-06-07T00:00:00.000Z");
 const toolReleaseDate = new Date("2026-06-07T00:00:00.000Z");
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const homepage = {
-    url: baseUrl,
-    lastModified: homepageReleaseDate,
-    changeFrequency: "weekly" as const,
-    priority: 1,
-  };
-
-  const toolPages = tools.map((tool) => ({
-    url: `${baseUrl}${tool.path}`,
-    lastModified: toolReleaseDate,
-    changeFrequency: "monthly" as const,
-    priority: 0.8,
+// Each logical route is emitted once per locale, and every entry carries the
+// full hreflang alternates map so crawlers can pair the language variants.
+function entriesForPath(
+  pathname: string,
+  lastModified: Date,
+  changeFrequency: "weekly" | "monthly",
+  priority: number,
+): MetadataRoute.Sitemap {
+  const languages = languageAlternates(pathname);
+  return locales.map((locale) => ({
+    url: localeUrl(locale, pathname),
+    lastModified,
+    changeFrequency,
+    priority,
+    alternates: { languages },
   }));
+}
 
-  return [homepage, ...toolPages];
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    ...entriesForPath("", homepageReleaseDate, "weekly", 1),
+    ...tools.flatMap((tool) =>
+      entriesForPath(tool.path, toolReleaseDate, "monthly", 0.8),
+    ),
+  ];
 }

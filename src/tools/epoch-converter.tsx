@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -8,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ToolConfig } from "@/types/tool";
 
 export function EpochConverterTool() {
+  const t = useTranslations("toolUI.epoch-converter");
   const [timestamp, setTimestamp] = useState("");
   const [humanDate, setHumanDate] = useState("");
   const [currentTime, setCurrentTime] = useState<number | null>(null);
@@ -110,12 +112,12 @@ export function EpochConverterTool() {
     const lines = batchInput.split("\n").filter((l) => l.trim());
     const results = lines.map((line) => {
       const num = parseInt(line.trim());
-      if (isNaN(num)) return `${line} → Invalid`;
+      if (isNaN(num)) return `${line} → ${t("invalid")}`;
 
       const milliseconds = num.toString().length === 10 ? num * 1000 : num;
       const date = new Date(milliseconds);
 
-      if (isNaN(date.getTime())) return `${line} → Invalid`;
+      if (isNaN(date.getTime())) return `${line} → ${t("invalid")}`;
 
       return `${line} → ${date.toISOString()}`;
     });
@@ -141,7 +143,12 @@ export function EpochConverterTool() {
     const remainingSeconds = sec % 60;
 
     setTimeBreakdown(
-      `${days} days, ${hours} hours, ${minutes} minutes, ${remainingSeconds} seconds`
+      t("timeBreakdownFormat", {
+        days,
+        hours,
+        minutes,
+        seconds: remainingSeconds,
+      })
     );
   };
 
@@ -167,7 +174,7 @@ export function EpochConverterTool() {
       {/* Current Time Display */}
       <div className="p-4 bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] rounded-[var(--radius-12)]">
         <div className="text-sm text-muted-foreground mb-1">
-          The current Unix epoch time is
+          {t("currentEpochLabel")}
         </div>
         <div className="font-mono text-lg font-bold">
           {currentTime !== null ? Math.floor(currentTime / 1000) : "—"}
@@ -179,11 +186,11 @@ export function EpochConverterTool() {
 
       {/* Basic Conversion */}
       <div>
-        <div className="text-base font-semibold mb-4">Convert epoch to human-readable date and vice versa</div>
+        <div className="text-base font-semibold mb-4">{t("basicConversionTitle")}</div>
         <div className="space-y-4">
           <div>
             <Input
-              label="Unix Timestamp"
+              label={t("unixTimestampLabel")}
               value={timestamp}
               onChange={(e) => {
                 setTimestamp(e.target.value);
@@ -194,15 +201,15 @@ export function EpochConverterTool() {
               className="font-mono text-sm mb-2"
             />
             <Button onClick={handleCurrentTime} className="w-full mb-2" variant="primary">
-              Timestamp to Human date
+              {t("timestampToHumanDate")}
             </Button>
             <div className="text-xs text-muted-foreground">
-              Supports Unix timestamps in seconds, milliseconds, microseconds and nanoseconds.
+              {t("timestampSupportHint")}
             </div>
           </div>
 
           <Input
-            label="Human Readable Date"
+            label={t("humanDateLabel")}
             value={humanDate}
             onChange={(e) => {
               setHumanDate(e.target.value);
@@ -219,10 +226,10 @@ export function EpochConverterTool() {
 
       {/* Manual Date Input */}
       <div>
-        <div className="text-base font-semibold mb-4">Manual Date Input</div>
+        <div className="text-base font-semibold mb-4">{t("manualDateTitle")}</div>
         <div className="grid grid-cols-6 gap-2 mb-2">
           <div>
-            <Label className="text-xs">Year</Label>
+            <Label className="text-xs">{t("year")}</Label>
             <Input
               type="number"
               value={year}
@@ -232,7 +239,7 @@ export function EpochConverterTool() {
             />
           </div>
           <div>
-            <Label className="text-xs">Month</Label>
+            <Label className="text-xs">{t("month")}</Label>
             <Input
               type="number"
               min="1"
@@ -244,7 +251,7 @@ export function EpochConverterTool() {
             />
           </div>
           <div>
-            <Label className="text-xs">Day</Label>
+            <Label className="text-xs">{t("day")}</Label>
             <Input
               type="number"
               min="1"
@@ -256,7 +263,7 @@ export function EpochConverterTool() {
             />
           </div>
           <div>
-            <Label className="text-xs">Hour</Label>
+            <Label className="text-xs">{t("hour")}</Label>
             <Input
               type="number"
               min="0"
@@ -268,7 +275,7 @@ export function EpochConverterTool() {
             />
           </div>
           <div>
-            <Label className="text-xs">Min</Label>
+            <Label className="text-xs">{t("min")}</Label>
             <Input
               type="number"
               min="0"
@@ -280,7 +287,7 @@ export function EpochConverterTool() {
             />
           </div>
           <div>
-            <Label className="text-xs">Sec</Label>
+            <Label className="text-xs">{t("sec")}</Label>
             <Input
               type="number"
               min="0"
@@ -294,10 +301,10 @@ export function EpochConverterTool() {
         </div>
         <div className="flex gap-2">
           <Button onClick={handleManualDateConvert} className="flex-1" variant="primary">
-            Human date to Timestamp
+            {t("humanDateToTimestamp")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -306,10 +313,10 @@ export function EpochConverterTool() {
 
       {/* Batch Convert */}
       <div>
-        <div className="text-base font-semibold mb-4">Batch Convert</div>
+        <div className="text-base font-semibold mb-4">{t("batchConvertTitle")}</div>
         <div className="space-y-4">
           <div>
-            <Label className="mb-2 block text-sm">Timestamps (one per line)</Label>
+            <Label className="mb-2 block text-sm">{t("timestampsLabel")}</Label>
             <Textarea
               value={batchInput}
               onChange={(e) => setBatchInput(e.target.value)}
@@ -318,11 +325,11 @@ export function EpochConverterTool() {
             />
           </div>
           <Button onClick={handleBatchConvert} className="w-full" variant="primary">
-            Batch Convert
+            {t("batchConvertButton")}
           </Button>
           {batchOutput && (
             <Textarea
-              label="Results"
+              label={t("resultsLabel")}
               value={batchOutput}
               readOnly
               showCopy
@@ -337,7 +344,7 @@ export function EpochConverterTool() {
       {/* Seconds to Days/Hours/Minutes */}
       <div>
         <div className="text-base font-semibold mb-4">
-          Convert seconds to days, hours and minutes
+          {t("secondsConvertTitle")}
         </div>
         <div className="space-y-4">
           <div>
@@ -350,11 +357,11 @@ export function EpochConverterTool() {
             />
           </div>
           <Button onClick={handleSecondsConvert} className="w-full" variant="primary">
-            Seconds to days, hours, minutes
+            {t("secondsConvertButton")}
           </Button>
           {timeBreakdown && (
             <Input
-              label="Time Breakdown"
+              label={t("timeBreakdownLabel")}
               value={timeBreakdown}
               readOnly
               showCopy

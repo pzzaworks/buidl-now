@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -50,6 +51,7 @@ const panicCodes: Record<string, string> = {
 };
 
 export function RevertReasonDecoderTool() {
+  const t = useTranslations("toolUI.revert-reason-decoder");
   const [inputMode, setInputMode] = useState<"hex" | "tx">("hex");
   const [revertData, setRevertData] = useState("");
   const [txHash, setTxHash] = useState("");
@@ -117,7 +119,7 @@ export function RevertReasonDecoderTool() {
           const stringHex = dataWithoutSelector.slice(128); // Skip offset (64) + length (64)
           result.decodedMessage = decodeHexString(stringHex);
         } catch (e) {
-          result.decodedMessage = "Failed to decode message";
+          result.decodedMessage = t("failedToDecodeMessage");
         }
       } else if (selector === "0x4e487b71") {
         // Panic(uint256)
@@ -125,12 +127,12 @@ export function RevertReasonDecoderTool() {
         const panicCodeHex = errorData.slice(10);
         const shortCode = "0x" + panicCodeHex.slice(-2);
         result.panicCode = shortCode;
-        result.panicDescription = panicCodes[shortCode] || "Unknown panic code";
+        result.panicDescription = panicCodes[shortCode] || t("unknownPanicCode");
       }
     } else {
       // Custom error or unknown
       result.isCustomError = true;
-      result.errorName = "Custom Error";
+      result.errorName = t("customError");
     }
 
     return result;
@@ -141,7 +143,7 @@ export function RevertReasonDecoderTool() {
     setDecoded(null);
 
     if (!revertData) {
-      setError("Please enter revert data");
+      setError(t("errEnterRevertData"));
       return;
     }
 
@@ -150,10 +152,10 @@ export function RevertReasonDecoderTool() {
       if (result) {
         setDecoded(result);
       } else {
-        setError("Invalid revert data format");
+        setError(t("errInvalidRevertDataFormat"));
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to decode revert data");
+      setError(e instanceof Error ? e.message : t("errFailedToDecodeRevertData"));
     }
   };
 
@@ -162,12 +164,12 @@ export function RevertReasonDecoderTool() {
     setDecoded(null);
 
     if (!txHash) {
-      setError("Please enter transaction hash");
+      setError(t("errEnterTxHash"));
       return;
     }
 
     if (!rpcUrl) {
-      setError("Please enter RPC URL");
+      setError(t("errEnterRpcUrl"));
       return;
     }
 
@@ -191,7 +193,7 @@ export function RevertReasonDecoderTool() {
       const data = await response.json();
 
       if (data.error) {
-        setError(`RPC Error: ${data.error.message}`);
+        setError(`${t("rpcErrorPrefix")} ${data.error.message}`);
         setLoading(false);
         return;
       }
@@ -199,13 +201,13 @@ export function RevertReasonDecoderTool() {
       const receipt = data.result;
 
       if (!receipt) {
-        setError("Transaction not found");
+        setError(t("errTxNotFound"));
         setLoading(false);
         return;
       }
 
       if (receipt.status === "0x1") {
-        setError("Transaction succeeded - no revert data");
+        setError(t("errTxSucceededNoRevert"));
         setLoading(false);
         return;
       }
@@ -259,14 +261,14 @@ export function RevertReasonDecoderTool() {
           if (result) {
             setDecoded(result);
           } else {
-            setError("Could not decode revert reason");
+            setError(t("errCouldNotDecodeRevert"));
           }
         } else {
-          setError("Could not retrieve revert reason from transaction");
+          setError(t("errCouldNotRetrieveRevert"));
         }
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to fetch transaction data");
+      setError(e instanceof Error ? e.message : t("errFailedToFetchTx"));
     } finally {
       setLoading(false);
     }
@@ -284,7 +286,7 @@ export function RevertReasonDecoderTool() {
     <div className="space-y-6">
       {/* Input Mode Selection */}
       <div>
-        <div className="text-sm font-medium mb-2">Input Method</div>
+        <div className="text-sm font-medium mb-2">{t("inputMethod")}</div>
         <div className="grid grid-cols-2 gap-2">
           <Button
             onClick={() => {
@@ -294,8 +296,8 @@ export function RevertReasonDecoderTool() {
             variant={inputMode === "hex" ? "primary" : "secondary"}
             className="h-auto p-3 flex flex-col items-start justify-start"
           >
-            <div className="text-sm font-medium">Revert Data (Hex)</div>
-            <div className="text-xs mt-1">Decode error data directly</div>
+            <div className="text-sm font-medium">{t("revertDataHex")}</div>
+            <div className="text-xs mt-1">{t("revertDataHexDesc")}</div>
           </Button>
           <Button
             onClick={() => {
@@ -305,8 +307,8 @@ export function RevertReasonDecoderTool() {
             variant={inputMode === "tx" ? "primary" : "secondary"}
             className="h-auto p-3 flex flex-col items-start justify-start"
           >
-            <div className="text-sm font-medium">Transaction Hash</div>
-            <div className="text-xs mt-1">Fetch from failed transaction</div>
+            <div className="text-sm font-medium">{t("transactionHash")}</div>
+            <div className="text-xs mt-1">{t("transactionHashDesc")}</div>
           </Button>
         </div>
       </div>
@@ -315,7 +317,7 @@ export function RevertReasonDecoderTool() {
       {inputMode === "hex" ? (
         <div>
           <Textarea
-            label="Revert Data (Hex)"
+            label={t("revertDataHex")}
             value={revertData}
             onChange={(e) => {
               setRevertData(e.target.value);
@@ -327,17 +329,17 @@ export function RevertReasonDecoderTool() {
           />
           <div className="flex gap-2 mt-2">
             <Button onClick={handleDecodeHex} variant="primary" className="flex-1">
-              Decode Revert Data
+              {t("decodeRevertData")}
             </Button>
             <Button onClick={handleReset}>
-              Reset
+              {t("reset")}
             </Button>
           </div>
         </div>
       ) : (
         <div className="space-y-3">
           <Input
-            label="Transaction Hash"
+            label={t("transactionHash")}
             value={txHash}
             onChange={(e) => {
               setTxHash(e.target.value);
@@ -348,7 +350,7 @@ export function RevertReasonDecoderTool() {
             className="font-mono text-sm"
           />
           <Input
-            label="RPC URL"
+            label={t("rpcUrl")}
             value={rpcUrl}
             onChange={(e) => {
               setRpcUrl(e.target.value);
@@ -365,10 +367,10 @@ export function RevertReasonDecoderTool() {
               className="flex-1"
               disabled={loading}
             >
-              {loading ? "Fetching..." : "Fetch & Decode"}
+              {loading ? t("fetching") : t("fetchAndDecode")}
             </Button>
             <Button onClick={handleReset} disabled={loading}>
-              Reset
+              {t("reset")}
             </Button>
           </div>
         </div>
@@ -377,7 +379,7 @@ export function RevertReasonDecoderTool() {
       {/* Error Message */}
       {error && (
         <div className="p-3 rounded-[12px] border bg-[var(--color-red-50)] border-red-500/30 text-[var(--color-red-500)]">
-          <div className="text-sm font-medium">Error: {error}</div>
+          <div className="text-sm font-medium">{t("errorPrefix")} {error}</div>
         </div>
       )}
 
@@ -385,11 +387,11 @@ export function RevertReasonDecoderTool() {
       {decoded && (
         <div className="space-y-4">
           <div className="text-sm font-medium text-[var(--color-green-500)] border-b border-green-500/30 pb-2">
-            Decoded Error
+            {t("decodedError")}
           </div>
 
           <Input
-            label="Error Selector"
+            label={t("errorSelector")}
             value={decoded.selector}
             readOnly
             showCopy
@@ -398,7 +400,7 @@ export function RevertReasonDecoderTool() {
 
           {decoded.errorName && (
             <Input
-              label="Error Name"
+              label={t("errorName")}
               value={decoded.errorName}
               readOnly
               showCopy
@@ -408,7 +410,7 @@ export function RevertReasonDecoderTool() {
 
           {decoded.signature && (
             <Input
-              label="Error Signature"
+              label={t("errorSignature")}
               value={decoded.signature}
               readOnly
               showCopy
@@ -418,7 +420,7 @@ export function RevertReasonDecoderTool() {
 
           {decoded.decodedMessage && (
             <Textarea
-              label="Decoded Message"
+              label={t("decodedMessage")}
               value={decoded.decodedMessage}
               readOnly
               showCopy
@@ -429,18 +431,18 @@ export function RevertReasonDecoderTool() {
           {decoded.isPanic && (
             <div className="p-4 rounded-[12px] border border-red-500/30 bg-red-500/5">
               <div className="text-sm font-medium text-[var(--color-red-500)] mb-2">
-                Panic Error Detected
+                {t("panicErrorDetected")}
               </div>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground">Code:</span>
+                  <span className="text-xs text-muted-foreground">{t("codeLabel")}</span>
                   <span className="font-mono text-sm text-[var(--color-red-500)]">
                     {decoded.panicCode}
                   </span>
                 </div>
                 <div className="flex items-start gap-2">
                   <span className="text-xs text-muted-foreground shrink-0">
-                    Description:
+                    {t("descriptionLabel")}
                   </span>
                   <span className="text-sm text-[var(--color-red-500)]">
                     {decoded.panicDescription}
@@ -453,8 +455,7 @@ export function RevertReasonDecoderTool() {
           {decoded.isCustomError && (
             <div className="p-3 rounded-[12px] border border-yellow-500/30 bg-yellow-500/5">
               <div className="text-sm text-yellow-400">
-                This appears to be a custom error. Custom errors are more gas-efficient
-                but require the contract ABI to decode parameter values. The selector is:{" "}
+                {t("customErrorInfo")}{" "}
                 <code className="px-1 py-0.5 rounded-[12px] bg-[var(--color-gray-0)]">{decoded.selector}</code>
               </div>
             </div>
@@ -462,7 +463,7 @@ export function RevertReasonDecoderTool() {
 
           {decoded.rawData && (
             <Textarea
-              label="Raw Revert Data"
+              label={t("rawRevertData")}
               value={decoded.rawData}
               readOnly
               showCopy
@@ -475,7 +476,7 @@ export function RevertReasonDecoderTool() {
       {/* Common Error Reference */}
       <div className="space-y-3">
         <div className="text-sm font-medium text-blue-400 border-b border-blue-500/30 pb-2">
-          Common Error Selectors
+          {t("commonErrorSelectors")}
         </div>
         <div className="space-y-2">
           {Object.entries(commonErrors).map(([selector, info]) => (
@@ -498,7 +499,7 @@ export function RevertReasonDecoderTool() {
       {/* Panic Codes Reference */}
       <div className="space-y-3">
         <div className="text-sm font-medium text-blue-400 border-b border-blue-500/30 pb-2">
-          Panic Codes Reference
+          {t("panicCodesReference")}
         </div>
         <div className="grid gap-2 max-h-[300px] overflow-y-auto pr-2">
           {Object.entries(panicCodes).map(([code, description]) => (
@@ -519,17 +520,17 @@ export function RevertReasonDecoderTool() {
       <div className="p-4 rounded-[12px] border border-blue-500/30 bg-blue-500/5">
         <div className="text-sm text-blue-400 space-y-2">
           <div>
-            <strong>Error Types:</strong> Solidity has three main error types:
+            <strong>{t("errorTypesTitle")}</strong> {t("errorTypesIntro")}
           </div>
           <ul className="list-disc list-inside text-xs space-y-1 ml-2">
             <li>
-              <strong>require()</strong>: Returns Error(string) with custom message
+              <strong>require()</strong>: {t("errorTypeRequire")}
             </li>
             <li>
-              <strong>revert CustomError()</strong>: Custom errors with parameters (more gas efficient)
+              <strong>revert CustomError()</strong>: {t("errorTypeCustom")}
             </li>
             <li>
-              <strong>Panic</strong>: System errors like overflow, divide by zero, array bounds
+              <strong>Panic</strong>: {t("errorTypePanic")}
             </li>
           </ul>
         </div>

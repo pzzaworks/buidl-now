@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ToolConfig } from "@/types/tool";
 
 export function MethodIdFinderTool() {
+  const t = useTranslations("toolUI.method-id-finder");
   const [methodId, setMethodId] = useState("");
   const [error, setError] = useState("");
 
@@ -13,7 +15,7 @@ export function MethodIdFinderTool() {
     setError("");
 
     if (!methodId) {
-      setError("Please enter a method ID");
+      setError(t("errorEmpty"));
       return;
     }
 
@@ -22,7 +24,7 @@ export function MethodIdFinderTool() {
 
     // Validate hex format and length (4 bytes = 8 hex characters)
     if (!/^[a-fA-F0-9]{8}$/.test(cleanId)) {
-      setError("Invalid method ID format. Must be 4 bytes (8 hex characters)");
+      setError(t("errorFormat"));
       return;
     }
 
@@ -47,14 +49,14 @@ export function MethodIdFinderTool() {
       {/* Input */}
       <div>
         <Input
-          label="Method ID (4 bytes)"
+          label={t("methodIdLabel")}
           value={methodId}
           onChange={(e) => setMethodId(e.target.value)}
           placeholder="0xa9059cbb"
           className="font-mono text-sm"
         />
         <div className="text-xs text-muted-foreground mt-1">
-          Enter the first 4 bytes of a function selector to look it up
+          {t("methodIdHelp")}
         </div>
       </div>
 
@@ -68,16 +70,16 @@ export function MethodIdFinderTool() {
       {/* Buttons */}
       <div className="flex gap-2">
         <Button onClick={handleSearch} variant="primary" className="flex-1">
-          Search on 4byte.directory
+          {t("searchButton")}
         </Button>
         <Button onClick={handleReset}>
-          Reset
+          {t("reset")}
         </Button>
       </div>
 
       {/* Examples */}
       <div className="space-y-2">
-        <div className="text-sm font-medium">Common Examples</div>
+        <div className="text-sm font-medium">{t("commonExamples")}</div>
         <div className="space-y-2">
           {exampleMethodIds.map((example) => (
             <Button
@@ -100,10 +102,7 @@ export function MethodIdFinderTool() {
       {/* Info Box */}
       <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-[12px]">
         <div className="text-sm text-blue-400">
-          <strong>How it works:</strong> This tool searches the 4byte.directory
-          database, which maintains a registry of Ethereum function signatures and
-          their corresponding 4-byte method IDs. Click "Search" to open results in a
-          new tab.
+          <strong>{t("howItWorksTitle")}</strong> {t("howItWorksBody")}
         </div>
       </div>
     </div>

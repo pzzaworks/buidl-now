@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { MdCheck } from "react-icons/md";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ToolConfig } from "@/types/tool";
 
 export function EnsResolverTool() {
+  const t = useTranslations("toolUI.ens-resolver");
   const [ensName, setEnsName] = useState("");
   const [resolvedAddress, setResolvedAddress] = useState("");
   const [isResolving, setIsResolving] = useState(false);
@@ -16,13 +18,13 @@ export function EnsResolverTool() {
 
   const handleResolve = async () => {
     if (!ensName) {
-      setError("Please enter an ENS name");
+      setError(t("errEnterName"));
       setResolvedAddress("");
       return;
     }
 
     if (!ensName.endsWith(".eth")) {
-      setError("ENS name must end with .eth");
+      setError(t("errMustEndEth"));
       setResolvedAddress("");
       return;
     }
@@ -46,18 +48,18 @@ export function EnsResolverTool() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to resolve ENS name");
+        throw new Error(data.error || t("errResolveFailed"));
       }
 
       if (data.address) {
         setResolvedAddress(data.address);
         setError("");
       } else {
-        setError("ENS name not found or not registered");
+        setError(t("errNotFound"));
         setResolvedAddress("");
       }
     } catch (e) {
-      const errorMessage = e instanceof Error ? e.message : "Failed to resolve ENS name";
+      const errorMessage = e instanceof Error ? e.message : t("errResolveFailed");
       setError(errorMessage);
       setResolvedAddress("");
     } finally {
@@ -76,7 +78,7 @@ export function EnsResolverTool() {
       {/* ENS Name Input */}
       <div>
         <Input
-          label="ENS Name"
+          label={t("ensNameLabel")}
           value={ensName}
           onChange={(e) => {
             setEnsName(e.target.value);
@@ -93,10 +95,10 @@ export function EnsResolverTool() {
             disabled={isResolving}
             variant="primary"
           >
-            {isResolving ? "Resolving..." : "Resolve Address"}
+            {isResolving ? t("resolving") : t("resolve")}
           </Button>
           <Button onClick={handleReset}>
-            Reset
+            {t("reset")}
           </Button>
         </div>
       </div>
@@ -109,19 +111,19 @@ export function EnsResolverTool() {
           onClick={() => setShowAdvanced(!showAdvanced)}
           className="h-auto px-0 py-0 text-sm"
         >
-          {showAdvanced ? "▼" : "▶"} Advanced Settings
+          {showAdvanced ? "▼" : "▶"} {t("advancedSettings")}
         </Button>
         {showAdvanced && (
           <div className="mt-3">
             <Input
-              label="Custom RPC URL (optional)"
+              label={t("customRpcLabel")}
               value={customRpc}
               onChange={(e) => setCustomRpc(e.target.value)}
               placeholder="https://eth-mainnet.g.alchemy.com/v2/your-api-key"
               className="text-sm"
             />
             <div className="text-xs text-muted-foreground mt-1">
-              Leave empty to use public RPCs (with automatic fallback). For guaranteed uptime, use your own RPC URL.
+              {t("rpcHelp")}
             </div>
           </div>
         )}
@@ -130,14 +132,14 @@ export function EnsResolverTool() {
       {/* Error Message */}
       {error && (
         <div className="p-3 rounded-[12px] border bg-[var(--color-red-50)] border-red-500/30 text-[var(--color-red-500)]">
-          <div className="text-sm font-medium">Error: {error}</div>
+          <div className="text-sm font-medium">{t("errorPrefix")} {error}</div>
         </div>
       )}
 
       {/* Resolved Address */}
       {resolvedAddress && (
         <Input
-          label="Resolved Ethereum Address"
+          label={t("resolvedLabel")}
           value={resolvedAddress}
           readOnly
           showCopy
@@ -149,12 +151,10 @@ export function EnsResolverTool() {
       <div className="p-4 rounded-[12px] border border-green-500/30 bg-green-500/5">
         <div className="text-sm text-[var(--color-green-500)] space-y-2">
           <div>
-            <strong className="flex items-center gap-1"><MdCheck className="inline" /> Live Data:</strong> This tool queries ENS Registry and Resolver contracts
-            directly on Ethereum mainnet. Uses automatic fallback across 3 public RPCs for reliability.
+            <strong className="flex items-center gap-1"><MdCheck className="inline" /> {t("liveDataLabel")}</strong> {t("liveDataDesc")}
           </div>
           <div className="text-xs">
-            <strong>Tip:</strong> For guaranteed uptime and no rate limits, add your own RPC URL
-            in Advanced Settings (Infura, Alchemy, Ankr with your API key).
+            <strong>{t("tipLabel")}</strong> {t("tipDesc")}
           </div>
         </div>
       </div>

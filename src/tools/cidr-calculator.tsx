@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -146,6 +147,7 @@ function splitCidr(cidr: string, newPrefix: number): CidrInfo[] {
 }
 
 export function CidrCalculatorTool() {
+  const t = useTranslations("toolUI.cidr-calculator");
   // CIDR to Range
   const [cidrInput, setCidrInput] = useState("");
   const [cidrResult, setCidrResult] = useState<{ start: string; end: string; mask: string; total: number } | null>(null);
@@ -168,7 +170,7 @@ export function CidrCalculatorTool() {
 
     const result = cidrToRange(cidrInput);
     if (!result) {
-      setError("Invalid CIDR notation. Use format: x.x.x.x/prefix");
+      setError(t("errInvalidCidr"));
       return;
     }
 
@@ -180,13 +182,13 @@ export function CidrCalculatorTool() {
     setRangeResult([]);
 
     if (!rangeStart || !rangeEnd) {
-      setError("Please enter both start and end IP addresses");
+      setError(t("errEnterRange"));
       return;
     }
 
     const result = rangeToCidr(rangeStart, rangeEnd);
     if (result.length === 0) {
-      setError("Invalid IP range");
+      setError(t("errInvalidRange"));
       return;
     }
 
@@ -199,13 +201,13 @@ export function CidrCalculatorTool() {
 
     const prefix = parseInt(splitPrefix);
     if (isNaN(prefix)) {
-      setError("Please enter a valid prefix length");
+      setError(t("errInvalidPrefix"));
       return;
     }
 
     const result = splitCidr(splitInput, prefix);
     if (result.length === 0) {
-      setError("Invalid CIDR or prefix. New prefix must be larger than current prefix.");
+      setError(t("errInvalidSplit"));
       return;
     }
 
@@ -235,36 +237,36 @@ export function CidrCalculatorTool() {
 
       {/* CIDR to Range */}
       <div>
-        <div className="text-base font-semibold mb-4">CIDR to IP Range</div>
+        <div className="text-base font-semibold mb-4">{t("cidrToRangeTitle")}</div>
         <div className="space-y-4">
           <Input
-            label="CIDR Notation"
+            label={t("cidrNotationLabel")}
             value={cidrInput}
             onChange={(e) => setCidrInput(e.target.value)}
             placeholder="192.168.1.0/24"
             className="font-mono text-sm"
           />
           <Button onClick={handleCidrToRange} variant="primary" className="w-full">
-            Convert to Range
+            {t("convertToRange")}
           </Button>
 
           {cidrResult && (
             <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <Label className="text-xs text-muted-foreground">Start IP</Label>
+                  <Label className="text-xs text-muted-foreground">{t("startIp")}</Label>
                   <div className="font-mono">{cidrResult.start}</div>
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">End IP</Label>
+                  <Label className="text-xs text-muted-foreground">{t("endIp")}</Label>
                   <div className="font-mono">{cidrResult.end}</div>
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">Subnet Mask</Label>
+                  <Label className="text-xs text-muted-foreground">{t("subnetMask")}</Label>
                   <div className="font-mono">{cidrResult.mask}</div>
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">Total Addresses</Label>
+                  <Label className="text-xs text-muted-foreground">{t("totalAddresses")}</Label>
                   <div className="font-mono">{cidrResult.total.toLocaleString()}</div>
                 </div>
               </div>
@@ -277,18 +279,18 @@ export function CidrCalculatorTool() {
 
       {/* Range to CIDR */}
       <div>
-        <div className="text-base font-semibold mb-4">IP Range to CIDR</div>
+        <div className="text-base font-semibold mb-4">{t("rangeToCidrTitle")}</div>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-2">
             <Input
-              label="Start IP"
+              label={t("startIp")}
               value={rangeStart}
               onChange={(e) => setRangeStart(e.target.value)}
               placeholder="192.168.1.0"
               className="font-mono text-sm"
             />
             <Input
-              label="End IP"
+              label={t("endIp")}
               value={rangeEnd}
               onChange={(e) => setRangeEnd(e.target.value)}
               placeholder="192.168.1.255"
@@ -296,18 +298,18 @@ export function CidrCalculatorTool() {
             />
           </div>
           <Button onClick={handleRangeToCidr} variant="primary" className="w-full">
-            Convert to CIDR
+            {t("convertToCidr")}
           </Button>
 
           {rangeResult.length > 0 && (
             <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
               <Label className="text-xs text-muted-foreground mb-2 block">
-                CIDR Blocks ({rangeResult.length})
+                {t("cidrBlocks")} ({rangeResult.length})
               </Label>
               <div className="space-y-2 max-h-[200px] overflow-y-auto">
                 {rangeResult.map((cidr, index) => (
                   <div key={index} className="font-mono text-sm p-2 bg-[var(--color-gray-50)] rounded">
-                    {cidr.cidr} ({cidr.totalAddresses.toLocaleString()} addresses)
+                    {cidr.cidr} ({cidr.totalAddresses.toLocaleString()} {t("addresses")})
                   </div>
                 ))}
               </div>
@@ -320,18 +322,18 @@ export function CidrCalculatorTool() {
 
       {/* Split CIDR */}
       <div>
-        <div className="text-base font-semibold mb-4">Split CIDR into Smaller Subnets</div>
+        <div className="text-base font-semibold mb-4">{t("splitTitle")}</div>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-2">
             <Input
-              label="CIDR to Split"
+              label={t("cidrToSplitLabel")}
               value={splitInput}
               onChange={(e) => setSplitInput(e.target.value)}
               placeholder="10.0.0.0/16"
               className="font-mono text-sm"
             />
             <Input
-              label="New Prefix"
+              label={t("newPrefixLabel")}
               type="number"
               min="0"
               max="32"
@@ -342,20 +344,20 @@ export function CidrCalculatorTool() {
             />
           </div>
           <Button onClick={handleSplitCidr} variant="primary" className="w-full">
-            Split Subnet
+            {t("splitSubnet")}
           </Button>
 
           {splitResult.length > 0 && (
             <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
               <Label className="text-xs text-muted-foreground mb-2 block">
-                Resulting Subnets ({splitResult.length})
+                {t("resultingSubnets")} ({splitResult.length})
               </Label>
               <div className="space-y-2 max-h-[300px] overflow-y-auto">
                 {splitResult.map((cidr, index) => (
                   <div key={index} className="font-mono text-xs p-2 bg-[var(--color-gray-50)] rounded">
                     <div className="font-semibold">{cidr.cidr}</div>
                     <div className="text-muted-foreground">
-                      {cidr.startIp} - {cidr.endIp} ({cidr.usableHosts.toLocaleString()} usable)
+                      {cidr.startIp} - {cidr.endIp} ({cidr.usableHosts.toLocaleString()} {t("usable")})
                     </div>
                   </div>
                 ))}
@@ -367,12 +369,12 @@ export function CidrCalculatorTool() {
 
       {/* Reset Button */}
       <Button onClick={handleReset} className="w-full">
-        Reset All
+        {t("resetAll")}
       </Button>
 
       {/* Quick Reference */}
       <div className="p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-        <div className="text-sm font-semibold mb-3">Quick Reference</div>
+        <div className="text-sm font-semibold mb-3">{t("quickReference")}</div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
           <div>/8 = 16.7M hosts</div>
           <div>/16 = 65,534 hosts</div>
@@ -384,7 +386,7 @@ export function CidrCalculatorTool() {
           <div>/32 = 1 host</div>
         </div>
         <div className="text-xs text-muted-foreground mt-2">
-          * /31 is used for point-to-point links (RFC 3021)
+          {t("note31")}
         </div>
       </div>
     </div>
