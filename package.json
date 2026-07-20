@@ -10,7 +10,8 @@
     "type-check": "tsc --noEmit",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "indexnow": "node scripts/indexnow.mjs"
   },
   "dependencies": {
     "@iarna/toml": "2.2.5",
