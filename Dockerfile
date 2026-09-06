@@ -39,6 +39,8 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
+# IndexNow submitter, run by Coolify as the post-deployment command.
+COPY --from=builder /app/scripts/indexnow.mjs ./scripts/indexnow.mjs
 
 # Set the correct permission for prerender cache
 RUN mkdir .next
