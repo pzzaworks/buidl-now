@@ -993,16 +993,31 @@ export function HomePageClient({
                   <div className="max-h-[420px] overflow-y-auto bg-white lg:min-h-0 lg:flex-1 lg:max-h-none">
                     {filteredTools.length > 0 ? (
                       filteredTools.map((tool) => (
-                        <button
+                        // A real link so crawlers can reach every tool page; a plain
+                        // click still switches the tool in place.
+                        <Link
                           key={tool.id}
-                          type="button"
+                          href={`/tools/${encodeURIComponent(tool.id)}`}
                           className={clsx(
                             "flex w-full items-start border-b border-[#202020]/10 px-4 py-4 text-left transition-colors last:border-b-0",
                             tool.id === selectedToolId
                               ? "bg-[#f0fb29]"
                               : "bg-white hover:bg-[#f5f5f5]",
                           )}
-                          onClick={() => activateTool(tool.id)}
+                          onClick={(event) => {
+                            // Let modified clicks (new tab, new window) open the page.
+                            if (
+                              event.button !== 0 ||
+                              event.metaKey ||
+                              event.ctrlKey ||
+                              event.shiftKey ||
+                              event.altKey
+                            ) {
+                              return;
+                            }
+                            event.preventDefault();
+                            activateTool(tool.id);
+                          }}
                         >
                           <div className="min-w-0">
                             <div
@@ -1018,7 +1033,7 @@ export function HomePageClient({
                               {toolDescription(tool.id, tool.description)}
                             </div>
                           </div>
-                        </button>
+                        </Link>
                       ))
                     ) : (
                       <div className="px-4 py-10">
