@@ -17,7 +17,8 @@ const aiCrawlers = [
 ];
 
 export default function robots(): MetadataRoute.Robots {
-  const disallow = ["/api/", "/_next/", "/private/"];
+  // /_next/ stays crawlable: Google needs the CSS, JS and fonts to render pages.
+  const disallow = ["/api/", "/private/"];
 
   return {
     rules: [
