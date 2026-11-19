@@ -8,6 +8,31 @@ import {
 } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { MdContentCopy, MdCheck, MdExpandMore, MdExpandLess } from "react-icons/md";
 
+type SyntaxTheme = typeof oneLight;
+
+// One Light token colors that fall below 4.5:1 on the code backgrounds (#fcfbf7 framed, white
+// unframed), darkened in 1% lightness steps until they pass on both with a small margin (>= 4.6:1),
+// keeping hue and saturation. Line numbers carry the "comment" class, so they follow its color.
+const ONE_LIGHT_AA_COLORS: Record<string, string> = {
+  "hsl(230, 4%, 64%)": "hsl(230, 4%, 45%)", // comments and line numbers
+  "hsl(35, 99%, 36%)": "hsl(35, 99%, 32%)", // numbers, booleans, class names
+  "hsl(5, 74%, 59%)": "hsl(5, 74%, 48%)", // properties, tags
+  "hsl(119, 34%, 47%)": "hsl(119, 34%, 37%)", // strings
+  "hsl(221, 87%, 60%)": "hsl(221, 87%, 55%)", // functions, variables
+  "hsl(198, 99%, 37%)": "hsl(198, 99%, 34%)", // urls
+};
+
+function withTokenColors(theme: SyntaxTheme, colors: Record<string, string>): SyntaxTheme {
+  return Object.fromEntries(
+    Object.entries(theme).map(([selector, style]) => {
+      const color = typeof style.color === "string" ? colors[style.color] : undefined;
+      return [selector, color ? { ...style, color } : style];
+    })
+  );
+}
+
+const oneLightAA = withTokenColors(oneLight, ONE_LIGHT_AA_COLORS);
+
 interface CodeProps {
   children: string;
   framed?: boolean;
@@ -44,7 +69,7 @@ export function Code({
   const displayContent = shouldCollapse && !isExpanded
     ? lines.slice(0, 10).join('\n')
     : children;
-  const syntaxTheme = isDark ? oneDark : oneLight;
+  const syntaxTheme = isDark ? oneDark : oneLightAA;
   const codeBackground = framed
     ? isDark
       ? "var(--color-gray-50)"
