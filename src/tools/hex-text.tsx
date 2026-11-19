@@ -157,7 +157,7 @@ export const hexTextConfig: ToolConfig = {
         <>
           <h4 className="text-base font-semibold mb-2">How to use this tool?</h4>
           <p className="text-sm mb-4">
-            Select Encode mode to convert text to hex, or Decode mode to convert hex back to text. When decoding, you can include or omit the '0x' prefix and spaces - they will be automatically removed.
+            Select Encode mode to convert text to hex, or Decode mode to convert hex back to text. When decoding, you can include or omit the &apos;0x&apos; prefix and spaces - they will be automatically removed.
           </p>
 
           <h4 className="text-base font-semibold mb-2">Use Cases</h4>

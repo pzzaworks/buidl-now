@@ -6,6 +6,24 @@ import { MdCheck } from "react-icons/md";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ToolConfig } from "@/types/tool";
+import { normalizeEnsName, resolveEnsAddress } from "@/lib/ens";
+
+/** Resolves through our API route (fixed public RPCs, avoids browser CORS limits). Null means not found. */
+async function resolveThroughApi(name: string): Promise<string | null> {
+  const response = await fetch("/api/ens", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ensName: name }),
+  });
+  if (response.status === 404) {
+    return null;
+  }
+  const data: { address?: string } = await response.json();
+  if (!response.ok || !data.address) {
+    throw new Error("ENS resolution failed");
+  }
+  return data.address;
+}
 
 export function EnsResolverTool() {
   const t = useTranslations("toolUI.ens-resolver");
@@ -23,8 +41,16 @@ export function EnsResolverTool() {
       return;
     }
 
-    if (!ensName.endsWith(".eth")) {
+    if (!ensName.trim().endsWith(".eth")) {
       setError(t("errMustEndEth"));
+      setResolvedAddress("");
+      return;
+    }
+
+    // Names that fail ENS normalization cannot be registered, so they can never resolve.
+    const name = normalizeEnsName(ensName);
+    if (!name) {
+      setError(t("errNotFound"));
       setResolvedAddress("");
       return;
     }
@@ -33,34 +59,19 @@ export function EnsResolverTool() {
     setError("");
 
     try {
-      // Call our API route to resolve ENS (avoids CORS issues)
-      const response = await fetch("/api/ens", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ensName,
-          rpcUrl: customRpc || undefined,
-        }),
-      });
+      const address = customRpc.trim()
+        ? // A custom RPC is queried straight from the browser, never through our server.
+          await resolveEnsAddress(name, customRpc.trim(), { ccipRead: true })
+        : await resolveThroughApi(name);
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || t("errResolveFailed"));
-      }
-
-      if (data.address) {
-        setResolvedAddress(data.address);
-        setError("");
+      if (address) {
+        setResolvedAddress(address);
       } else {
         setError(t("errNotFound"));
         setResolvedAddress("");
       }
-    } catch (e) {
-      const errorMessage = e instanceof Error ? e.message : t("errResolveFailed");
-      setError(errorMessage);
+    } catch {
+      setError(t("errResolveFailed"));
       setResolvedAddress("");
     } finally {
       setIsResolving(false);

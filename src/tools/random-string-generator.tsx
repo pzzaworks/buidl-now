@@ -242,7 +242,7 @@ export const randomStringGeneratorConfig: ToolConfig = {
           </ul>
 
           <h4 className="text-base font-semibold mb-2">Security</h4>
-          <p className="text-sm mb-4">This tool uses the Web Crypto API's cryptographically strong random number generator (crypto.getRandomValues), making it suitable for generating secure tokens and keys.</p>
+          <p className="text-sm mb-4">This tool uses the Web Crypto API&apos;s cryptographically strong random number generator (crypto.getRandomValues), making it suitable for generating secure tokens and keys.</p>
         </>
       ),
     },

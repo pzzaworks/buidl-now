@@ -57,8 +57,8 @@ describe('LoremIpsumTool', () => {
 
     fireEvent.click(sentencesButton)
 
-    // Button should have selected styling (blue border)
-    expect(sentencesButton.className).toContain('border-[var(--color-blue-500)]')
+    // The selected mode is exposed to assistive tech via aria-pressed
+    expect(sentencesButton).toHaveAttribute('aria-pressed', 'true')
   })
 
   it('switches to words mode', () => {
@@ -67,8 +67,8 @@ describe('LoremIpsumTool', () => {
 
     fireEvent.click(wordsButton)
 
-    // Button should have selected styling (blue border)
-    expect(wordsButton.className).toContain('border-[var(--color-blue-500)]')
+    // The selected mode is exposed to assistive tech via aria-pressed
+    expect(wordsButton).toHaveAttribute('aria-pressed', 'true')
   })
 
   it('generates specified number of words', () => {

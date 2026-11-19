@@ -324,7 +324,7 @@ console.log("Execution price:", result.executionPrice.toFixed(2), "USDC/ETH");
           <div>
             <h4 className="text-base font-semibold mb-2">Impermanent Loss</h4>
             <p className="text-sm">
-              Impermanent Loss occurs when the price ratio of tokens in a liquidity pool changes. The loss is 'impermanent' because it only becomes permanent when you withdraw liquidity.
+              Impermanent Loss occurs when the price ratio of tokens in a liquidity pool changes. The loss is &apos;impermanent&apos; because it only becomes permanent when you withdraw liquidity.
             </p>
           </div>
         </>

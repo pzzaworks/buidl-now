@@ -172,12 +172,12 @@ export const jsonFormatterConfig: ToolConfig = {
 
           <h4 className="text-base font-semibold mb-2">JSON Data Types</h4>
           <ul className="list-disc list-inside space-y-1">
-            <li>String: "text"</li>
+            <li>String: &quot;text&quot;</li>
             <li>Number: 123 or 123.45</li>
             <li>Boolean: true or false</li>
             <li>Null: null</li>
             <li>Array: [1, 2, 3]</li>
-            <li>Object: &#123;"key": "value"&#125;</li>
+            <li>Object: &#123;&quot;key&quot;: &quot;value&quot;&#125;</li>
           </ul>
         </>
       ),

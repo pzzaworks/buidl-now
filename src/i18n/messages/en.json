@@ -2862,7 +2862,6 @@
       "totalGwei": "Total Gwei",
       "totalEth": "Total ETH",
       "totalUsd": "Total USD",
-      "recalculate": "Recalculate",
       "reset": "Reset",
       "formula": "Formula:",
       "typicalGasLimits": "Typical Gas Limits"

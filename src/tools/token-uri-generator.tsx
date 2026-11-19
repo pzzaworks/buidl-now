@@ -455,16 +455,16 @@ console.log("Gateway:", uris.gateways.ipfsIo);
       content: (
         <>
           <h4 className="text-base font-semibold mb-2">IPFS URIs</h4>
-          <p className="text-sm mb-4">IPFS (InterPlanetary File System) is the most popular decentralized storage solution for NFTs. IPFS URIs follow the format 'ipfs://&#123;CID&#125;' where CID is a content identifier. The content is addressable by its hash, ensuring immutability. However, content must be 'pinned' to remain available.</p>
+          <p className="text-sm mb-4">IPFS (InterPlanetary File System) is the most popular decentralized storage solution for NFTs. IPFS URIs follow the format &apos;ipfs://&#123;CID&#125;&apos; where CID is a content identifier. The content is addressable by its hash, ensuring immutability. However, content must be &apos;pinned&apos; to remain available.</p>
 
           <h4 className="text-base font-semibold mb-2">Gateway URLs</h4>
           <p className="text-sm mb-4">IPFS gateways convert IPFS content to HTTP URLs that browsers can access. Popular gateways include ipfs.io, Cloudflare IPFS, Pinata, and Infura. While convenient, gateways introduce centralization and may have availability issues. The native ipfs:// URI is preferred for on-chain storage.</p>
 
           <h4 className="text-base font-semibold mb-2">Arweave URIs</h4>
-          <p className="text-sm mb-4">Arweave provides permanent storage with a one-time payment. URIs follow the format 'ar://&#123;transaction-id&#125;'. Once uploaded, content is guaranteed to be stored for at least 200 years. This makes Arweave ideal for high-value NFTs requiring permanent availability.</p>
+          <p className="text-sm mb-4">Arweave provides permanent storage with a one-time payment. URIs follow the format &apos;ar://&#123;transaction-id&#125;&apos;. Once uploaded, content is guaranteed to be stored for at least 200 years. This makes Arweave ideal for high-value NFTs requiring permanent availability.</p>
 
           <h4 className="text-base font-semibold mb-2">Data URIs</h4>
-          <p className="text-sm mb-4">Data URIs encode the entire metadata JSON directly in the URI using Base64 encoding. This makes the metadata fully on-chain and completely immutable, with no external dependencies. However, it's expensive for large metadata and limited by block gas limits.</p>
+          <p className="text-sm mb-4">Data URIs encode the entire metadata JSON directly in the URI using Base64 encoding. This makes the metadata fully on-chain and completely immutable, with no external dependencies. However, it&apos;s expensive for large metadata and limited by block gas limits.</p>
 
           <h4 className="text-base font-semibold mb-2">Best Practices</h4>
           <ul className="list-disc list-inside space-y-1">

@@ -86,7 +86,7 @@ export function AsciiTableTool() {
   const t = useTranslations("toolUI.ascii-table");
   const [search, setSearch] = useState("");
   const [rangeStart, setRangeStart] = useState("");
-  const [rangeEnd, setRangeEnd] = useState("63");
+  const [rangeEnd, setRangeEnd] = useState("");
   const [filterType, setFilterType] = useState<"all" | "printable" | "control">("all");
 
   const asciiTable = useMemo(() => generateAsciiTable(), []);

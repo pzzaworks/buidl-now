@@ -578,7 +578,7 @@ export const accessControlVisualizerConfig: ToolConfig = {
 
           <h4 className="text-base font-semibold mb-2">OpenZeppelin AccessControl</h4>
           <p className="text-sm mb-4">
-            OpenZeppelin's AccessControl provides a role-based access control mechanism with role hierarchies. Each role has an admin role that can grant/revoke that role to addresses.
+            OpenZeppelin&apos;s AccessControl provides a role-based access control mechanism with role hierarchies. Each role has an admin role that can grant/revoke that role to addresses.
           </p>
 
           <h4 className="text-base font-semibold mb-2">Role Hierarchy</h4>

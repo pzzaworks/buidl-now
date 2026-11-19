@@ -157,7 +157,7 @@ export function RegexTesterTool() {
             {matches.map((match, index) => (
               <div key={index} className="pb-2 border-b border-border last:border-0">
                 <div className="text-sm font-mono text-[var(--color-green-500)]">
-                  {t("match")} {index + 1}: "{match[0]}"
+                  {t("match")} {index + 1}: &quot;{match[0]}&quot;
                 </div>
                 {match.index !== undefined && (
                   <div className="text-xs text-muted-foreground mt-1">

@@ -157,7 +157,7 @@ export const removeDuplicatesConfig: ToolConfig = {
           <p className="text-sm mb-4">This tool removes duplicate lines from your text, keeping only the first occurrence of each unique line. The order of lines is preserved.</p>
 
           <h4 className="text-base font-semibold mb-2">Case Sensitivity</h4>
-          <p className="text-sm mb-4">When case-sensitive mode is off (default), 'Apple' and 'apple' are considered duplicates. When enabled, they are treated as different lines.</p>
+          <p className="text-sm mb-4">When case-sensitive mode is off (default), &apos;Apple&apos; and &apos;apple&apos; are considered duplicates. When enabled, they are treated as different lines.</p>
         </>
       ),
     },

@@ -127,7 +127,7 @@ export const base64TextConfig: ToolConfig = {
       title: "How does it work?",
       content: (
         <p className="text-sm">
-          Base64 converts binary data into text by dividing the input into 6-bit groups and mapping each to one of 64 ASCII characters (A-Z, a-z, 0-9, +, /). Every 3 bytes of input produces 4 characters of output. Padding with '=' characters is added when the input length isn't divisible by 3.
+          Base64 converts binary data into text by dividing the input into 6-bit groups and mapping each to one of 64 ASCII characters (A-Z, a-z, 0-9, +, /). Every 3 bytes of input produces 4 characters of output. Padding with &apos;=&apos; characters is added when the input length isn&apos;t divisible by 3.
         </p>
       ),
     },

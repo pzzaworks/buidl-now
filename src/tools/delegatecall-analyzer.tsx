@@ -565,7 +565,7 @@ export const delegatecallAnalyzerConfig: ToolConfig = {
       content: (
         <>
           <p className="text-sm mb-4">
-            Delegatecall preserves msg.sender and msg.value while executing another contract's code in the caller's storage context. Storage slots are accessed by position (0, 1, 2...), not by variable names. This enables proxies to run implementation logic while maintaining proxy state, but requires careful storage layout alignment.
+            Delegatecall preserves msg.sender and msg.value while executing another contract&apos;s code in the caller&apos;s storage context. Storage slots are accessed by position (0, 1, 2...), not by variable names. This enables proxies to run implementation logic while maintaining proxy state, but requires careful storage layout alignment.
           </p>
 
           <h4 className="text-base font-semibold mb-2">Storage Layout Compatibility</h4>

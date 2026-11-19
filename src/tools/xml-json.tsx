@@ -250,7 +250,7 @@ export const xmlJsonConfig: ToolConfig = {
       title: "How does it work?",
       content: (
         <>
-          <p className="text-sm mb-4">The converter parses XML using a DOM parser, traversing the document tree to extract elements, attributes, and text content. It maps XML elements to JSON objects, attributes to '@attributes' properties, and repeated elements to arrays. The reverse process builds XML tags from JSON keys and handles special properties like '@attributes' and '#text'.</p>
+          <p className="text-sm mb-4">The converter parses XML using a DOM parser, traversing the document tree to extract elements, attributes, and text content. It maps XML elements to JSON objects, attributes to &apos;@attributes&apos; properties, and repeated elements to arrays. The reverse process builds XML tags from JSON keys and handles special properties like &apos;@attributes&apos; and &apos;#text&apos;.</p>
 
           <h4 className="text-base font-semibold mb-2">XML vs JSON</h4>
           <p className="text-sm mb-4">XML (eXtensible Markup Language) uses tags and attributes to structure data, while JSON (JavaScript Object Notation) uses key-value pairs with braces and brackets. Both are popular for data exchange, with XML being more verbose but supporting attributes and namespaces.</p>
@@ -259,7 +259,7 @@ export const xmlJsonConfig: ToolConfig = {
           <p className="text-sm mb-4">XML is commonly used in legacy systems, configuration files, and SOAP APIs. JSON is preferred for modern REST APIs and web applications due to its lighter weight and native JavaScript support.</p>
 
           <h4 className="text-base font-semibold mb-2">Conversion Notes</h4>
-          <p className="text-sm">When converting from XML to JSON, attributes are stored under '@attributes' and text content under '#text'. Arrays are created for repeated elements. Some XML features like namespaces and processing instructions may not be fully preserved.</p>
+          <p className="text-sm">When converting from XML to JSON, attributes are stored under &apos;@attributes&apos; and text content under &apos;#text&apos;. Arrays are created for repeated elements. Some XML features like namespaces and processing instructions may not be fully preserved.</p>
         </>
       ),
     },

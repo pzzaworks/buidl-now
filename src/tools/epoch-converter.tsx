@@ -186,7 +186,7 @@ export function EpochConverterTool() {
 
       {/* Basic Conversion */}
       <div>
-        <div className="text-base font-semibold mb-4">{t("basicConversionTitle")}</div>
+        <h3 className="text-base font-semibold mb-4">{t("basicConversionTitle")}</h3>
         <div className="space-y-4">
           <div>
             <Input
@@ -226,7 +226,7 @@ export function EpochConverterTool() {
 
       {/* Manual Date Input */}
       <div>
-        <div className="text-base font-semibold mb-4">{t("manualDateTitle")}</div>
+        <h3 className="text-base font-semibold mb-4">{t("manualDateTitle")}</h3>
         <div className="grid grid-cols-6 gap-2 mb-2">
           <div>
             <Label className="text-xs">{t("year")}</Label>
@@ -313,7 +313,7 @@ export function EpochConverterTool() {
 
       {/* Batch Convert */}
       <div>
-        <div className="text-base font-semibold mb-4">{t("batchConvertTitle")}</div>
+        <h3 className="text-base font-semibold mb-4">{t("batchConvertTitle")}</h3>
         <div className="space-y-4">
           <div>
             <Label className="mb-2 block text-sm">{t("timestampsLabel")}</Label>
@@ -343,9 +343,9 @@ export function EpochConverterTool() {
 
       {/* Seconds to Days/Hours/Minutes */}
       <div>
-        <div className="text-base font-semibold mb-4">
+        <h3 className="text-base font-semibold mb-4">
           {t("secondsConvertTitle")}
-        </div>
+        </h3>
         <div className="space-y-4">
           <div>
             <Input

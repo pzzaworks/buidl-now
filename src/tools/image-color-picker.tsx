@@ -374,7 +374,7 @@ export const imageColorPickerConfig: ToolConfig = {
 
           <h4 className="text-base font-semibold mb-2">How to use this tool?</h4>
           <p className="text-sm">
-            Upload an image (max 5MB). Click anywhere on the image to pick the color at that specific point. The tool will display the color values in multiple formats. Use the 'Extract Dominant Colors' button to find the most prevalent colors in the image.
+            Upload an image (max 5MB). Click anywhere on the image to pick the color at that specific point. The tool will display the color values in multiple formats. Use the &apos;Extract Dominant Colors&apos; button to find the most prevalent colors in the image.
           </p>
         </>
       ),

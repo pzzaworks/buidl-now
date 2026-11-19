@@ -168,7 +168,7 @@ export const binaryTextConfig: ToolConfig = {
       title: "How does it work?",
       content: (
         <p className="text-sm">
-          Binary encoding converts text characters to their ASCII/Unicode numeric values, then represents each number in base-2 (binary). Each character becomes an 8-bit byte. For example, 'A' has ASCII value 65, which is 01000001 in binary. Decoding reverses this process by converting 8-bit chunks back to characters.
+          Binary encoding converts text characters to their ASCII/Unicode numeric values, then represents each number in base-2 (binary). Each character becomes an 8-bit byte. For example, &apos;A&apos; has ASCII value 65, which is 01000001 in binary. Decoding reverses this process by converting 8-bit chunks back to characters.
         </p>
       ),
     },

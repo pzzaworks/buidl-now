@@ -138,8 +138,8 @@ export const escapeUnescapeConfig: ToolConfig = {
             <li>\\n: Newline</li>
             <li>\\r: Carriage return</li>
             <li>\\t: Tab</li>
-            <li>\\": Double quote</li>
-            <li>\\': Single quote</li>
+            <li>\\&quot;: Double quote</li>
+            <li>\\&apos;: Single quote</li>
             <li>\\\\: Backslash</li>
           </ul>
         </>

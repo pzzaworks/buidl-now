@@ -690,7 +690,7 @@ console.log("Max depth:", analysis.maxDepth);
           <p className="text-sm mb-4">Transaction tracing uses debug_traceTransaction RPC method with the callTracer to record every internal call, gas usage, input/output data, and state changes. The trace is returned as a hierarchical tree structure showing the complete call graph from the initial transaction through all sub-calls.</p>
 
           <h4 className="text-base font-semibold mb-2">Call Types</h4>
-          <p className="text-sm">CALL: Standard external call. DELEGATECALL: Execute code in caller's context. STATICCALL: Read-only call. CREATE/CREATE2: Contract deployment. Each type has different implications for state changes and context.</p>
+          <p className="text-sm">CALL: Standard external call. DELEGATECALL: Execute code in caller&apos;s context. STATICCALL: Read-only call. CREATE/CREATE2: Contract deployment. Each type has different implications for state changes and context.</p>
         </>
       ),
     },
