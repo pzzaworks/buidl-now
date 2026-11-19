@@ -1,48 +1,35 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { ToolConfig } from "@/types/tool";
 
+type CharFrequency = { char: string; count: number; percentage: number };
+
+const EMPTY_STATS = {
+  characters: 0,
+  charactersNoSpaces: 0,
+  lines: 0,
+  paragraphs: 0,
+  totalWords: 0,
+  uniqueWords: 0,
+  avgWordLength: 0,
+  longestWord: "",
+  shortestWord: "",
+  avgSentenceLength: 0,
+  lexicalDensity: 0,
+  readingTime: 0,
+};
+
 export function TextAnalyzerTool() {
   const t = useTranslations("toolUI.text-analyzer");
   const [text, setText] = useState("");
-  const [stats, setStats] = useState({
-    characters: 0,
-    charactersNoSpaces: 0,
-    lines: 0,
-    paragraphs: 0,
-    totalWords: 0,
-    uniqueWords: 0,
-    avgWordLength: 0,
-    longestWord: "",
-    shortestWord: "",
-    avgSentenceLength: 0,
-    lexicalDensity: 0,
-    readingTime: 0,
-  });
-  const [charFrequency, setCharFrequency] = useState<Array<{ char: string; count: number; percentage: number }>>([]);
-
-  useEffect(() => {
+  // Derived from the text on every render; syncing it through an effect rendered twice per keystroke.
+  const { stats, charFrequency } = useMemo(() => {
     if (!text) {
-      setStats({
-        characters: 0,
-        charactersNoSpaces: 0,
-        lines: 0,
-        paragraphs: 0,
-        totalWords: 0,
-        uniqueWords: 0,
-        avgWordLength: 0,
-        longestWord: "",
-        shortestWord: "",
-        avgSentenceLength: 0,
-        lexicalDensity: 0,
-        readingTime: 0,
-      });
-      setCharFrequency([]);
-      return;
+      return { stats: EMPTY_STATS, charFrequency: [] as CharFrequency[] };
     }
 
     // Basic counts
@@ -88,7 +75,7 @@ export function TextAnalyzerTool() {
     // Lexical density (unique words / total words)
     const lexicalDensity = totalWords > 0 ? (uniqueWords / totalWords) * 100 : 0;
 
-    setStats({
+    const stats = {
       characters,
       charactersNoSpaces,
       lines,
@@ -101,7 +88,7 @@ export function TextAnalyzerTool() {
       avgSentenceLength,
       lexicalDensity,
       readingTime,
-    });
+    };
 
     // Character frequency analysis
     const charMap = new Map<string, number>();
@@ -126,7 +113,7 @@ export function TextAnalyzerTool() {
         percentage: (count / totalChars) * 100,
       }));
 
-    setCharFrequency(sortedChars);
+    return { stats, charFrequency: sortedChars };
   }, [text]);
 
   return (

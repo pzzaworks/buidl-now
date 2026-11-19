@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -9,20 +9,10 @@ import { ToolConfig } from "@/types/tool";
 export function CaseConverterTool() {
   const t = useTranslations("toolUI.case-converter");
   const [text, setText] = useState("");
-  const [conversions, setConversions] = useState({
-    uppercase: "",
-    lowercase: "",
-    titleCase: "",
-    camelCase: "",
-    pascalCase: "",
-    snakeCase: "",
-    kebabCase: "",
-    constantCase: "",
-  });
-
-  useEffect(() => {
+  // Derived from the text on every render; syncing it through an effect rendered twice per keystroke.
+  const conversions = useMemo(() => {
     if (!text) {
-      setConversions({
+      return {
         uppercase: "",
         lowercase: "",
         titleCase: "",
@@ -31,8 +21,7 @@ export function CaseConverterTool() {
         snakeCase: "",
         kebabCase: "",
         constantCase: "",
-      });
-      return;
+      };
     }
 
     const uppercase = text.toUpperCase();
@@ -75,7 +64,7 @@ export function CaseConverterTool() {
     // CONSTANT_CASE: uppercase with underscores
     const constantCase = words.map((w) => w.toUpperCase()).join("_");
 
-    setConversions({
+    return {
       uppercase,
       lowercase,
       titleCase,
@@ -84,7 +73,7 @@ export function CaseConverterTool() {
       snakeCase,
       kebabCase,
       constantCase,
-    });
+    };
   }, [text]);
 
   return (
