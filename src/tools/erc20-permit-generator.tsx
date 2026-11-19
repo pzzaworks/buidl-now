@@ -347,7 +347,7 @@ export const erc20PermitGeneratorConfig: ToolConfig = {
         <>
           <h4 className="text-base font-semibold mb-2">How Permits Work</h4>
           <p className="text-sm mb-4">
-            Instead of calling approve() which costs gas, users sign an off-chain message (EIP-712) containing the approval details. The spender then submits this signature along with the permit details to the token contract. The contract verifies the signature and updates the approval, all within the spender's transaction.
+            Instead of calling approve() which costs gas, users sign an off-chain message (EIP-712) containing the approval details. The spender then submits this signature along with the permit details to the token contract. The contract verifies the signature and updates the approval, all within the spender&apos;s transaction.
           </p>
 
           <h4 className="text-base font-semibold mb-2">Common Use Cases</h4>
@@ -373,7 +373,7 @@ export const erc20PermitGeneratorConfig: ToolConfig = {
 → Spender: 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D
   (Uniswap V2 Router)
 → Amount: 1000000000 (1000 USDC, 6 decimals)
-→ Token: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+→ Asset: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
   (USDC mainnet)
 → Deadline: 1698768000 (Nov 1, 2023)`,
       type: "code",
@@ -384,14 +384,14 @@ export const erc20PermitGeneratorConfig: ToolConfig = {
 → Spender: 0xE592427A0AEce92De3Edee1F18E0157C05861564
   (Uniswap V3 Router)
 → Amount: 1000000000000000000 (1 DAI, 18 decimals)
-→ Token: 0x8f3Cf7ad23Cd3CaDbD9735AFF958023D60C95eEE
+→ Asset: 0x8f3Cf7ad23Cd3CaDbD9735AFF958023D60C95eEE
   (DAI Polygon)
 → ChainID: 137`,
       type: "code",
     },
     {
       title: "Custom Token Permit - Arbitrum",
-      content: `Token: 0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8
+      content: `Asset: 0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8
   (USDC.e Arbitrum)
 → Nonce: 0
 → ChainID: 42161
