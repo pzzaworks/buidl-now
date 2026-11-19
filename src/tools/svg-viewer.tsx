@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -14,29 +15,20 @@ export function SvgViewerTool() {
   const [svgCode, setSvgCode] = useState("");
   const [width, setWidth] = useState("300");
   const [height, setHeight] = useState("300");
-  const [error, setError] = useState("");
-
-  const validateSvg = (code: string): boolean => {
-    if (!code.trim()) {
-      setError(t("emptyError"));
-      return false;
-    }
-
-    // Basic SVG validation
-    if (!code.trim().includes("<svg")) {
-      setError(t("mustContainSvg"));
-      return false;
-    }
-
-    setError("");
-    return true;
-  };
+  // Derived from the code. This used to be state set by a validator called during render, which
+  // re-rendered forever ("Too many re-renders") the moment any SVG was pasted.
+  const error = !svgCode
+    ? ""
+    : !svgCode.trim()
+      ? t("emptyError")
+      : !svgCode.trim().includes("<svg")
+        ? t("mustContainSvg")
+        : "";
 
   const handleReset = () => {
     setSvgCode("");
     setWidth("300");
     setHeight("300");
-    setError("");
   };
 
   const loadSampleSvg = () => {
@@ -47,7 +39,6 @@ export function SvgViewerTool() {
   <path d="M 70 120 Q 100 140 130 120" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
 </svg>`;
     setSvgCode(sample);
-    setError("");
   };
 
   return (
@@ -106,7 +97,7 @@ export function SvgViewerTool() {
       )}
 
       {/* SVG Preview */}
-      {svgCode && validateSvg(svgCode) && (
+      {svgCode && !error && (
         <div className="space-y-4">
           {/* Rendered Preview */}
           <div>
@@ -117,11 +108,18 @@ export function SvgViewerTool() {
                 minHeight: `${parseInt(height) || 300}px`,
               }}
             >
-              <div
-                dangerouslySetInnerHTML={{ __html: svgCode }}
+              {/* As an image, never as markup: inline SVG runs its scripts and event handlers
+                  (onload, <script>), so a pasted file could act inside this site. */}
+              <Image
+                src={svgDataUrl(svgCode)}
+                alt={t("svgPreviewLabel")}
+                width={parseInt(width) || 300}
+                height={parseInt(height) || 300}
+                unoptimized
                 style={{
                   maxWidth: `${parseInt(width) || 300}px`,
                   maxHeight: `${parseInt(height) || 300}px`,
+                  objectFit: "contain",
                 }}
               />
             </div>
@@ -286,3 +284,11 @@ console.log('\\nIs valid SVG:', validateSvg(smileyFace));
     },
   ],
 };
+
+/** The SVG as a data URL for an <img>. An image needs the SVG namespace, which inline markup does not. */
+function svgDataUrl(svg: string): string {
+  const withNamespace = /<svg\b[^>]*\bxmlns=/i.test(svg)
+    ? svg
+    : svg.replace(/<svg\b/i, '<svg xmlns="http://www.w3.org/2000/svg"');
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(withNamespace)}`;
+}

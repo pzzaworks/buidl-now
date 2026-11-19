@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
+import DOMPurify from "dompurify";
 import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -18,19 +19,19 @@ const md = new MarkdownIt({
 export function MarkdownPreviewTool() {
   const t = useTranslations("toolUI.markdown-preview");
   const [input, setInput] = useState("");
-  const [html, setHtml] = useState("");
-
-  useEffect(() => {
+  // Derived on render; syncing it through an effect rendered twice per change.
+  const html = useMemo(() => {
     if (!input.trim()) {
-      setHtml("");
-      return;
+      return "";
     }
 
     try {
-      const rendered = md.render(input);
-      setHtml(rendered);
+      // HTML stays enabled (it is a markdown feature), so the result is sanitized: a pasted README
+      // with <img onerror> or <script> must not run inside this site. Without a DOM (server
+      // render) DOMPurify cannot clean anything, and the input is empty there anyway.
+      return DOMPurify.isSupported ? DOMPurify.sanitize(md.render(input)) : "";
     } catch {
-      setHtml(`<p>${t("errorRendering")}</p>`);
+      return `<p>${t("errorRendering")}</p>`;
     }
   }, [input, t]);
 
