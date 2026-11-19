@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { ToolConfig } from "@/types/tool";
@@ -12,41 +12,35 @@ export function TomlJsonTool() {
   const [tomlInput, setTomlInput] = useState("");
   const [jsonInput, setJsonInput] = useState("");
   const [error, setError] = useState("");
-  const [lastEdited, setLastEdited] = useState<"toml" | "json" | null>(null);
-
-  // Auto-convert when TOML input changes
-  useEffect(() => {
-    if (lastEdited === "toml" && tomlInput) {
-      try {
-        const parsed = TOML.parse(tomlInput);
-        setJsonInput(JSON.stringify(parsed, null, 2));
-        setError("");
-      } catch (e) {
-        setError(e instanceof Error ? e.message : t("invalidToml"));
-      }
+  // Each side converts the other as it is typed in, inside the change handler: an effect watching
+  // both inputs rendered every keystroke twice.
+  const handleTomlChange = (value: string) => {
+    setTomlInput(value);
+    if (!value) return;
+    try {
+      setJsonInput(JSON.stringify(TOML.parse(value), null, 2));
+      setError("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("invalidToml"));
     }
-  }, [tomlInput, lastEdited]);
+  };
 
-  // Auto-convert when JSON input changes
-  useEffect(() => {
-    if (lastEdited === "json" && jsonInput) {
-      try {
-        const parsed = JSON.parse(jsonInput);
-        const toml = TOML.stringify(parsed as TOML.JsonMap);
-        setTomlInput(toml);
-        setError("");
-      } catch (e) {
-        setError(e instanceof Error ? e.message : t("invalidJson"));
-      }
+  const handleJsonChange = (value: string) => {
+    setJsonInput(value);
+    if (!value) return;
+    try {
+      setTomlInput(TOML.stringify(JSON.parse(value) as TOML.JsonMap));
+      setError("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("invalidJson"));
     }
-  }, [jsonInput, lastEdited]);
+  };
 
   const handleSwap = () => {
     const tempToml = tomlInput;
     const tempJson = jsonInput;
     setTomlInput(tempJson);
     setJsonInput(tempToml);
-    setLastEdited(null);
   };
 
   return (
@@ -55,10 +49,7 @@ export function TomlJsonTool() {
       <Textarea
         label="TOML"
         value={tomlInput}
-        onChange={(e) => {
-          setTomlInput(e.target.value);
-          setLastEdited("toml");
-        }}
+        onChange={(e) => handleTomlChange(e.target.value)}
         placeholder='[package]&#10;name = "my-project"&#10;version = "1.0.0"'
         className="font-mono text-sm"
         rows={8}
@@ -86,10 +77,7 @@ export function TomlJsonTool() {
       <Textarea
         label="JSON"
         value={jsonInput}
-        onChange={(e) => {
-          setJsonInput(e.target.value);
-          setLastEdited("json");
-        }}
+        onChange={(e) => handleJsonChange(e.target.value)}
         placeholder='{"package":{"name":"my-project","version":"1.0.0"}}'
         className="font-mono text-sm"
         rows={8}

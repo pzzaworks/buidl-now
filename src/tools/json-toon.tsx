@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { ToolConfig } from "@/types/tool";
@@ -253,40 +253,38 @@ export function JsonToonTool() {
   const [jsonInput, setJsonInput] = useState("");
   const [toonInput, setToonInput] = useState("");
   const [error, setError] = useState("");
-  const [lastEdited, setLastEdited] = useState<"json" | "toon" | null>(null);
+  // Each side converts the other inside its change handler; an effect on both inputs rendered
+  // every keystroke twice.
 
-  // Auto-convert when JSON input changes
-  useEffect(() => {
-    if (lastEdited === "json" && jsonInput) {
-      try {
-        const toon = jsonToToon(jsonInput);
-        setToonInput(toon);
-        setError("");
-      } catch (e) {
-        setError(e instanceof Error ? e.message : t("errorInvalidJson"));
-      }
+  const handleJsonChange = (value: string) => {
+    setJsonInput(value);
+    if (!value) return;
+    try {
+      const toon = jsonToToon(value);
+      setToonInput(toon);
+      setError("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("errorInvalidJson"));
     }
-  }, [jsonInput, lastEdited]);
+  };
 
-  // Auto-convert when TOON input changes
-  useEffect(() => {
-    if (lastEdited === "toon" && toonInput) {
-      try {
-        const json = toonToJson(toonInput);
-        setJsonInput(json);
-        setError("");
-      } catch (e) {
-        setError(e instanceof Error ? e.message : t("errorInvalidToon"));
-      }
+  const handleToonChange = (value: string) => {
+    setToonInput(value);
+    if (!value) return;
+    try {
+      const json = toonToJson(value);
+      setJsonInput(json);
+      setError("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("errorInvalidToon"));
     }
-  }, [toonInput, lastEdited]);
+  };
 
   const handleSwap = () => {
     const tempJson = jsonInput;
     const tempToon = toonInput;
     setJsonInput(tempToon);
     setToonInput(tempJson);
-    setLastEdited(null);
   };
 
   return (
@@ -295,10 +293,7 @@ export function JsonToonTool() {
       <Textarea
         label="JSON"
         value={jsonInput}
-        onChange={(e) => {
-          setJsonInput(e.target.value);
-          setLastEdited("json");
-        }}
+        onChange={(e) => handleJsonChange(e.target.value)}
         placeholder='{"key": "value"}'
         className="font-mono text-sm"
         rows={8}
@@ -326,10 +321,7 @@ export function JsonToonTool() {
       <Textarea
         label="TOON"
         value={toonInput}
-        onChange={(e) => {
-          setToonInput(e.target.value);
-          setLastEdited("toon");
-        }}
+        onChange={(e) => handleToonChange(e.target.value)}
         placeholder="key: value"
         className="font-mono text-sm"
         rows={8}

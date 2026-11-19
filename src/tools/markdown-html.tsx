@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { ToolConfig } from "@/types/tool";
@@ -20,40 +20,38 @@ export function MarkdownHtmlTool() {
   const [markdownInput, setMarkdownInput] = useState("");
   const [htmlInput, setHtmlInput] = useState("");
   const [error, setError] = useState("");
-  const [lastEdited, setLastEdited] = useState<"markdown" | "html" | null>(null);
+  // Each side converts the other inside its change handler; an effect on both inputs rendered
+  // every keystroke twice.
 
-  // Auto-convert when Markdown input changes
-  useEffect(() => {
-    if (lastEdited === "markdown" && markdownInput) {
-      try {
-        const html = marked.parse(markdownInput, { async: false }) as string;
-        setHtmlInput(html);
-        setError("");
-      } catch (e) {
-        setError(e instanceof Error ? e.message : t("invalidMarkdown"));
-      }
+  const handleMarkdownChange = (value: string) => {
+    setMarkdownInput(value);
+    if (!value) return;
+    try {
+      const html = marked.parse(value, { async: false }) as string;
+      setHtmlInput(html);
+      setError("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("invalidMarkdown"));
     }
-  }, [markdownInput, lastEdited]);
+  };
 
-  // Auto-convert when HTML input changes
-  useEffect(() => {
-    if (lastEdited === "html" && htmlInput) {
-      try {
-        const markdown = turndownService.turndown(htmlInput);
-        setMarkdownInput(markdown);
-        setError("");
-      } catch (e) {
-        setError(e instanceof Error ? e.message : t("invalidHtml"));
-      }
+  const handleHtmlChange = (value: string) => {
+    setHtmlInput(value);
+    if (!value) return;
+    try {
+      const markdown = turndownService.turndown(value);
+      setMarkdownInput(markdown);
+      setError("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("invalidHtml"));
     }
-  }, [htmlInput, lastEdited]);
+  };
 
   const handleSwap = () => {
     const tempMarkdown = markdownInput;
     const tempHtml = htmlInput;
     setMarkdownInput(tempHtml);
     setHtmlInput(tempMarkdown);
-    setLastEdited(null);
   };
 
   return (
@@ -62,10 +60,7 @@ export function MarkdownHtmlTool() {
       <Textarea
         label="Markdown"
         value={markdownInput}
-        onChange={(e) => {
-          setMarkdownInput(e.target.value);
-          setLastEdited("markdown");
-        }}
+        onChange={(e) => handleMarkdownChange(e.target.value)}
         placeholder="# Hello World&#10;&#10;This is **bold** and this is *italic*."
         className="font-mono text-sm"
         rows={8}
@@ -93,10 +88,7 @@ export function MarkdownHtmlTool() {
       <Textarea
         label="HTML"
         value={htmlInput}
-        onChange={(e) => {
-          setHtmlInput(e.target.value);
-          setLastEdited("html");
-        }}
+        onChange={(e) => handleHtmlChange(e.target.value)}
         placeholder="<h1>Hello World</h1>&#10;<p>This is <strong>bold</strong> and this is <em>italic</em>.</p>"
         className="font-mono text-sm"
         rows={8}

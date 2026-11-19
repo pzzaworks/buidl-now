@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -144,31 +144,53 @@ export function CsvJsonTool() {
   const [error, setError] = useState("");
   const [lastEdited, setLastEdited] = useState<"csv" | "json" | null>(null);
 
-  // Auto-convert when CSV input changes
-  useEffect(() => {
-    if (lastEdited === "csv" && csvInput) {
+  // Converts from the side last typed in, with the given options. Called from the change
+  // handlers rather than an effect, which rendered every keystroke and option change twice.
+  const convert = (
+    side: "csv" | "json" | null,
+    csv: string,
+    json: string,
+    nextDelimiter: DelimiterType,
+    nextHasHeaders: boolean
+  ) => {
+    if (side === "csv" && csv) {
       try {
-        const json = csvToJson(csvInput, delimiter, hasHeaders);
-        setJsonInput(json);
+        setJsonInput(csvToJson(csv, nextDelimiter, nextHasHeaders));
         setError("");
       } catch (e) {
         setError(e instanceof Error ? e.message : t("errorInvalidCsv"));
       }
-    }
-  }, [csvInput, delimiter, hasHeaders, lastEdited]);
-
-  // Auto-convert when JSON input changes
-  useEffect(() => {
-    if (lastEdited === "json" && jsonInput) {
+    } else if (side === "json" && json) {
       try {
-        const csv = jsonToCsv(jsonInput, delimiter);
-        setCsvInput(csv);
+        setCsvInput(jsonToCsv(json, nextDelimiter));
         setError("");
       } catch (e) {
         setError(e instanceof Error ? e.message : t("errorInvalidJson"));
       }
     }
-  }, [jsonInput, delimiter, lastEdited]);
+  };
+
+  const handleCsvChange = (value: string) => {
+    setCsvInput(value);
+    setLastEdited("csv");
+    convert("csv", value, jsonInput, delimiter, hasHeaders);
+  };
+
+  const handleJsonChange = (value: string) => {
+    setJsonInput(value);
+    setLastEdited("json");
+    convert("json", csvInput, value, delimiter, hasHeaders);
+  };
+
+  const changeDelimiter = (next: DelimiterType) => {
+    setDelimiter(next);
+    convert(lastEdited, csvInput, jsonInput, next, hasHeaders);
+  };
+
+  const changeHasHeaders = (next: boolean) => {
+    setHasHeaders(next);
+    convert(lastEdited, csvInput, jsonInput, delimiter, next);
+  };
 
   const handleSwap = () => {
     const tempCsv = csvInput;
@@ -186,21 +208,21 @@ export function CsvJsonTool() {
           <Label className="mb-2 block text-sm">{t("delimiter")}</Label>
           <div className="flex gap-2 flex-wrap">
             <Button
-              onClick={() => setDelimiter("comma")}
+              onClick={() => changeDelimiter("comma")}
               variant={delimiter === "comma" ? "primary" : "secondary"}
               size="sm"
             >
               {t("comma")}
             </Button>
             <Button
-              onClick={() => setDelimiter("semicolon")}
+              onClick={() => changeDelimiter("semicolon")}
               variant={delimiter === "semicolon" ? "primary" : "secondary"}
               size="sm"
             >
               {t("semicolon")}
             </Button>
             <Button
-              onClick={() => setDelimiter("tab")}
+              onClick={() => changeDelimiter("tab")}
               variant={delimiter === "tab" ? "primary" : "secondary"}
               size="sm"
             >
@@ -212,14 +234,14 @@ export function CsvJsonTool() {
           <Label className="mb-2 block text-sm">{t("firstRow")}</Label>
           <div className="flex gap-2 flex-wrap">
             <Button
-              onClick={() => setHasHeaders(true)}
+              onClick={() => changeHasHeaders(true)}
               variant={hasHeaders ? "primary" : "secondary"}
               size="sm"
             >
               {t("containsHeaders")}
             </Button>
             <Button
-              onClick={() => setHasHeaders(false)}
+              onClick={() => changeHasHeaders(false)}
               variant={!hasHeaders ? "primary" : "secondary"}
               size="sm"
             >
@@ -233,10 +255,7 @@ export function CsvJsonTool() {
       <Textarea
         label="CSV"
         value={csvInput}
-        onChange={(e) => {
-          setCsvInput(e.target.value);
-          setLastEdited("csv");
-        }}
+        onChange={(e) => handleCsvChange(e.target.value)}
         placeholder="name,age,city&#10;John,30,New York&#10;Jane,25,London"
         className="font-mono text-sm"
         rows={8}
@@ -264,10 +283,7 @@ export function CsvJsonTool() {
       <Textarea
         label="JSON"
         value={jsonInput}
-        onChange={(e) => {
-          setJsonInput(e.target.value);
-          setLastEdited("json");
-        }}
+        onChange={(e) => handleJsonChange(e.target.value)}
         placeholder='[{"name":"John","age":"30","city":"New York"}]'
         className="font-mono text-sm"
         rows={8}

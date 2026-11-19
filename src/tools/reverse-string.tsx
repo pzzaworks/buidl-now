@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -9,22 +9,11 @@ import { ToolConfig } from "@/types/tool";
 export function ReverseStringTool() {
   const t = useTranslations("toolUI.reverse-string");
   const [input, setInput] = useState("");
-  const [output, setOutput] = useState("");
-
-  useEffect(() => {
-    if (!input) {
-      setOutput("");
-      return;
-    }
-
-    // Reverse the string character by character
-    const reversed = input.split("").reverse().join("");
-    setOutput(reversed);
-  }, [input]);
+  // Reverse the string character by character (derived, not synced through an effect)
+  const output = input.split("").reverse().join("");
 
   const handleReset = () => {
     setInput("");
-    setOutput("");
   };
 
   const handleSwap = () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -37,12 +37,10 @@ export function SlugGeneratorTool() {
   const [lowercase, setLowercase] = useState(true);
   const [separator, setSeparator] = useState<"dash" | "underscore">("dash");
   const [transliterate, setTransliterate] = useState(true);
-  const [slug, setSlug] = useState("");
-
-  useEffect(() => {
+  // Derived on render; syncing it through an effect rendered twice per change.
+  const slug = useMemo(() => {
     if (!input) {
-      setSlug("");
-      return;
+      return "";
     }
 
     let result = input;
@@ -77,12 +75,11 @@ export function SlugGeneratorTool() {
       .replace(/[\s_-]+/g, sep) // Replace spaces, underscores, hyphens with separator
       .replace(new RegExp(`^${sep === "-" ? "\\-" : "_"}+|${sep === "-" ? "\\-" : "_"}+$`, "g"), ""); // Trim separators from ends
 
-    setSlug(result);
+    return result;
   }, [input, lowercase, separator, transliterate]);
 
   const handleReset = () => {
     setInput("");
-    setSlug("");
   };
 
   return (

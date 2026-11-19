@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -18,20 +18,17 @@ export function StringTruncatorTool() {
   const [ellipsisPosition, setEllipsisPosition] = useState<EllipsisPosition>("end");
   const [wordBoundary, setWordBoundary] = useState(true);
   const [customEllipsis, setCustomEllipsis] = useState("...");
-  const [output, setOutput] = useState("");
-
-  useEffect(() => {
+  // Derived on render; syncing it through an effect rendered twice per change.
+  const output = useMemo(() => {
     if (!input) {
-      setOutput("");
-      return;
+      return "";
     }
 
     const max = parseInt(maxLength) || 50;
     const ellipsis = customEllipsis || "...";
 
     if (input.length <= max) {
-      setOutput(input);
-      return;
+      return input;
     }
 
     let result = "";
@@ -83,7 +80,7 @@ export function StringTruncatorTool() {
       result = startPart.trimEnd() + ellipsis + endPart.trimStart();
     }
 
-    setOutput(result);
+    return result;
   }, [input, maxLength, ellipsisPosition, wordBoundary, customEllipsis]);
 
   const handleReset = () => {
@@ -92,7 +89,6 @@ export function StringTruncatorTool() {
     setEllipsisPosition("end");
     setWordBoundary(true);
     setCustomEllipsis("...");
-    setOutput("");
   };
 
   return (

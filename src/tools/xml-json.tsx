@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { ToolConfig } from "@/types/tool";
@@ -135,40 +135,38 @@ export function XmlJsonTool() {
   const [xmlInput, setXmlInput] = useState("");
   const [jsonInput, setJsonInput] = useState("");
   const [error, setError] = useState("");
-  const [lastEdited, setLastEdited] = useState<"xml" | "json" | null>(null);
+  // Each side converts the other inside its change handler; an effect on both inputs rendered
+  // every keystroke twice.
 
-  // Auto-convert when XML input changes
-  useEffect(() => {
-    if (lastEdited === "xml" && xmlInput) {
-      try {
-        const json = xmlToJson(xmlInput);
-        setJsonInput(json);
-        setError("");
-      } catch (e) {
-        setError(e instanceof Error ? e.message : t("errorInvalidXml"));
-      }
+  const handleXmlChange = (value: string) => {
+    setXmlInput(value);
+    if (!value) return;
+    try {
+      const json = xmlToJson(value);
+      setJsonInput(json);
+      setError("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("errorInvalidXml"));
     }
-  }, [xmlInput, lastEdited]);
+  };
 
-  // Auto-convert when JSON input changes
-  useEffect(() => {
-    if (lastEdited === "json" && jsonInput) {
-      try {
-        const xml = jsonToXml(jsonInput);
-        setXmlInput(xml);
-        setError("");
-      } catch (e) {
-        setError(e instanceof Error ? e.message : t("errorInvalidJson"));
-      }
+  const handleJsonChange = (value: string) => {
+    setJsonInput(value);
+    if (!value) return;
+    try {
+      const xml = jsonToXml(value);
+      setXmlInput(xml);
+      setError("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("errorInvalidJson"));
     }
-  }, [jsonInput, lastEdited]);
+  };
 
   const handleSwap = () => {
     const tempXml = xmlInput;
     const tempJson = jsonInput;
     setXmlInput(tempJson);
     setJsonInput(tempXml);
-    setLastEdited(null);
   };
 
   return (
@@ -177,10 +175,7 @@ export function XmlJsonTool() {
       <Textarea
         label="XML"
         value={xmlInput}
-        onChange={(e) => {
-          setXmlInput(e.target.value);
-          setLastEdited("xml");
-        }}
+        onChange={(e) => handleXmlChange(e.target.value)}
         placeholder='<person><name>John</name><age>30</age></person>'
         className="font-mono text-sm"
         rows={8}
@@ -208,10 +203,7 @@ export function XmlJsonTool() {
       <Textarea
         label="JSON"
         value={jsonInput}
-        onChange={(e) => {
-          setJsonInput(e.target.value);
-          setLastEdited("json");
-        }}
+        onChange={(e) => handleJsonChange(e.target.value)}
         placeholder='{"person":{"name":"John","age":"30"}}'
         className="font-mono text-sm"
         rows={8}

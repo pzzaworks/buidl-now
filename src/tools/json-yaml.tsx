@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -96,39 +96,38 @@ export function JsonYamlTool() {
   const [jsonInput, setJsonInput] = useState("");
   const [yamlInput, setYamlInput] = useState("");
   const [error, setError] = useState("");
-  const [lastEdited, setLastEdited] = useState<"json" | "yaml" | null>(null);
+  // Each side converts the other inside its change handler; an effect on both inputs rendered
+  // every keystroke twice.
 
-  // Auto-convert when input changes
-  useEffect(() => {
-    if (lastEdited === "json" && jsonInput) {
-      try {
-        const yaml = jsonToYaml(jsonInput);
-        setYamlInput(yaml);
-        setError("");
-      } catch (e) {
-        setError(e instanceof Error ? e.message : t("errorInvalidJson"));
-      }
+  const handleJsonChange = (value: string) => {
+    setJsonInput(value);
+    if (!value) return;
+    try {
+      const yaml = jsonToYaml(value);
+      setYamlInput(yaml);
+      setError("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("errorInvalidJson"));
     }
-  }, [jsonInput, lastEdited]);
+  };
 
-  useEffect(() => {
-    if (lastEdited === "yaml" && yamlInput) {
-      try {
-        const json = yamlToJson(yamlInput);
-        setJsonInput(json);
-        setError("");
-      } catch (e) {
-        setError(e instanceof Error ? e.message : t("errorInvalidYaml"));
-      }
+  const handleYamlChange = (value: string) => {
+    setYamlInput(value);
+    if (!value) return;
+    try {
+      const json = yamlToJson(value);
+      setJsonInput(json);
+      setError("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("errorInvalidYaml"));
     }
-  }, [yamlInput, lastEdited]);
+  };
 
   const handleSwap = () => {
     const tempJson = jsonInput;
     const tempYaml = yamlInput;
     setJsonInput(tempYaml);
     setYamlInput(tempJson);
-    setLastEdited(null);
   };
 
   return (
@@ -137,10 +136,7 @@ export function JsonYamlTool() {
       <Textarea
         label="JSON"
         value={jsonInput}
-        onChange={(e) => {
-          setJsonInput(e.target.value);
-          setLastEdited("json");
-        }}
+        onChange={(e) => handleJsonChange(e.target.value)}
         placeholder='{"name":"John","age":30}'
         className="font-mono text-sm"
         rows={8}
@@ -168,10 +164,7 @@ export function JsonYamlTool() {
       <Textarea
         label="YAML"
         value={yamlInput}
-        onChange={(e) => {
-          setYamlInput(e.target.value);
-          setLastEdited("yaml");
-        }}
+        onChange={(e) => handleYamlChange(e.target.value)}
         placeholder="name: John&#10;age: 30"
         className="font-mono text-sm"
         rows={8}
