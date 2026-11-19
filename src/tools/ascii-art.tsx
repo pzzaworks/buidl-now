@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -59,38 +59,25 @@ export function AsciiArtTool() {
   const t = useTranslations("toolUI.ascii-art");
   const [input, setInput] = useState("");
   const [selectedFont, setSelectedFont] = useState<FontName>("Standard");
-  const [output, setOutput] = useState("");
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    loadFonts();
-  }, []);
-
-  useEffect(() => {
-    if (!input.trim()) {
-      setOutput("");
-      setError("");
-      return;
-    }
-
+  // Derived on render; an effect syncing it rendered every keystroke twice. Fonts load lazily
+  // (once, synchronously) the first time there is something to draw.
+  const { output, error } = useMemo(() => {
+    if (!input.trim()) return { output: "", error: "" };
     try {
+      loadFonts();
       const result = figlet.textSync(input, {
         font: selectedFont,
         horizontalLayout: "default",
         verticalLayout: "default",
       });
-      setOutput(result);
-      setError("");
+      return { output: result, error: "" };
     } catch (e) {
-      setError(e instanceof Error ? e.message : t("generateError"));
-      setOutput("");
+      return { output: "", error: e instanceof Error ? e.message : t("generateError") };
     }
-  }, [input, selectedFont]);
+  }, [input, selectedFont, t]);
 
   const handleReset = () => {
     setInput("");
-    setOutput("");
-    setError("");
     setSelectedFont("Standard");
   };
 

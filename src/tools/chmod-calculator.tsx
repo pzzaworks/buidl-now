@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -58,39 +58,34 @@ export function ChmodCalculatorTool() {
     };
   };
 
-  const getNumericValue = (): string => {
-    return (
-      permissionToNumber(permissions.owner).toString() +
-      permissionToNumber(permissions.group).toString() +
-      permissionToNumber(permissions.other).toString()
-    );
-  };
+  const numericValue = (perms: Permissions): string =>
+    permissionToNumber(perms.owner).toString() +
+    permissionToNumber(perms.group).toString() +
+    permissionToNumber(perms.other).toString();
 
-  const getSymbolicValue = (): string => {
-    return (
-      permissionToSymbolic(permissions.owner) +
-      permissionToSymbolic(permissions.group) +
-      permissionToSymbolic(permissions.other)
-    );
-  };
+  const symbolicValue = (perms: Permissions): string =>
+    permissionToSymbolic(perms.owner) + permissionToSymbolic(perms.group) + permissionToSymbolic(perms.other);
 
-  useEffect(() => {
-    setNumericInput(getNumericValue());
-    setSymbolicInput(getSymbolicValue());
-  }, [permissions]);
+  // Permissions and both text forms change together, in the handler: an effect copying them
+  // into the inputs rendered every toggle twice.
+  const applyPermissions = (next: Permissions) => {
+    setPermissions(next);
+    setNumericInput(numericValue(next));
+    setSymbolicInput(symbolicValue(next));
+  };
 
   const handleCheckboxChange = (
     role: "owner" | "group" | "other",
     permission: "read" | "write" | "execute",
     checked: boolean
   ) => {
-    setPermissions((prev) => ({
-      ...prev,
+    applyPermissions({
+      ...permissions,
       [role]: {
-        ...prev[role],
+        ...permissions[role],
         [permission]: checked,
       },
-    }));
+    });
   };
 
   const handleNumericChange = (value: string) => {
@@ -102,7 +97,7 @@ export function ChmodCalculatorTool() {
       const group = parseInt(value[1]);
       const other = parseInt(value[2]);
 
-      setPermissions({
+      applyPermissions({
         owner: numberToPermission(owner),
         group: numberToPermission(group),
         other: numberToPermission(other),
@@ -115,7 +110,7 @@ export function ChmodCalculatorTool() {
 
     // Validate input: should be 9 characters like rwxr-xr-x
     if (/^[rwx-]{9}$/.test(value)) {
-      setPermissions({
+      applyPermissions({
         owner: symbolicToPermission(value.slice(0, 3)),
         group: symbolicToPermission(value.slice(3, 6)),
         other: symbolicToPermission(value.slice(6, 9)),
@@ -124,7 +119,7 @@ export function ChmodCalculatorTool() {
   };
 
   const handleReset = () => {
-    setPermissions({
+    applyPermissions({
       owner: { read: true, write: true, execute: true },
       group: { read: true, write: false, execute: true },
       other: { read: true, write: false, execute: true },
@@ -211,7 +206,7 @@ export function ChmodCalculatorTool() {
       <div>
         <Input
           label={`chmod ${t("command")}`}
-          value={`chmod ${getNumericValue()} filename`}
+          value={`chmod ${numericValue(permissions)} filename`}
           readOnly
           showCopy
           className="font-mono bg-[var(--color-gray-0)]"

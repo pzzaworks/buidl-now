@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -163,17 +163,17 @@ function parseUserAgent(ua: string): ParsedUserAgent {
   return result;
 }
 
+// The user agent never changes while the page is open.
+function subscribeNever(): () => void {
+  return () => {};
+}
+
 export function UserAgentParserTool() {
   const t = useTranslations("toolUI.user-agent-parser");
   const [input, setInput] = useState("");
   const [parsed, setParsed] = useState<ParsedUserAgent | null>(null);
-  const [currentUserAgent, setCurrentUserAgent] = useState("");
-
-  useEffect(() => {
-    if (typeof navigator !== "undefined") {
-      setCurrentUserAgent(navigator.userAgent);
-    }
-  }, []);
+  // Read from the browser; empty on the server and during hydration (shown as loading).
+  const currentUserAgent = useSyncExternalStore(subscribeNever, () => navigator.userAgent, () => "");
 
   const handleParse = () => {
     if (!input.trim()) {
