@@ -404,8 +404,8 @@ function RevealSection({
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    // With reduced motion the section renders visible already (shouldReduceMotion || isVisible).
     if (shouldReduceMotion) {
-      setIsVisible(true);
       return;
     }
 
@@ -602,16 +602,15 @@ export function HomePageClient({
   const heroActionsOpacity = useTransform(scrollY, [0, 180, 420], [1, 0.9, 0.58]);
 
   useEffect(() => {
+    // Reduced motion skips the entrance: every use of isPageReady is OR-ed with shouldReduceMotion
+    // or goes to RevealSection, which checks it itself. isPageReady starts false.
     if (shouldReduceMotion) {
-      setIsPageReady(true);
       return;
     }
 
     let firstFrame = 0;
     let secondFrame = 0;
     let readyTimeout = 0;
-
-    setIsPageReady(false);
 
     firstFrame = window.requestAnimationFrame(() => {
       secondFrame = window.requestAnimationFrame(() => {
@@ -628,13 +627,15 @@ export function HomePageClient({
     };
   }, [shouldReduceMotion]);
 
-  useEffect(() => {
-    if (!initialSelectedToolId || !getToolMetaById(initialSelectedToolId)) {
-      return;
+  // Navigating between tool pages keeps this component and changes the prop: follow it while
+  // rendering that change, not in an effect afterwards.
+  const [followedToolId, setFollowedToolId] = useState(initialSelectedToolId);
+  if (initialSelectedToolId !== followedToolId) {
+    setFollowedToolId(initialSelectedToolId);
+    if (initialSelectedToolId && getToolMetaById(initialSelectedToolId)) {
+      setSelectedToolId(initialSelectedToolId);
     }
-
-    setSelectedToolId(initialSelectedToolId);
-  }, [initialSelectedToolId]);
+  }
 
   useEffect(() => {
     if (routeMode !== "home") {

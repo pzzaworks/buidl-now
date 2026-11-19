@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -8,11 +8,23 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ToolConfig } from "@/types/tool";
 
+function subscribeToSeconds(onTick: () => void): () => void {
+  const interval = setInterval(onTick, 1000);
+  return () => clearInterval(interval);
+}
+
+/** Whole seconds, so the snapshot stays the same value until the next tick. */
+function currentSecond(): number {
+  return Math.floor(Date.now() / 1000) * 1000;
+}
+
 export function EpochConverterTool() {
   const t = useTranslations("toolUI.epoch-converter");
   const [timestamp, setTimestamp] = useState("");
   const [humanDate, setHumanDate] = useState("");
-  const [currentTime, setCurrentTime] = useState<number | null>(null);
+  // A ticking clock read from an external store: null on the server and during hydration, then
+  // the current second (an effect setting it on mount rendered twice and skipped the lint rule).
+  const currentTime = useSyncExternalStore(subscribeToSeconds, currentSecond, () => null);
 
   // Manual date input
   const [year, setYear] = useState("");
@@ -29,14 +41,6 @@ export function EpochConverterTool() {
   // Seconds converter
   const [seconds, setSeconds] = useState("");
   const [timeBreakdown, setTimeBreakdown] = useState("");
-
-  useEffect(() => {
-    setCurrentTime(Date.now());
-    const interval = setInterval(() => {
-      setCurrentTime(Date.now());
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   const timestampToDate = (ts: string) => {
     if (!ts) {
