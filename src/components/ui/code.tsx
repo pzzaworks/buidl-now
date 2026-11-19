@@ -60,9 +60,13 @@ export function Code({
 
   return (
     <div className="relative">
-      {/* Language Badge */}
+      {/* Language Badge: a code language id, so it is uppercased with English rules in every locale
+          (Turkish rules would print "TYPESCRİPT") */}
       {language !== "" && (
-        <div className="absolute top-2 left-2 z-10 border border-[var(--color-gray-300)] bg-[var(--color-gray-0)] px-2 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--color-gray-700)]">
+        <div
+          lang="en"
+          className="absolute top-2 left-2 z-10 border border-[var(--color-gray-300)] bg-[var(--color-gray-0)] px-2 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--color-gray-700)]"
+        >
           {language}
         </div>
       )}

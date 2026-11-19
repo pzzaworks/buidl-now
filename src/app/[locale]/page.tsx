@@ -32,7 +32,15 @@ interface SiteAction {
   external?: boolean;
   href: string;
   label: string;
+  /** Language of the label when it is not the page's, e.g. a brand name that `uppercase` must not localize. */
+  lang?: string;
 }
+
+/**
+ * Brand names render in English casing: `text-transform: uppercase` follows the page language, so under
+ * Turkish "GitHub" would become "GİTHUB".
+ */
+const BRAND_LANG = "en";
 
 interface ToolStoryRow {
   body: string;
@@ -405,6 +413,7 @@ function ActionLink({
         target="_blank"
         rel={externalLinkRel}
         className={className}
+        lang={action.lang}
       >
         {action.label}
       </a>
@@ -415,6 +424,7 @@ function ActionLink({
     <a
       href={action.href}
       className={className}
+      lang={action.lang}
       onClick={(event) => {
         event.preventDefault();
         onInternalClick?.();
@@ -522,11 +532,11 @@ export function HomePageClient({
 
   const headerActions: SiteAction[] = [
     { href: "#tools", label: tNav("tools") },
-    { external: true, href: githubUrl, label: tNav("github") },
+    { external: true, href: githubUrl, label: tNav("github"), lang: BRAND_LANG },
   ];
   const footerActions: SiteAction[] = [
     { href: "#tools", label: tNav("openTools") },
-    { external: true, href: githubUrl, label: tNav("github") },
+    { external: true, href: githubUrl, label: tNav("github"), lang: BRAND_LANG },
   ];
   const toolCategoryOptions: ToolCategoryOption[] = toolCategoryValues.map(
     (value) => ({ value, label: tCat(value) }),
@@ -919,6 +929,7 @@ export function HomePageClient({
                     rel={externalLinkRel}
                     className="inline-flex rounded-none border border-[#202020] px-8 py-6 text-[13px] font-medium uppercase tracking-[0.22em] text-[#202020] transition-colors hover:bg-[#202020] hover:text-[#f0fb29]"
                     style={monoStyle}
+                    lang={BRAND_LANG}
                   >
                     {tNav("github")}
                   </a>
@@ -1336,6 +1347,7 @@ export function HomePageClient({
                     <div
                       className="bg-[#f0fb29] px-3 py-2 text-[12px] font-medium uppercase tracking-[0.18em] text-[#202020]"
                       style={monoStyle}
+                      lang={toolCodeSnippet ? BRAND_LANG : undefined}
                     >
                       {toolCodeSnippet ? "TypeScript" : t("snippetBadge")}
                     </div>
