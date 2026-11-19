@@ -238,4 +238,21 @@ describe('MarkdownPreviewTool', () => {
       expect(link.tagName).toBe('A')
     })
   })
+
+  // Regression: HTML in the markdown went into the page unsanitized, so a pasted README
+  // could run script inside the site.
+  it('strips script and event handlers from HTML in the markdown', async () => {
+    const { container } = render(<MarkdownPreviewTool />)
+    const textarea = screen.getByPlaceholderText(/# Hello World/)
+
+    fireEvent.change(textarea, {
+      target: { value: '<img src="x" onerror="alert(1)"><script>alert(2)</script>\n\n**kept**' },
+    })
+
+    await waitFor(() => {
+      expect(screen.getByText('kept').tagName).toBe('STRONG')
+    })
+    expect(container.querySelector('script')).toBeNull()
+    expect(container.querySelector('[onerror]')).toBeNull()
+  })
 })
