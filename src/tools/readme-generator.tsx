@@ -264,7 +264,7 @@ export function ReadmeGeneratorTool() {
             </Button>
           ))}
         </div>
-        <p className="text-xs text-[var(--color-gray-500)] mt-1">
+        <p className="text-xs text-[var(--color-gray-600)] mt-1">
           {t(
             TEMPLATE_STYLES.find((s) => s.value === style)?.descKey ??
               "styleStandardDesc"

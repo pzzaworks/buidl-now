@@ -378,7 +378,7 @@ export function GitignoreGeneratorTool() {
 
         {categories.map((category) => (
           <div key={category}>
-            <Label className="mb-2 block text-xs text-[var(--color-gray-500)] uppercase tracking-wide">
+            <Label className="mb-2 block text-xs text-[var(--color-gray-600)] uppercase tracking-wide">
               {category}
             </Label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2">

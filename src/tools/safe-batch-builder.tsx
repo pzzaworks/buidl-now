@@ -180,7 +180,7 @@ export function SafeBatchBuilderTool() {
           </div>
         ))}
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button onClick={addTransaction} variant="primary" className="flex-1">
             {t("addTransaction")}
           </Button>

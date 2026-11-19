@@ -203,9 +203,9 @@ export function ImageColorPickerTool() {
           type="file"
           accept="image/*"
           onChange={handleFileSelect}
-          className="block w-full text-sm text-[var(--color-gray-500)] file:mr-4 file:py-2.5 file:px-4 file:rounded-[var(--radius-10)] file:border file:border-[var(--color-gray-200)] file:text-sm file:font-medium file:bg-[var(--color-gray-0)] file:text-[var(--color-gray-950)] hover:file:bg-[var(--color-gray-50)] file:cursor-pointer file:transition-colors"
+          className="block w-full text-sm text-[var(--color-gray-600)] file:mr-4 file:py-2.5 file:px-4 file:rounded-[var(--radius-10)] file:border file:border-[var(--color-gray-200)] file:text-sm file:font-medium file:bg-[var(--color-gray-0)] file:text-[var(--color-gray-950)] hover:file:bg-[var(--color-gray-50)] file:cursor-pointer file:transition-colors"
         />
-        <p className="mt-2 text-xs text-[var(--color-gray-400)]">
+        <p className="mt-2 text-xs text-[var(--color-gray-600)]">
           {t("uploadHint")}
         </p>
       </div>
@@ -300,7 +300,7 @@ export function ImageColorPickerTool() {
                     <div className="p-2 bg-[var(--color-gray-0)] flex items-center justify-between">
                       <div className="space-y-0.5">
                         <code className="text-xs font-mono block">{color.hex}</code>
-                        <code className="text-xs font-mono text-[var(--color-gray-500)] block">{color.rgb}</code>
+                        <code className="text-xs font-mono text-[var(--color-gray-600)] block">{color.rgb}</code>
                       </div>
                       <button
                         type="button"

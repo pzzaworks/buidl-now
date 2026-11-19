@@ -202,7 +202,7 @@ export function UnicodeEscapeTool() {
             </Button>
           ))}
         </div>
-        <p className="text-xs text-[var(--color-gray-500)] mt-1">
+        <p className="text-xs text-[var(--color-gray-600)] mt-1">
           {formatLabels[format]}
         </p>
       </div>
