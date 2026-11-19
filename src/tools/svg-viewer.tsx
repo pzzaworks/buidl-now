@@ -136,11 +136,11 @@ export function SvgViewerTool() {
           {/* SVG Information */}
           <div className="grid grid-cols-2 gap-4">
             <div className="p-3 bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] rounded-[12px]">
-              <Label className="text-xs text-[var(--color-gray-500)] mb-1 block">{t("codeLengthLabel")}</Label>
+              <Label className="text-xs text-[var(--color-gray-600)] mb-1 block">{t("codeLengthLabel")}</Label>
               <p className="text-sm font-mono">{svgCode.length} {t("charactersUnit")}</p>
             </div>
             <div className="p-3 bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] rounded-[12px]">
-              <Label className="text-xs text-[var(--color-gray-500)] mb-1 block">{t("fileSizeLabel")}</Label>
+              <Label className="text-xs text-[var(--color-gray-600)] mb-1 block">{t("fileSizeLabel")}</Label>
               <p className="text-sm font-mono">
                 {(new Blob([svgCode]).size / 1024).toFixed(2)} KB
               </p>

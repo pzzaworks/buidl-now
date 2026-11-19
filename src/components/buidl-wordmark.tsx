@@ -6,9 +6,9 @@ import {
   motionValue,
   type MotionValue,
   useInView,
-  useReducedMotion,
   useTransform,
 } from "framer-motion";
+import { useHydrationSafeReducedMotion } from "@/lib/reduced-motion";
 
 interface WordmarkRect {
   x: number;
@@ -236,7 +236,7 @@ function WordmarkLetterGroup({
   letter: WordmarkLetter;
   scrollY?: MotionValue<number>;
 }) {
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useHydrationSafeReducedMotion();
   const scrollStart = index * 56;
   const scrollEnd = scrollStart + 78;
   const driftY = useTransform(

@@ -107,7 +107,7 @@ export function GradientGeneratorTool() {
             onChange={(e) => setAngle(e.target.value)}
             className="w-full h-2 bg-[var(--color-gray-100)] rounded-[12px] appearance-none cursor-pointer accent-[var(--color-blue-500)]"
           />
-          <div className="flex justify-between text-xs text-[var(--color-gray-400)] mt-1">
+          <div className="flex justify-between text-xs text-[var(--color-gray-600)] mt-1">
             <span>0°</span>
             <span>90°</span>
             <span>180°</span>
@@ -160,7 +160,7 @@ export function GradientGeneratorTool() {
                     }
                     className="flex-1 h-2 bg-[var(--color-gray-100)] rounded-[12px] appearance-none cursor-pointer accent-[var(--color-blue-500)]"
                   />
-                  <span className="text-xs text-[var(--color-gray-500)] w-12 text-right">
+                  <span className="text-xs text-[var(--color-gray-600)] w-12 text-right">
                     {stop.position}%
                   </span>
                 </div>

@@ -129,7 +129,7 @@ export function LoremIpsumTool() {
 
         <div>
           <Label className="mb-2 block text-sm">{t("type")}</Label>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button
               variant={type === "paragraphs" ? "primary" : "secondary"}
               aria-pressed={type === "paragraphs"}

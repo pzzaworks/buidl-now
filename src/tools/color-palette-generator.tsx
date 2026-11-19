@@ -280,10 +280,10 @@ export function ColorPaletteGeneratorTool() {
                       )}
                     </button>
                   </div>
-                  <div className="text-xs text-[var(--color-gray-500)] font-mono">
+                  <div className="text-xs text-[var(--color-gray-600)] font-mono">
                     {color.rgb}
                   </div>
-                  <div className="text-xs text-[var(--color-gray-500)] font-mono">
+                  <div className="text-xs text-[var(--color-gray-600)] font-mono">
                     {color.hsl}
                   </div>
                 </div>

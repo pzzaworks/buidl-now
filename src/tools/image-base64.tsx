@@ -94,9 +94,9 @@ export function ImageBase64Tool() {
           type="file"
           accept="image/*"
           onChange={handleFileSelect}
-          className="block w-full text-sm text-[var(--color-gray-500)] file:mr-4 file:py-2.5 file:px-4 file:rounded-[var(--radius-10)] file:border file:border-[var(--color-gray-200)] file:text-sm file:font-medium file:bg-[var(--color-gray-0)] file:text-[var(--color-gray-950)] hover:file:bg-[var(--color-gray-50)] file:cursor-pointer file:transition-colors"
+          className="block w-full text-sm text-[var(--color-gray-600)] file:mr-4 file:py-2.5 file:px-4 file:rounded-[var(--radius-10)] file:border file:border-[var(--color-gray-200)] file:text-sm file:font-medium file:bg-[var(--color-gray-0)] file:text-[var(--color-gray-950)] hover:file:bg-[var(--color-gray-50)] file:cursor-pointer file:transition-colors"
         />
-        <p className="mt-2 text-xs text-[var(--color-gray-400)]">
+        <p className="mt-2 text-xs text-[var(--color-gray-600)]">
           {t("fileHelp")}
         </p>
       </div>
@@ -128,11 +128,11 @@ export function ImageBase64Tool() {
           {/* File Information */}
           <div className="grid grid-cols-2 gap-4">
             <div className="p-3 bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] rounded-[12px]">
-              <Label className="text-xs text-[var(--color-gray-500)] mb-1 block">{t("originalSize")}</Label>
+              <Label className="text-xs text-[var(--color-gray-600)] mb-1 block">{t("originalSize")}</Label>
               <p className="text-sm font-mono">{formatBytes(originalSize)}</p>
             </div>
             <div className="p-3 bg-[var(--color-gray-0)] border border-[var(--color-gray-200)] rounded-[12px]">
-              <Label className="text-xs text-[var(--color-gray-500)] mb-1 block">{t("encodedSize")}</Label>
+              <Label className="text-xs text-[var(--color-gray-600)] mb-1 block">{t("encodedSize")}</Label>
               <p className="text-sm font-mono">{formatBytes(encodedSize)}</p>
             </div>
           </div>

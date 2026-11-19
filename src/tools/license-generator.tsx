@@ -485,7 +485,7 @@ export function LicenseGeneratorTool() {
                   <li key={c} className="text-[var(--color-gray-600)]">= {c}</li>
                 ))
               ) : (
-                <li className="text-[var(--color-gray-400)]">{t("none")}</li>
+                <li className="text-[var(--color-gray-600)]">{t("none")}</li>
               )}
             </ul>
           </div>

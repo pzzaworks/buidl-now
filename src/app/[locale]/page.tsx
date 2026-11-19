@@ -6,7 +6,6 @@ import clsx from "clsx";
 import {
   AnimatePresence,
   motion,
-  useReducedMotion,
   useScroll,
   useTransform,
 } from "framer-motion";
@@ -14,6 +13,7 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { BuidlWordmark } from "@/components/buidl-wordmark";
+import { useHydrationSafeReducedMotion } from "@/lib/reduced-motion";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Code } from "@/components/ui/code";
 import {
@@ -532,7 +532,7 @@ export function HomePageClient({
     (value) => ({ value, label: tCat(value) }),
   );
 
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useHydrationSafeReducedMotion();
   const isToolRoute = routeMode === "tool";
   const HeroHeading = isToolRoute ? motion.p : motion.h1;
   const categoryDropdownRef = useRef<HTMLDivElement>(null);
@@ -768,7 +768,13 @@ export function HomePageClient({
         <FaqStructuredData items={faqItems} />
       ) : null}
 
-      <div className="min-h-screen w-full bg-[#f5f5f5] text-[#202020]">
+      {/* Remounted once when a reduced-motion preference is detected after
+          hydration, so the motion elements start from their visible state instead
+          of keeping the hidden styles they were server-rendered with. */}
+      <div
+        key={shouldReduceMotion ? "reduced-motion" : "motion"}
+        className="min-h-screen w-full bg-[#f5f5f5] text-[#202020]"
+      >
         <header className="sticky top-0 z-50 bg-[#f0fb29]">
           <motion.div
             className="mx-auto flex min-h-[84px] w-full max-w-[1920px] items-center justify-between gap-6 px-6 lg:px-16"
@@ -931,12 +937,15 @@ export function HomePageClient({
           >
             <SectionLabel title={`/ ${t("sectionTools")}`} />
 
-            <div className="grid grid-cols-1 gap-y-8 pt-10 lg:h-[760px] lg:grid-cols-[620px_minmax(0,1fr)] lg:items-stretch lg:gap-x-8 lg:pt-12">
+            {/* Finder and tool sit side by side from xl only. Tools lay out with
+                viewport breakpoints (sm:/md:), so at lg the fixed 620px finder
+                left a 242px panel running wide layouts and labels spilled out. */}
+            <div className="grid grid-cols-1 gap-y-8 pt-10 xl:h-[760px] xl:grid-cols-[620px_minmax(0,1fr)] xl:items-stretch xl:gap-x-8 lg:pt-12">
               <motion.div
-                className="lg:min-h-0"
+                className="xl:min-h-0"
                 variants={shouldReduceMotion ? undefined : fadeUpVariants}
               >
-                <div className="border border-[#202020] bg-[#fbfaf6] lg:flex lg:h-full lg:min-h-0 lg:flex-col">
+                <div className="border border-[#202020] bg-[#fbfaf6] xl:flex xl:h-full xl:min-h-0 xl:flex-col">
                   <div className="border-b border-[#202020] px-4 py-3">
                     <div
                       className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]"
@@ -1008,7 +1017,7 @@ export function HomePageClient({
                     </div>
                   </div>
 
-                  <div className="max-h-[420px] overflow-y-auto bg-white lg:min-h-0 lg:flex-1 lg:max-h-none">
+                  <div className="max-h-[420px] overflow-y-auto bg-white xl:min-h-0 xl:flex-1 xl:max-h-none">
                     {filteredTools.length > 0 ? (
                       filteredTools.map((tool) => (
                         // A real link so crawlers can reach every tool page; a plain
@@ -1074,10 +1083,10 @@ export function HomePageClient({
               </motion.div>
 
               <motion.div
-                className="min-w-0 lg:min-h-0"
+                className="min-w-0 xl:min-h-0"
                 variants={shouldReduceMotion ? undefined : fadeUpVariants}
               >
-                <div className="border border-[#202020] bg-[#fbfaf6] lg:flex lg:h-full lg:min-h-0 lg:flex-col">
+                <div className="border border-[#202020] bg-[#fbfaf6] xl:flex xl:h-full xl:min-h-0 xl:flex-col">
                   <div
                     className="flex items-center gap-2 border-b border-[#202020] px-4 py-3"
                     style={{
@@ -1101,12 +1110,12 @@ export function HomePageClient({
                     </div>
                   </div>
 
-                  <div className="bg-white px-4 py-4 sm:px-5 sm:py-5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+                  <div className="bg-white px-4 py-4 sm:px-5 sm:py-5 xl:min-h-0 xl:flex-1 xl:overflow-y-auto">
                     <AnimatePresence mode="wait" initial={false}>
                       {ActiveToolComponent ? (
                         <motion.div
                           key={selectedToolId}
-                          className="text-[#202020] lg:h-full [&_.font-mono]:!font-[var(--font-ibm-plex-mono)] [&_.text-muted-foreground]:!text-[#202020]/60 [&_button]:!rounded-none [&_button]:!shadow-none [&_input]:!rounded-none [&_input]:!shadow-none [&_textarea]:!rounded-none [&_textarea]:!shadow-none"
+                          className="text-[#202020] xl:h-full [&_.font-mono]:!font-[var(--font-ibm-plex-mono)] [&_.text-muted-foreground]:!text-[#202020]/65 [&_button]:!rounded-none [&_button]:!shadow-none [&_input]:!rounded-none [&_input]:!shadow-none [&_textarea]:!rounded-none [&_textarea]:!shadow-none"
                           style={sansStyle}
                           initial={
                             shouldReduceMotion ? false : { opacity: 0, y: 18 }

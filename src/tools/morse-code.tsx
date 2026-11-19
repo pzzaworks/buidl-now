@@ -293,7 +293,7 @@ export function MorseCodeTool() {
               className="flex flex-col items-center p-1 rounded bg-[var(--color-gray-0)]"
             >
               <span className="font-semibold">{char}</span>
-              <span className="text-[var(--color-gray-500)]">{code}</span>
+              <span className="text-[var(--color-gray-600)]">{code}</span>
             </div>
           ))}
         </div>
