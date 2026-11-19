@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties, ReactNode } from "react";
-import { Children, isValidElement, useEffect, useRef, useState } from "react";
+import { Children, isValidElement, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import clsx from "clsx";
 import {
   AnimatePresence,
@@ -213,6 +213,48 @@ const homepageToolOverrides: Record<string, HomepageToolOverride> = {
 function getToolMetaById(toolId: string): Tool | undefined {
   return tools.find((tool) => tool.id === toolId);
 }
+
+// The landing URL never changes while the page is open.
+function subscribeToNothing(): () => void {
+  return () => {};
+}
+
+interface LandingIntent {
+  search?: string;
+  category?: string;
+  toolId?: string;
+  scrollToTools: boolean;
+}
+
+/**
+ * What the landing URL asks the Tool Finder to show, in priority order:
+ * - ?search=<query>: the WebSite SearchAction target, so the structured-data search box maps to
+ *   a real on-site search;
+ * - ?category=<id>: the BreadcrumbList category item, so the breadcrumb on tool pages links to a
+ *   real filtered view;
+ * - ?tool=<id>: a tool, scrolled to only with #tools.
+ */
+function parseLandingIntent(url: string): LandingIntent {
+  const hashIndex = url.indexOf("#");
+  const query = hashIndex === -1 ? url : url.slice(0, hashIndex);
+  const hash = hashIndex === -1 ? "" : url.slice(hashIndex);
+  const params = new URLSearchParams(query);
+
+  const search = params.get("search");
+  if (search && search.trim()) {
+    return { search, scrollToTools: true };
+  }
+  const category = params.get("category");
+  if (category && toolCategoryValues.includes(category)) {
+    return { category, scrollToTools: true };
+  }
+  const toolId = params.get("tool");
+  if (toolId && getToolMetaById(toolId)) {
+    return { toolId, scrollToTools: hash === "#tools" };
+  }
+  return { scrollToTools: false };
+}
+
 
 function normalizeText(value: string): string {
   return value.replace(/\s+/g, " ").trim();
@@ -637,62 +679,37 @@ export function HomePageClient({
     }
   }
 
+  // The landing URL (home route only), read without an effect: null on the server and while
+  // hydrating, then the real location. Applied once, while rendering; only the scroll it asks
+  // for runs in an effect.
+  const landingUrl = useSyncExternalStore(
+    subscribeToNothing,
+    () => window.location.search + window.location.hash,
+    () => null,
+  );
+  const [landingApplied, setLandingApplied] = useState(false);
+  const [scrollToToolsOnLanding, setScrollToToolsOnLanding] = useState(false);
+  if (routeMode === "home" && landingUrl !== null && !landingApplied) {
+    setLandingApplied(true);
+    const intent = parseLandingIntent(landingUrl);
+    if (intent.search) setToolSearchQuery(intent.search);
+    if (intent.category) setSelectedToolCategory(intent.category);
+    if (intent.toolId) setSelectedToolId(intent.toolId);
+    setScrollToToolsOnLanding(intent.scrollToTools);
+  }
+
   useEffect(() => {
-    if (routeMode !== "home") {
+    if (!scrollToToolsOnLanding) {
       return;
     }
-
-    const searchParams = new URLSearchParams(window.location.search);
-
-    // Honour the WebSite SearchAction target (/?search=<query>) by pre-filling
-    // the Tool Finder and scrolling to it, so the structured-data search box
-    // maps to a real on-site search.
-    const searchQuery = searchParams.get("search");
-    if (searchQuery && searchQuery.trim()) {
-      setToolSearchQuery(searchQuery);
-      requestAnimationFrame(() => {
-        toolsSectionRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
+    const frame = requestAnimationFrame(() => {
+      toolsSectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
       });
-      return;
-    }
-
-    // Honour the BreadcrumbList category item (/?category=<id>) by pre-selecting
-    // that category filter in the Tool Finder and scrolling to it, so the
-    // visible breadcrumb on tool pages links to a real filtered view.
-    const categoryParam = searchParams.get("category");
-    if (
-      categoryParam &&
-      toolCategoryOptions.some((option) => option.value === categoryParam)
-    ) {
-      setSelectedToolCategory(categoryParam);
-      requestAnimationFrame(() => {
-        toolsSectionRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      });
-      return;
-    }
-
-    const toolId = searchParams.get("tool");
-    if (!toolId || !getToolMetaById(toolId)) {
-      return;
-    }
-
-    setSelectedToolId(toolId);
-
-    if (window.location.hash === "#tools") {
-      requestAnimationFrame(() => {
-        toolsSectionRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      });
-    }
-  }, [routeMode]);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [scrollToToolsOnLanding]);
 
   useEffect(() => {
     function handlePointerDown(event: MouseEvent) {
