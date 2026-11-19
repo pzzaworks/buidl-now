@@ -140,13 +140,10 @@ export function ChmodCalculatorTool() {
     { label: "444 (r--r--r--)", value: "444", desc: "Read-only for all" },
   ];
 
-  const PermissionCheckboxes = ({
-    role,
-    label,
-  }: {
-    role: "owner" | "group" | "other";
-    label: string;
-  }) => (
+  // A plain render helper, not a component defined during render: a nested
+  // component gets a new identity each render, remounting the checkboxes and
+  // dropping keyboard focus on every toggle.
+  const renderPermissionCheckboxes = (role: "owner" | "group" | "other", label: string) => (
     <div className="space-y-2">
       <Label className="text-sm font-medium">{label}</Label>
       <div className="flex gap-4">
@@ -173,9 +170,9 @@ export function ChmodCalculatorTool() {
     <div className="space-y-6">
       {/* Permission Checkboxes */}
       <div className="space-y-4 p-4 bg-[var(--color-gray-0)] border border-border rounded-[12px]">
-        <PermissionCheckboxes role="owner" label={t("ownerLabel")} />
-        <PermissionCheckboxes role="group" label={t("groupLabel")} />
-        <PermissionCheckboxes role="other" label={t("otherLabel")} />
+        {renderPermissionCheckboxes("owner", t("ownerLabel"))}
+        {renderPermissionCheckboxes("group", t("groupLabel"))}
+        {renderPermissionCheckboxes("other", t("otherLabel"))}
       </div>
 
       {/* Numeric Input */}

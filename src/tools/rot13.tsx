@@ -107,7 +107,7 @@ export const rot13Config: ToolConfig = {
           <p className="text-sm mb-4">Enter any text in the input field and click Convert. The same operation both encodes and decodes text. Non-alphabetic characters (numbers, punctuation, spaces) remain unchanged.</p>
 
           <h4 className="text-base font-semibold mb-2">Use Cases</h4>
-          <p className="text-sm mb-4">ROT13 is commonly used to obscure spoilers, puzzle solutions, or potentially offensive content in online forums. It's not secure encryption - just simple obfuscation.</p>
+          <p className="text-sm mb-4">ROT13 is commonly used to obscure spoilers, puzzle solutions, or potentially offensive content in online forums. It&apos;s not secure encryption - just simple obfuscation.</p>
         </>
       ),
     },

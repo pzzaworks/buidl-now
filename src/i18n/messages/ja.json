@@ -2862,7 +2862,6 @@
       "totalGwei": "合計 Gwei",
       "totalEth": "合計 ETH",
       "totalUsd": "合計 USD",
-      "recalculate": "再計算",
       "reset": "リセット",
       "formula": "計算式:",
       "typicalGasLimits": "一般的な gas limit"

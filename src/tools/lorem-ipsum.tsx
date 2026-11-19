@@ -132,6 +132,7 @@ export function LoremIpsumTool() {
           <div className="flex gap-2">
             <Button
               variant={type === "paragraphs" ? "primary" : "secondary"}
+              aria-pressed={type === "paragraphs"}
               onClick={() => setType("paragraphs")}
               className="flex-1"
               size="sm"
@@ -140,6 +141,7 @@ export function LoremIpsumTool() {
             </Button>
             <Button
               variant={type === "sentences" ? "primary" : "secondary"}
+              aria-pressed={type === "sentences"}
               onClick={() => setType("sentences")}
               className="flex-1"
               size="sm"
@@ -148,6 +150,7 @@ export function LoremIpsumTool() {
             </Button>
             <Button
               variant={type === "words" ? "primary" : "secondary"}
+              aria-pressed={type === "words"}
               onClick={() => setType("words")}
               className="flex-1"
               size="sm"
@@ -218,10 +221,10 @@ export const loremIpsumConfig: ToolConfig = {
       content: (
         <>
           <h4 className="text-base font-semibold mb-2">Generator Functionality</h4>
-          <p className="text-sm mb-4">This tool generates Lorem Ipsum text in paragraphs, sentences, or words. You can specify the count and optionally start with the classic "Lorem ipsum dolor sit amet" phrase.</p>
+          <p className="text-sm mb-4">This tool generates Lorem Ipsum text in paragraphs, sentences, or words. You can specify the count and optionally start with the classic &quot;Lorem ipsum dolor sit amet&quot; phrase.</p>
 
           <h4 className="text-base font-semibold mb-2">Origin</h4>
-          <p className="text-sm mb-4">Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. It has been used as dummy text since the 1500s.</p>
+          <p className="text-sm mb-4">Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of &quot;de Finibus Bonorum et Malorum&quot; (The Extremes of Good and Evil) by Cicero, written in 45 BC. It has been used as dummy text since the 1500s.</p>
         </>
       ),
     },

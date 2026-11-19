@@ -349,7 +349,7 @@ export const textAnalyzerConfig: ToolConfig = {
           </ul>
 
           <h4 className="text-base font-semibold mb-2">Understanding Lexical Density</h4>
-          <p className="text-sm">Lexical density is the ratio of unique words to total words, expressed as a percentage. Higher values (60-80%) indicate more varied vocabulary, while lower values suggest more repetitive text. It's a useful metric for analyzing writing style and complexity.</p>
+          <p className="text-sm">Lexical density is the ratio of unique words to total words, expressed as a percentage. Higher values (60-80%) indicate more varied vocabulary, while lower values suggest more repetitive text. It&apos;s a useful metric for analyzing writing style and complexity.</p>
         </>
       ),
     },

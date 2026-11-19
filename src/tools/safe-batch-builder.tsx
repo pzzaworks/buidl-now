@@ -325,7 +325,7 @@ console.log(JSON.stringify(batch, null, 2));
         <>
           <h4 className="text-base font-semibold mb-2">JSON Generation</h4>
           <p className="text-sm mb-4">
-            This tool generates a JSON file compatible with Safe's Transaction Builder app. You can:
+            This tool generates a JSON file compatible with Safe&apos;s Transaction Builder app. You can:
           </p>
           <ul className="list-disc list-inside space-y-1 text-sm mb-4">
             <li>Add multiple transactions with different recipients and data</li>
@@ -334,7 +334,7 @@ console.log(JSON.stringify(batch, null, 2));
             <li>Export as JSON to import directly into Safe UI</li>
           </ul>
           <p className="text-sm text-muted-foreground mb-4">
-            The generated JSON follows Safe's transaction batch format v1.0, ensuring compatibility with the Safe Transaction Builder.
+            The generated JSON follows Safe&apos;s transaction batch format v1.0, ensuring compatibility with the Safe Transaction Builder.
           </p>
 
           <h4 className="text-base font-semibold mb-2">Transaction Operations</h4>

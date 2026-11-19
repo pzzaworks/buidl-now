@@ -190,7 +190,7 @@ console.log("New signature:", newSignature);
       content: (
         <>
           <h4 className="text-base font-semibold mb-2">Message Signing</h4>
-          <p className="text-sm mb-4">When you sign a message in Ethereum, you're creating a cryptographic proof that you control a particular address. The signature can be verified by anyone to recover the signer's address.</p>
+          <p className="text-sm mb-4">When you sign a message in Ethereum, you&apos;re creating a cryptographic proof that you control a particular address. The signature can be verified by anyone to recover the signer&apos;s address.</p>
 
           <h4 className="text-base font-semibold mb-2">Signature Format</h4>
           <p className="text-sm mb-4">Ethereum signatures are 65 bytes: 32 bytes for r, 32 bytes for s, and 1 byte for v (recovery id). They are typically represented as a hex string starting with 0x.</p>

@@ -482,7 +482,7 @@ export const blockTimestampConverterConfig: ToolConfig = {
       content: (
         <>
           <p className="text-sm mb-4">
-            Block to timestamp conversion uses the average block time and a reference point (known block and timestamp). The tool calculates the time difference by multiplying the block difference by the chain's average block time. For accurate results, use a recent reference block from a block explorer.
+            Block to timestamp conversion uses the average block time and a reference point (known block and timestamp). The tool calculates the time difference by multiplying the block difference by the chain&apos;s average block time. For accurate results, use a recent reference block from a block explorer.
           </p>
 
           <h4 className="text-base font-semibold mb-2">Why Convert Blocks to Timestamps?</h4>

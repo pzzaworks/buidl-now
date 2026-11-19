@@ -267,7 +267,7 @@ export const eip712HasherConfig: ToolConfig = {
           <ol className="list-decimal list-inside space-y-2 text-sm mb-4">
             <li>Calculate the domain separator hash</li>
             <li>Calculate the message struct hash</li>
-            <li>Combine them: keccak256("\x19\x01" + domainSeparator + messageHash)</li>
+            <li>Combine them: keccak256(&quot;\x19\x01&quot; + domainSeparator + messageHash)</li>
           </ol>
           <p className="text-sm">
             The domain separator includes information about the dApp, version, chain ID, and verifying contract to prevent signature replay across different contexts.

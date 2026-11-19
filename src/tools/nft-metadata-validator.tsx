@@ -540,7 +540,7 @@ console.log("Valid:", validateNFTMetadata(metadata));
               <strong>description:</strong> A description of the NFT
             </li>
             <li>
-              <strong>image:</strong> URI pointing to the NFT's image (IPFS, HTTP, or data URI)
+              <strong>image:</strong> URI pointing to the NFT&apos;s image (IPFS, HTTP, or data URI)
             </li>
           </ul>
 

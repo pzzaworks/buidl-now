@@ -2862,7 +2862,6 @@
       "totalGwei": "총 Gwei",
       "totalEth": "총 ETH",
       "totalUsd": "총 USD",
-      "recalculate": "다시 계산",
       "reset": "초기화",
       "formula": "공식:",
       "typicalGasLimits": "일반적인 가스 한도"

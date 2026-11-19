@@ -2862,7 +2862,6 @@
       "totalGwei": "Celkovo Gwei",
       "totalEth": "Celkovo ETH",
       "totalUsd": "Celkovo USD",
-      "recalculate": "Prepočítať",
       "reset": "Obnoviť",
       "formula": "Vzorec:",
       "typicalGasLimits": "Typické gas limity"

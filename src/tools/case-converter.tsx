@@ -205,7 +205,7 @@ export const caseConverterConfig: ToolConfig = {
       content: (
         <>
           <p className="text-sm mb-4">
-            The converter first parses the input by detecting word boundaries (spaces, underscores, hyphens, or camelCase transitions). It then applies the selected format's rules: capitalizing specific letters, adding separators, or removing spaces. Each format follows language-specific conventions.
+            The converter first parses the input by detecting word boundaries (spaces, underscores, hyphens, or camelCase transitions). It then applies the selected format&apos;s rules: capitalizing specific letters, adding separators, or removing spaces. Each format follows language-specific conventions.
           </p>
 
           <h4 className="text-base font-semibold mb-2">Available Formats</h4>

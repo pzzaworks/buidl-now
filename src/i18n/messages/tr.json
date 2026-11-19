@@ -2862,7 +2862,6 @@
       "totalGwei": "Toplam Gwei",
       "totalEth": "Toplam ETH",
       "totalUsd": "Toplam USD",
-      "recalculate": "Yeniden Hesapla",
       "reset": "Sıfırla",
       "formula": "Formül:",
       "typicalGasLimits": "Tipik Gas Limitleri"

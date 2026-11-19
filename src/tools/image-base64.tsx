@@ -195,7 +195,7 @@ export const imageBase64Config: ToolConfig = {
       content: (
         <>
           <p className="text-sm mb-4">
-            Base64 encoding converts binary image data into ASCII text by grouping binary data into 6-bit chunks and mapping each chunk to a character from a 64-character set (A-Z, a-z, 0-9, +, /). This encoding allows binary data to be safely transmitted in text-based formats like HTML, CSS, or JSON. The encoded string starts with a data URL prefix (e.g., 'data:image/png;base64,') followed by the Base64-encoded image data.
+            Base64 encoding converts binary image data into ASCII text by grouping binary data into 6-bit chunks and mapping each chunk to a character from a 64-character set (A-Z, a-z, 0-9, +, /). This encoding allows binary data to be safely transmitted in text-based formats like HTML, CSS, or JSON. The encoded string starts with a data URL prefix (e.g., &apos;data:image/png;base64,&apos;) followed by the Base64-encoded image data.
           </p>
 
           <h4 className="text-base font-semibold mb-2">When to Use Base64 Images</h4>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -24,38 +24,25 @@ export function GasEstimatorTool() {
   const [ethPrice, setEthPrice] = useState("2500"); // USD
   const [customGasLimit, setCustomGasLimit] = useState("");
 
-  const [results, setResults] = useState({
-    gasLimit: GAS_LIMITS.transfer,
-    gasCostGwei: "0",
-    gasCostEth: "0",
-    gasCostUsd: "0",
-  });
-
-  useEffect(() => {
-    calculateGasCost();
-  }, [txType, gasPrice, ethPrice, customGasLimit]);
-
-  const calculateGasCost = () => {
+  // Derived from the inputs; an empty or invalid custom limit falls back to the
+  // preset for the selected transaction type instead of rendering NaN.
+  const results = useMemo(() => {
     const gasPriceNum = parseFloat(gasPrice) || 0;
     const ethPriceNum = parseFloat(ethPrice) || 0;
-    const gasLimit = customGasLimit
-      ? parseInt(customGasLimit)
-      : GAS_LIMITS[txType];
+    const customLimit = parseInt(customGasLimit, 10);
+    const gasLimit = Number.isFinite(customLimit) && customLimit > 0 ? customLimit : GAS_LIMITS[txType];
 
-    if (gasLimit <= 0) return;
-
-    // Calculate costs
     const gasCostGwei = gasLimit * gasPriceNum;
     const gasCostEth = gasCostGwei / 1e9;
     const gasCostUsd = gasCostEth * ethPriceNum;
 
-    setResults({
+    return {
       gasLimit,
       gasCostGwei: gasCostGwei.toLocaleString(),
       gasCostEth: gasCostEth.toFixed(6),
       gasCostUsd: gasCostUsd.toFixed(2),
-    });
-  };
+    };
+  }, [txType, gasPrice, ethPrice, customGasLimit]);
 
   const handleReset = () => {
     setTxType("transfer");
@@ -188,10 +175,7 @@ export function GasEstimatorTool() {
         </div>
 
         <div className="flex gap-2">
-          <Button onClick={calculateGasCost} className="flex-1" variant="primary">
-            {t("recalculate")}
-          </Button>
-          <Button onClick={handleReset}>
+          <Button onClick={handleReset} className="flex-1">
             {t("reset")}
           </Button>
         </div>
@@ -256,7 +240,7 @@ export const gasEstimatorConfig: ToolConfig = {
         <>
           <h4 className="text-base font-semibold mb-2">Gas Limit vs Gas Used</h4>
           <p className="text-sm mb-4">
-            Gas limit is the maximum amount of gas you're willing to spend on a transaction. Gas used is the actual amount consumed. If the limit is too low, the transaction fails. Unused gas is refunded.
+            Gas limit is the maximum amount of gas you&apos;re willing to spend on a transaction. Gas used is the actual amount consumed. If the limit is too low, the transaction fails. Unused gas is refunded.
           </p>
 
           <h4 className="text-base font-semibold mb-2">Gas Price Tiers</h4>

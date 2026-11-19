@@ -281,7 +281,7 @@ export const yamlValidatorConfig: ToolConfig = {
       title: "How does it work?",
       content: (
         <>
-          <p className="text-sm mb-4">Paste your YAML content in the input field and click Validate. The tool will check the syntax and display the parsed result as JSON. If there are errors, you'll see detailed error messages with line numbers.</p>
+          <p className="text-sm mb-4">Paste your YAML content in the input field and click Validate. The tool will check the syntax and display the parsed result as JSON. If there are errors, you&apos;ll see detailed error messages with line numbers.</p>
 
           <h4 className="text-base font-semibold mb-2">Common YAML Syntax</h4>
           <ul className="list-disc list-inside space-y-1">

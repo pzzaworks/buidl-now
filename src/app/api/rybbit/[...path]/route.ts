@@ -34,6 +34,9 @@ const HOP_BY_HOP = new Set([
   "upgrade",
   "content-length",
   "accept-encoding",
+  // This site's credentials (session or admin cookies, auth headers) never go to analytics
+  "cookie",
+  "authorization",
 ]);
 
 // Response headers that describe the framing we re-derive ourselves.

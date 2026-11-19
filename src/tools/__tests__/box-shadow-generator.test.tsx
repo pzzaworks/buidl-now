@@ -13,12 +13,12 @@ describe('BoxShadowGeneratorTool', () => {
 
   it('displays preset buttons', () => {
     render(<BoxShadowGeneratorTool />)
-    expect(screen.getByRole('button', { name: 'subtle' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'medium' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'large' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'xl' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'inset' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'outline' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Subtle' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Medium' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Large' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'XL' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Inset' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Outline' })).toBeInTheDocument()
   })
 
   it('displays shadow controls', () => {
@@ -88,7 +88,7 @@ describe('BoxShadowGeneratorTool', () => {
   it('applies subtle preset when clicked', () => {
     render(<BoxShadowGeneratorTool />)
 
-    const subtleButton = screen.getByRole('button', { name: 'subtle' })
+    const subtleButton = screen.getByRole('button', { name: 'Subtle' })
     fireEvent.click(subtleButton)
 
     // CSS output should contain subtle shadow values
@@ -101,7 +101,7 @@ describe('BoxShadowGeneratorTool', () => {
   it('applies inset preset when clicked', () => {
     render(<BoxShadowGeneratorTool />)
 
-    const insetButton = screen.getByRole('button', { name: 'inset' })
+    const insetButton = screen.getByRole('button', { name: 'Inset' })
     fireEvent.click(insetButton)
 
     const readonlyInputs = document.querySelectorAll('input[readonly]')

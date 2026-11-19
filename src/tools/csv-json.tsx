@@ -307,7 +307,7 @@ export const csvJsonConfig: ToolConfig = {
       content: (
         <>
           <p className="text-sm mb-4">
-            CSV to JSON parses each line into an array, using the first row as property names (if headers enabled). Each subsequent row becomes a JSON object with those properties. JSON to CSV extracts all unique keys as headers, then maps each object's values to CSV rows, handling quotes for values containing delimiters or newlines.
+            CSV to JSON parses each line into an array, using the first row as property names (if headers enabled). Each subsequent row becomes a JSON object with those properties. JSON to CSV extracts all unique keys as headers, then maps each object&apos;s values to CSV rows, handling quotes for values containing delimiters or newlines.
           </p>
 
           <h4 className="text-base font-semibold mb-2">Use Cases</h4>

@@ -135,7 +135,7 @@ export const tomlJsonConfig: ToolConfig = {
           <h4 className="text-base font-semibold mb-2">TOML Syntax Basics</h4>
           <ul className="list-disc list-inside space-y-1 mb-4">
             <li>[section] - Creates a table (object)</li>
-            <li>key = "value" - String assignment</li>
+            <li>key = &quot;value&quot; - String assignment</li>
             <li>key = 123 - Integer assignment</li>
             <li>key = true - Boolean assignment</li>
             <li>array = [1, 2, 3] - Array assignment</li>
