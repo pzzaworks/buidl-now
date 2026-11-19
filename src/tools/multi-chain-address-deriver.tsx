@@ -295,7 +295,7 @@ export function MultiChainAddressDeriverTool() {
             <div className="bg-[var(--color-gray-0)] rounded-[12px] border border-border p-4">
               <div className="text-xs font-semibold text-blue-400 mb-2">{t("bip44Title")}</div>
               <div className="text-xs font-mono text-muted-foreground space-y-1">
-                <div>m / purpose' / coin_type' / account' / change / address_index</div>
+                <div>{"m / purpose' / coin_type' / account' / change / address_index"}</div>
                 <div className="mt-2 space-y-0.5 text-muted-foreground">
                   <div>• purpose: 44 (BIP44)</div>
                   <div>• coin_type: 60 (Ethereum)</div>
@@ -356,8 +356,9 @@ export const multiChainAddressDeriverConfig: ToolConfig = {
 import { privateKeyToAccount, mnemonicToAccount } from 'viem/accounts';
 
 // Derive address from private key
-const privateKey = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
-const account = privateKeyToAccount(privateKey as \`0x\${string}\`);
+// Never hardcode a real key: read it from the environment.
+const privateKey = process.env.PRIVATE_KEY as \`0x\${string}\`;
+const account = privateKeyToAccount(privateKey);
 console.log("Address:", account.address);
 
 // Derive address from mnemonic phrase
@@ -405,7 +406,7 @@ for (let i = 0; i < 5; i++) {
           <p className="text-sm mb-4">Ethereum Virtual Machine (EVM) compatible chains use the same address format. This means your private key or mnemonic phrase generates the same address across Ethereum, BSC, Polygon, Arbitrum, Optimism, Avalanche, and Base.</p>
 
           <h4 className="text-base font-semibold mb-2">BIP44 Derivation</h4>
-          <p className="text-sm mb-4">BIP44 is a standard that defines how to derive multiple addresses from a single mnemonic phrase. The derivation path format is: m / purpose' / coin_type' / account' / change / address_index. For Ethereum, coin_type is 60.</p>
+          <p className="text-sm mb-4">BIP44 is a standard that defines how to derive multiple addresses from a single mnemonic phrase. The derivation path format is: {"m / purpose' / coin_type' / account' / change / address_index"}. For Ethereum, coin_type is 60.</p>
 
           <h4 className="text-base font-semibold mb-2">Security Practices</h4>
           <ul className="list-disc list-inside space-y-1 text-sm mb-4">
@@ -430,7 +431,7 @@ Path: m/44'/60'/0'/0/0
     },
     {
       title: "Private Key to Address",
-      content: `Private Key: 0x39d81618ff2db2922a9a87dafb9d17bcb0300c234
+      content: `Private Key: <your 64-hex-character key>
 → Address: 0xb67C268fAC7C2Fba5eD461C8085008D75F5Db8A70
 (Works across all EVM-compatible chains)`,
       type: "code",
