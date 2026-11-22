@@ -26,6 +26,7 @@ import { FaqAccordion } from "@/components/faq-accordion";
 import { tools } from "@/lib/tools-list";
 import { externalLinkRel } from "@/lib/seo";
 import { getToolById } from "@/tools";
+import { Copyright } from "@/components/copyright";
 import { type Tool } from "@/types/tools";
 
 interface SiteAction {
@@ -1516,7 +1517,7 @@ export function HomePageClient({
                 className="text-[12px] font-medium uppercase tracking-[0.22em] text-[#202020]"
                 style={monoStyle}
               >
-                {t("copyright")}
+                <Copyright />
               </span>
             </motion.div>
           </RevealSection>

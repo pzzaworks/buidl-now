@@ -5,20 +5,19 @@ import { FaGithub } from "react-icons/fa";
 import { MdApps } from "react-icons/md";
 import { Link, usePathname } from "@/i18n/navigation";
 import { externalLinkRel } from "@/lib/seo";
+import { Copyright } from "@/components/copyright";
 
 export function Footer() {
-  const t = useTranslations("home");
   const tNav = useTranslations("nav");
   const pathname = usePathname();
   const isToolsPage = pathname?.startsWith("/tools");
-  const copyrightLabel = t("copyright");
 
   return (
     <>
       {/* Mobile Footer - Centered */}
       <div className={`global-footer lg:hidden ${isToolsPage ? "relative mt-4 pb-4" : "fixed bottom-6"} left-0 right-0 flex flex-col items-center gap-4 z-50`}>
         <div className="flex items-center gap-3 text-sm text-muted-foreground font-semibold" style={{ fontFamily: 'var(--font-turret), sans-serif' }}>
-          <span className="text-foreground">{copyrightLabel}</span>
+          <span className="text-foreground"><Copyright /></span>
           {pathname === "/tools" ? null : (
             <>
               <span>·</span>
@@ -48,7 +47,7 @@ export function Footer() {
       {/* Desktop Footer - Left: Built by, Right: GitHub */}
       <div className="hidden lg:block fixed bottom-10 left-10 z-50">
         <span className="text-sm text-foreground font-semibold" style={{ fontFamily: 'var(--font-turret), sans-serif' }}>
-          {copyrightLabel}
+          <Copyright />
         </span>
       </div>
 
