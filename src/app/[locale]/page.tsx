@@ -6,6 +6,7 @@ import clsx from "clsx";
 import {
   AnimatePresence,
   motion,
+  useMotionValueEvent,
   useScroll,
   useTransform,
 } from "framer-motion";
@@ -92,6 +93,49 @@ const toolSwapTransition = {
   duration: 0.34,
   ease: [0.22, 1, 0.36, 1] as const,
 };
+
+/** Height of the sticky header bar (its `min-h-[84px]`); above this scroll offset it always shows. */
+const headerHeight = 84;
+
+/** Scroll distance in one direction before the header hides or shows, so trackpad jitter cannot flicker it. */
+const headerScrollTolerance = 8;
+
+/**
+ * How long the header stays hidden after the last scroll event of a scroll the page started itself
+ * (jumping to the tools), so a jump upwards does not reveal the header over the content it lands on.
+ */
+const programmaticScrollSettleMs = 180;
+
+const headerSlideTransition = {
+  duration: 0.32,
+  ease: [0.22, 1, 0.36, 1] as const,
+};
+
+interface HeaderScrollState {
+  /** Scroll offset the header last reacted at; movement is measured from here. */
+  anchorY: number;
+  /** True while the page runs a scroll of its own, which must not reveal the header. */
+  programmatic: boolean;
+  settleTimeout: number;
+}
+
+/** Ends the programmatic-scroll guard once no scroll event has arrived for `delayMs`. */
+function releaseHeaderAfter(state: HeaderScrollState, delayMs: number) {
+  window.clearTimeout(state.settleTimeout);
+  state.settleTimeout = window.setTimeout(() => {
+    state.programmatic = false;
+    state.anchorY = window.scrollY;
+  }, delayMs);
+}
+
+/**
+ * Starts the guard for a scroll the page is about to run. The first wait is longer because a
+ * smooth scroll emits its first event a frame or two after it is requested.
+ */
+function holdHeaderForProgrammaticScroll(state: HeaderScrollState) {
+  state.programmatic = true;
+  releaseHeaderAfter(state, programmaticScrollSettleMs * 2);
+}
 
 const staggerParentVariants = {
   hidden: {},
@@ -548,6 +592,7 @@ export function HomePageClient({
   const HeroHeading = isToolRoute ? motion.p : motion.h1;
   const categoryDropdownRef = useRef<HTMLDivElement>(null);
   const toolsSectionRef = useRef<HTMLElement>(null);
+  const toolPanelRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
   const [isPageReady, setIsPageReady] = useState(false);
@@ -654,6 +699,50 @@ export function HomePageClient({
   const heroActionsX = useTransform(scrollY, [0, 420], [0, 4]);
   const heroActionsOpacity = useTransform(scrollY, [0, 180, 420], [1, 0.9, 0.58]);
 
+  // The header slides away while reading down the page and comes back on the first scroll up.
+  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
+  const headerScrollRef = useRef<HeaderScrollState>({
+    anchorY: 0,
+    programmatic: false,
+    settleTimeout: 0,
+  });
+
+  // Keeps the header hidden through a scroll the page starts itself (jumping to the tools), so a
+  // jump upwards does not slide the header over what it lands on. Not every browser has
+  // `scrollend`, so the guard lifts once scroll events go quiet.
+  function holdHeaderHiddenUntilScrollSettles() {
+    holdHeaderForProgrammaticScroll(headerScrollRef.current);
+    setIsHeaderHidden(true);
+  }
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const state = headerScrollRef.current;
+
+    if (state.programmatic) {
+      releaseHeaderAfter(state, programmaticScrollSettleMs);
+      return;
+    }
+
+    if (latest <= headerHeight) {
+      setIsHeaderHidden(false);
+      state.anchorY = latest;
+      return;
+    }
+
+    const delta = latest - state.anchorY;
+    if (Math.abs(delta) < headerScrollTolerance) {
+      return;
+    }
+
+    setIsHeaderHidden(delta > 0);
+    state.anchorY = latest;
+  });
+
+  useEffect(() => {
+    const state = headerScrollRef.current;
+    return () => window.clearTimeout(state.settleTimeout);
+  }, []);
+
   useEffect(() => {
     // Reduced motion skips the entrance: every use of isPageReady is OR-ed with shouldReduceMotion
     // or goes to RevealSection, which checks it itself. isPageReady starts false.
@@ -713,7 +802,10 @@ export function HomePageClient({
     if (!scrollToToolsOnLanding) {
       return;
     }
+    // A landing jump is the page's own scroll too: the header stays out of its way.
     const frame = requestAnimationFrame(() => {
+      holdHeaderForProgrammaticScroll(headerScrollRef.current);
+      setIsHeaderHidden(true);
       toolsSectionRef.current?.scrollIntoView({
         behavior: "smooth",
         block: "start",
@@ -741,6 +833,7 @@ export function HomePageClient({
   }, []);
 
   function scrollToTools() {
+    holdHeaderHiddenUntilScrollSettles();
     toolsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
@@ -762,8 +855,11 @@ export function HomePageClient({
       window.history.replaceState({}, "", `${url.pathname}${url.search}#tools`);
     }
 
+    // Land on the tool itself, not the finder: below xl the finder sits above the tool, so
+    // scrolling to the section would leave the newly picked tool out of view.
+    holdHeaderHiddenUntilScrollSettles();
     requestAnimationFrame(() => {
-      toolsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      toolPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
 
@@ -786,7 +882,14 @@ export function HomePageClient({
         key={shouldReduceMotion ? "reduced-motion" : "motion"}
         className="min-h-screen w-full bg-[#f5f5f5] text-[#202020]"
       >
-        <header className="sticky top-0 z-50 bg-[#f0fb29]">
+        <motion.header
+          className="sticky top-0 z-50 bg-[#f0fb29]"
+          initial={false}
+          animate={{ y: isHeaderHidden ? "-100%" : "0%" }}
+          transition={shouldReduceMotion ? { duration: 0 } : headerSlideTransition}
+          // Tabbing into a hidden header brings it back so the focused link is visible.
+          onFocus={() => setIsHeaderHidden(false)}
+        >
           <motion.div
             className="mx-auto flex min-h-[84px] w-full max-w-[1920px] items-center justify-between gap-6 px-6 lg:px-16"
             initial={shouldReduceMotion ? false : "hidden"}
@@ -820,9 +923,11 @@ export function HomePageClient({
               <LanguageSwitcher />
             </div>
           </motion.div>
-        </header>
+        </motion.header>
 
-        <section className="min-h-[calc(100svh-84px)] border-b border-[#202020] bg-[#f0fb29] sm:min-h-[max(calc(100svh-84px),42rem)] lg:min-h-[max(calc(100svh-84px),44rem)]">
+        {/* overflow-x-clip: the scroll parallax shifts the hero copy right, which on narrow
+            screens pushed it past the viewport and made the whole page scroll sideways. */}
+        <section className="min-h-[calc(100svh-84px)] overflow-x-clip border-b border-[#202020] bg-[#f0fb29] sm:min-h-[max(calc(100svh-84px),42rem)] lg:min-h-[max(calc(100svh-84px),44rem)]">
           <div className="relative mx-auto flex min-h-[calc(100svh-84px)] w-full max-w-[1920px] flex-col px-6 pb-[72px] pt-8 sm:min-h-[max(calc(100svh-84px),42rem)] lg:min-h-[max(calc(100svh-84px),44rem)] lg:px-16 lg:pb-20 lg:pt-8">
             <div className="w-full sm:absolute sm:left-6 sm:top-[22%] sm:max-w-[calc(100%-48px)] sm:-translate-y-1/2 lg:left-16 lg:top-[23%] lg:max-w-[calc(100%-128px)] 2xl:top-[32%]">
               <motion.div
@@ -940,7 +1045,13 @@ export function HomePageClient({
           </div>
         </section>
 
-        <section id="tools" ref={toolsSectionRef} className="bg-[#f5f5f5]">
+        {/* -scroll-mt-18: jumping to the tools skips 72px of the 96px top padding, so the label
+            sits 24px below the viewport edge and the workspace below it fits the screen. */}
+        <section
+          id="tools"
+          ref={toolsSectionRef}
+          className="-scroll-mt-18 bg-[#f5f5f5]"
+        >
           <RevealSection
             className="mx-auto w-full max-w-[1920px] px-6 py-24 lg:px-16"
             pageReady={isPageReady}
@@ -951,8 +1062,12 @@ export function HomePageClient({
 
             {/* Finder and tool sit side by side from xl only. Tools lay out with
                 viewport breakpoints (sm:/md:), so at lg the fixed 620px finder
-                left a 242px panel running wide layouts and labels spilled out. */}
-            <div className="grid grid-cols-1 gap-y-8 pt-10 xl:h-[760px] xl:grid-cols-[620px_minmax(0,1fr)] xl:items-stretch xl:gap-x-8 lg:pt-12">
+                left a 242px panel running wide layouts and labels spilled out.
+                From xl the workspace follows the viewport height: after a jump to
+                the tools this box starts 59px down (24px gap + 35px label), so
+                100svh-83px leaves the same 24px below it. The clamp keeps short
+                screens usable and very tall ones from stretching the panels. */}
+            <div className="grid grid-cols-1 gap-y-8 pt-10 xl:h-[clamp(560px,calc(100svh-83px),960px)] xl:grid-cols-[620px_minmax(0,1fr)] xl:items-stretch xl:gap-x-8 lg:pt-12">
               <motion.div
                 className="xl:min-h-0"
                 variants={shouldReduceMotion ? undefined : fadeUpVariants}
@@ -1029,7 +1144,9 @@ export function HomePageClient({
                     </div>
                   </div>
 
-                  <div className="max-h-[420px] overflow-y-auto bg-white xl:min-h-0 xl:flex-1 xl:max-h-none">
+                  {/* Capped at half the screen when stacked, so on phones the list
+                      does not swallow every swipe meant for the page. */}
+                  <div className="max-h-[min(420px,50svh)] overflow-y-auto bg-white xl:min-h-0 xl:flex-1 xl:max-h-none">
                     {filteredTools.length > 0 ? (
                       filteredTools.map((tool) => (
                         // A real link so crawlers can reach every tool page; a plain
@@ -1095,7 +1212,8 @@ export function HomePageClient({
               </motion.div>
 
               <motion.div
-                className="min-w-0 xl:min-h-0"
+                ref={toolPanelRef}
+                className="min-w-0 scroll-mt-6 xl:min-h-0"
                 variants={shouldReduceMotion ? undefined : fadeUpVariants}
               >
                 <div className="border border-[#202020] bg-[#fbfaf6] xl:flex xl:h-full xl:min-h-0 xl:flex-col">
